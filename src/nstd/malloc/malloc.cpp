@@ -3,14 +3,16 @@
 #include <Process.h>
 
 using kernel::Process;
+using nstd::uintptr_t;
+using nstd::size_t;
 
 /**
  * `[...] undefined reference to 'operator new(unsigned long)'.`
  * See `llvm-clang/libcxx/include/new`
  */
-void* operator new(nstd::size_t sz)
+void* operator new(size_t sz)
 {
-  nstd::uintptr_t ptr = Process::brk();
+  uintptr_t ptr = Process::brk();
   ptr += sz;
   Process::brk(ptr);
   return ptr;

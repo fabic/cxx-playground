@@ -10,14 +10,14 @@
 namespace kernel {
 
     /**
-     * see musl/arch/x86_64/syscall_arch.h
+     * see `musl/arch/x86_64/syscall_arch.h`
      *
      * TODO: rename to Kernel ? and namespace to linux ?
      *
      */
     class Syscall {
     public:
-        // see misc/musl-libc/arch/x86_64/bits/syscall.h
+        // see `misc/musl-libc/arch/x86_64/bits/syscall.h`
         static const long SYS_brk            =  12;
         static const long SYS_getpid         =  39;
         static const long SYS_exit           =  60;

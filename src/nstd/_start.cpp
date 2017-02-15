@@ -78,6 +78,7 @@ __asm__
   "  call _start_c        \n"/* musl init will run the program */
 
   "nop\nnop\nnop\nnop\n"
+  "nop\nnop\nnop\nnop\n" /* padding, alignment */
 );
 
 

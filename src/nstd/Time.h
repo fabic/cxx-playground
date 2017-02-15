@@ -43,7 +43,8 @@ namespace kernel {
 
         static inline struct timespec gettimeofday() {
             struct timespec ts;
-            int ec = Time::sc_gettimeofday(&ts.tv, &ts.tz);
+            //int ec =
+              Time::sc_gettimeofday(&ts.tv, &ts.tz);
             return ts;
         }
     };
