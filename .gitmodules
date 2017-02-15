@@ -4,3 +4,6 @@
 [submodule "clang-libcxx"]
 	path = lib/libcxx
 	url = git@github.com:llvm-mirror/libcxx.git
+[submodule "clang-libcxxabi"]
+	path = lib/libcxxabi
+	url = git@github.com:llvm-mirror/libcxxabi.git
