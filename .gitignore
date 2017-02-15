@@ -1,5 +1,8 @@
 # .gitignore (cxx_playground)
 
+*.sw?
+*~
+
 /.idea/
 .tags
 .tags_sorted_by_file

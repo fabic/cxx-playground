@@ -9,6 +9,7 @@
 
 namespace kernel {
 
+  using nstd::uintptr_t;
 
     class Process {
     public:
@@ -36,9 +37,11 @@ namespace kernel {
          * musl-libc/src/malloc/__brk.c
          * \link http://man7.org/linux/man-pages/man2/brk.2.html
          */
-        inline static nstd::uintptr_t brk(nstd::uintptr_t newbrk = 0)
+        inline static uintptr_t brk(uintptr_t newbrk = nullptr)
         {
-            return static_cast<nstd::uintptr_t>( Syscall::syscall1(Syscall::SYS_brk, newbrk) );
+            return reinterpret_cast<uintptr_t>(
+                  Syscall::syscall1(Syscall::SYS_brk, (long)newbrk)
+                );
         }
 
     };
