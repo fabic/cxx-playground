@@ -1,4 +1,4 @@
-# cpp_playground/.gitignore
+# .gitignore (cxx_playground)
 
 /.idea/
 .tags
@@ -9,7 +9,12 @@ cscope.in.out
 cscope.out
 cscope.po.out
 
-
 /build/
-/logs/
 #/CMakeFiles/
+
+*.o
+*.so
+
+# Compiled Static libraries
+*.la
+*.a
