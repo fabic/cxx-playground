@@ -1,3 +1,6 @@
 [submodule "musl-libc"]
 	path = lib/musl
 	url = git://git.musl-libc.org/musl
+[submodule "clang-libcxx"]
+	path = lib/libcxx
+	url = git@github.com:llvm-mirror/libcxx.git
