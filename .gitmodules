@@ -7,3 +7,6 @@
 [submodule "clang-libcxxabi"]
 	path = lib/libcxxabi
 	url = git@github.com:llvm-mirror/libcxxabi.git
+[submodule "gnu-glibc"]
+	path = lib/glibc
+	url = git://sourceware.org/git/glibc
