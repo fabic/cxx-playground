@@ -16,5 +16,7 @@ int main(int argc, char *argv[], char *env[])
 {
   auto foo1 = new Foo();
 
+  // -_- compiler is smart enough to compute this at compile-time,
+  //     ->get() is never invoked.
   return argc + foo1->get() + foo1->get();
 }

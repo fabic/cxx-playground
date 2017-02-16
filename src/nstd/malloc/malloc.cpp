@@ -17,3 +17,8 @@ void* operator new(size_t sz)
   Process::brk(ptr);
   return ptr;
 }
+
+void* operator new[](nstd::size_t sz)
+{
+  return ::operator new( sz );
+}

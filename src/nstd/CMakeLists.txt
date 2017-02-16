@@ -75,27 +75,31 @@ target_compile_options( test_aac PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( test_aac PROPERTIES LINK_FLAGS -nostdlib)
 
 add_executable( test_aad tests/test_aad.cpp
-  assert.cpp _start.cpp string/memset.cpp malloc/malloc.cpp
+    assert.cpp _start.cpp string/memset.cpp malloc/malloc.cpp
   )
 target_compile_options( test_aad PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( test_aad PROPERTIES LINK_FLAGS -nostdlib)
 
+add_executable( test_aae tests/test_aae.cpp
+    _start.cpp malloc/malloc.cpp
+  )
+target_compile_options( test_aae PUBLIC -nostdinc -nostdinc++ )
+set_target_properties( test_aae PROPERTIES LINK_FLAGS -nostdlib)
 
 
-add_executable( aaa
-  tests/test001.cpp
-  #../hacks/hack_cxa_throw_exception.cpp
+# ~ ~ ~ * ~ ~ ~
+
+# Old thing that is.
+add_executable( aaa tests/test001.cpp
+    #../hacks/hack_cxa_throw_exception.cpp
+  )
+target_include_directories( aaa PUBLIC
+    # ...
   )
 
-
-target_include_directories( aaa
-  PUBLIC
-  # ...
-)
-
 target_link_libraries( aaa
-  # ${Boost_LIBRARIES}
-  # Unwind dl # for hack_cxa_throw_exception.cpp
-)
+    # ${Boost_LIBRARIES}
+    # Unwind dl # for hack_cxa_throw_exception.cpp
+  )
 
 #add_subdirectory(tests)
