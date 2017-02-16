@@ -18,6 +18,8 @@ int main(int argc, char *argv[], char *env[])
 
   Stream::write(2, buffer, readCount);
 
+  Stream::close(0);
+
   return 111;
 }
 
