@@ -48,35 +48,39 @@ namespace nstd {
 
   // ~ ~ is_integral ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ {
 
-  template <class T>   struct is_integral                     : public false_type {};
-  template <>          struct is_integral<bool>               : public true_type {};
-  template <>          struct is_integral<char>               : public true_type {};
-  template <>          struct is_integral<signed char>        : public true_type {};
-  template <>          struct is_integral<unsigned char>      : public true_type {};
-  template <>          struct is_integral<short>              : public true_type {};
-  template <>          struct is_integral<unsigned short>     : public true_type {};
-  template <>          struct is_integral<int>                : public true_type {};
-  template <>          struct is_integral<unsigned int>       : public true_type {};
-  template <>          struct is_integral<long>               : public true_type {};
-  template <>          struct is_integral<unsigned long>      : public true_type {};
-  template <>          struct is_integral<long long>          : public true_type {};
-  template <>          struct is_integral<unsigned long long> : public true_type {};
+  namespace priv {
+    template <class T>   struct is_integral                     : public false_type {};
+    template <>          struct is_integral<bool>               : public true_type {};
+    template <>          struct is_integral<char>               : public true_type {};
+    template <>          struct is_integral<signed char>        : public true_type {};
+    template <>          struct is_integral<unsigned char>      : public true_type {};
+    template <>          struct is_integral<short>              : public true_type {};
+    template <>          struct is_integral<unsigned short>     : public true_type {};
+    template <>          struct is_integral<int>                : public true_type {};
+    template <>          struct is_integral<unsigned int>       : public true_type {};
+    template <>          struct is_integral<long>               : public true_type {};
+    template <>          struct is_integral<unsigned long>      : public true_type {};
+    template <>          struct is_integral<long long>          : public true_type {};
+    template <>          struct is_integral<unsigned long long> : public true_type {};
+  }
 
   template <class T> struct is_integral
-      : public is_integral<typename remove_cv<T>::type> {};
+      : public priv::is_integral<typename remove_cv<T>::type> {};
 
   // }
 
 
   // ~ ~ is_floating_point ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ {
 
-  template <class T>   struct is_floating_point              : public false_type {};
-  template <>          struct is_floating_point<float>       : public true_type {};
-  template <>          struct is_floating_point<double>      : public true_type {};
-  template <>          struct is_floating_point<long double> : public true_type {};
+  namespace priv {
+    template <class T>   struct is_floating_point              : public false_type {};
+    template <>          struct is_floating_point<float>       : public true_type {};
+    template <>          struct is_floating_point<double>      : public true_type {};
+    template <>          struct is_floating_point<long double> : public true_type {};
+  }
 
   template <class T> struct is_floating_point
-      : public is_floating_point< typename remove_cv<T>::type > {};
+      : public priv::is_floating_point< typename remove_cv<T>::type > {};
 
   // }
 
@@ -92,34 +96,44 @@ namespace nstd {
 
   // ~ ~ numeric_limits<T> ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ {
 
-  /**
-   * Inspired by LLVM-Clang's `libcxx/include/limits`
-   *
-   * \link http://en.cppreference.com/w/cpp/types/numeric_limits
-   */
-  template <class T>
-  class numeric_limits<T, bool IsArithmetic = true>
-  {
-  protected:
-      typedef T type;
+  namespace priv {
 
-      static constexpr const bool is_specialized = true;
+    template <class T, bool = is_arithmetic<T>()>
+    class numeric_limits
+    {};
 
-      static constexpr const bool is_signed = type(-1) < type(0);
+    /**
+     * \link http://en.cppreference.com/w/cpp/types/numeric_limits
+     */
+    template <class T>
+    class numeric_limits<T, true>
+    {
+    public:
+        typedef T type;
 
-      /// Count of boolean digits.
-      static constexpr const int  digits = static_cast<int>(sizeof(type) * 8 - is_signed);
+        static constexpr const bool is_signed = type(-1) < type(0);
 
-      inline static constexpr type min() noexcept {
-        return type( type(1) << digits );
-      }
+        /// Count of boolean digits.
+        static constexpr const int  digits = static_cast<int>(sizeof(type) * 8 - is_signed);
 
-      inline static constexpr type max() noexcept {
-        return is_signed ? type(type(~0) ^ min()): type(~0);
-      }
-  };
+        inline static constexpr type min() noexcept {
+          return type( type(1) << digits );
+        }
 
-  static_assert(numeric_limits<char>::max() == 255);
+        inline static constexpr type max() noexcept {
+          return is_signed ? type(type(~0) ^ min()): type(~0);
+        }
+    };
+
+  } // priv ns
+
+  template<class T>
+    class numeric_limits
+      : public priv::numeric_limits<typename remove_cv<T>::type>
+  {};
+
+  static_assert(numeric_limits<char>::max() == 127);
+  static_assert(numeric_limits<unsigned char>::max() == 255);
 
   // }
 
