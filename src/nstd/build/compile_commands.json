@@ -1,0 +1,73 @@
+[
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -o CMakeFiles/aaa.dir/tests/test001.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/tests/test001.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/tests/test001.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aab.dir/tests/test_aab.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/tests/test_aab.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/tests/test_aab.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aad.dir/tests/test_aad.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/tests/test_aad.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/tests/test_aad.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aad.dir/c/assert.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/c/assert.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/c/assert.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aad.dir/c/_start.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/c/_start.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/c/_start.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aad.dir/c/memset.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/c/memset.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/c/memset.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aad.dir/malloc/malloc.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/malloc/malloc.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/malloc/malloc.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aae.dir/tests/test_aae.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/tests/test_aae.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/tests/test_aae.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aae.dir/c/_start.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/c/_start.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/c/_start.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aae.dir/malloc/malloc.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/malloc/malloc.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/malloc/malloc.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aac.dir/tests/test_aac.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/tests/test_aac.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/tests/test_aac.cpp"
+},
+
+{
+  "directory": "/home/fabi/dev/cxx-playground/src/nstd/build",
+  "command": "/home/fabi/dev/llvm-clang/local/bin/clang++    -I. -I../  -O2 -g -DNDEBUG   -std=c++1z -fPIC -Wall -pedantic -fcolor-diagnostics -fdiagnostics-show-category=name -fdiagnostics-show-template-tree -fno-optimize-sibling-calls -Wmissing-field-initializers -Wcovered-switch-default -Wnon-virtual-dtor -Wdelete-non-virtual-dtor -Woverloaded-virtual -nostdinc -nostdinc++ -o CMakeFiles/test_aac.dir/c/assert.cpp.o -c /home/fabi/dev/cxx-playground/src/nstd/c/assert.cpp",
+  "file": "/home/fabi/dev/cxx-playground/src/nstd/c/assert.cpp"
+}
+]

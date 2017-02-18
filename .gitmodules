@@ -10,3 +10,6 @@
 [submodule "gnu-glibc"]
 	path = lib/glibc
 	url = git://sourceware.org/git/glibc
+[submodule "boost-cpp-netlib"]
+	path = lib/cpp-netlib
+	url = https://github.com/cpp-netlib/cpp-netlib

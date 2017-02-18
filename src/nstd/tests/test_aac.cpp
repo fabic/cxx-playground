@@ -1,6 +1,6 @@
 
 #include <Process.h>
-#include <assert.h>
+#include <c/assert.h>
 
 using namespace kernel;
 

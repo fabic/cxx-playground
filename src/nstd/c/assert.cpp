@@ -1,4 +1,4 @@
-#include <assert.h>
+#include <c/assert.h>
 
 /**
  * Musl-libc `src/exit/assert.c`
