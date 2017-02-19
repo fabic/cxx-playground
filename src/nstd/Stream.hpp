@@ -12,7 +12,8 @@ namespace kernel {
   class Stream {
     public:
       static inline ssize_t read(int fd, void *buffer, size_t count);
-      static inline ssize_t write(int fd, void *buffer, size_t count);
+      static inline ssize_t write(int fd, const void *buffer, size_t count);
+      static inline ssize_t write(int fd, const char *str, size_t len);
       static inline int     close(int fd);
       // todo: does the kernel actually returns an 'int' ?? or is it libc ?
   };
@@ -26,11 +27,15 @@ namespace kernel {
   }
 
   ///
-  ssize_t Stream::write(int fd, void *buffer, size_t count)
+  ssize_t Stream::write(int fd, const void *buffer, size_t count)
   {
     long buf = reinterpret_cast<long>( buffer );
 
     return Syscall::syscall3(Syscall::SYS_write, fd, buf, count);
+  }
+
+  ssize_t Stream::write(int fd, const char *str, size_t len) {
+    return Stream::write(fd, reinterpret_cast<const void *>(str), len);
   }
 
   ///

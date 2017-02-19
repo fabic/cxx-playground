@@ -94,6 +94,12 @@ add_library( nstd STATIC
   )
 
 
+add_executable( test_strlen String/test_length.cpp)
+target_compile_options( test_strlen PUBLIC -nostdinc -nostdinc++ )
+target_link_libraries( test_strlen nstd )
+set_target_properties( test_strlen PROPERTIES LINK_FLAGS -nostdlib)
+
+
 # ~ ~ ~ * ~ ~ ~
 
 # Old thing that is.
