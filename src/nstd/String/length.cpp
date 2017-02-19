@@ -1,10 +1,6 @@
 
 #include <String.hpp>
 
-// #define ONES ((size_t)-1/UCHAR_MAX)
-// #define HIGHS (ONES * (UCHAR_MAX/2+1))
-// #define HASZERO(x) ((x)-ONES & ~(x) & HIGHS)
-
 namespace nstd {
 
   using nstd::size_t;
@@ -53,8 +49,7 @@ namespace nstd {
   }
 
   /**
-   * Borrowed from musl-libc `src/string/strlen.c`
-   *
+   * * `musl-libc:src/string/strlen.c`
    * * http://stackoverflow.com/a/24805807/643087
    */
   size_t String::length(const char *s)
