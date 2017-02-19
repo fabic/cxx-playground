@@ -1,7 +1,0 @@
-/home/fabi/dev/cxx-playground/src/nstd/build/CMakeFiles/rebuild_cache.dir
-/home/fabi/dev/cxx-playground/src/nstd/build/CMakeFiles/edit_cache.dir
-/home/fabi/dev/cxx-playground/src/nstd/build/CMakeFiles/aaa.dir
-/home/fabi/dev/cxx-playground/src/nstd/build/CMakeFiles/test_aab.dir
-/home/fabi/dev/cxx-playground/src/nstd/build/CMakeFiles/test_aad.dir
-/home/fabi/dev/cxx-playground/src/nstd/build/CMakeFiles/test_aae.dir
-/home/fabi/dev/cxx-playground/src/nstd/build/CMakeFiles/test_aac.dir
