@@ -18,6 +18,10 @@ namespace kernel {
       // todo: does the kernel actually returns an 'int' ?? or is it libc ?
   };
 
+  //
+  // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+  //
+
   ///
   ssize_t Stream::read(int fd, void *buffer, size_t count)
   {
@@ -34,6 +38,7 @@ namespace kernel {
     return Syscall::syscall3(Syscall::SYS_write, fd, buf, count);
   }
 
+  ///
   ssize_t Stream::write(int fd, const char *str, size_t len) {
     return Stream::write(fd, reinterpret_cast<const void *>(str), len);
   }
