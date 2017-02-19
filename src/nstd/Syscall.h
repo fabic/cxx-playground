@@ -10,7 +10,8 @@
 namespace kernel {
 
     /**
-     * see `musl/arch/x86_64/syscall_arch.h`
+     * * see `musl/arch/x86_64/syscall_arch.h`
+     * * https://github.com/android/platform_bionic/tree/master/libc/arch-x86_64/syscalls
      *
      * TODO: rename to Kernel ? and namespace to linux ?
      *

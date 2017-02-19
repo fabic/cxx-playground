@@ -13,3 +13,9 @@
 [submodule "boost-cpp-netlib"]
 	path = lib/cpp-netlib
 	url = https://github.com/cpp-netlib/cpp-netlib
+[submodule "bionic-libc"]
+	path = lib/bionic-libc
+	url = git@github.com:android/platform_bionic.git
+[submodule "doc-linux-insides-0xax"]
+	path = docs/linux-insides-0xax
+	url = git@github.com:0xAX/linux-insides.git

@@ -52,7 +52,7 @@ namespace nstd {
    * * `musl-libc:src/string/strlen.c`
    * * http://stackoverflow.com/a/24805807/643087
    */
-  size_t String::length(const char *s)
+  size_t String::strlen(const char *s)
   {
     using word_t = const unsigned long;
 

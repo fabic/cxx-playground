@@ -9,7 +9,7 @@ namespace nstd {
 
   class String {
     public:
-      static size_t length(const char *s);
+      static size_t strlen(const char *s);
 
   };
 

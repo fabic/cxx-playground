@@ -5,6 +5,10 @@
 
 // todo: throw bad_alloc.
 
+/*
+ * * https://github.com/android/platform_bionic/blob/master/libstdc%2B%2B/include/new
+ */
+
 void* operator new(nstd::size_t sz);
 
 void* operator new[](nstd::size_t sz);
