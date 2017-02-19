@@ -87,6 +87,13 @@ target_compile_options( test_aae PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( test_aae PROPERTIES LINK_FLAGS -nostdlib)
 
 
+# ~ ~ ~ Das `nstd` lib. ~ ~ ~
+add_library( nstd STATIC
+    c/_start.cpp c/memset.cpp malloc/malloc.cpp c/assert.cpp
+    String/length.cpp
+  )
+
+
 # ~ ~ ~ * ~ ~ ~
 
 # Old thing that is.

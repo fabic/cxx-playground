@@ -50,6 +50,7 @@ namespace nstd {
 
   /**
    * * `musl-libc:src/string/strlen.c`
+   * * https://github.com/android/platform_bionic/tree/master/libc/arch-x86_64/string
    * * http://stackoverflow.com/a/24805807/643087
    */
   size_t String::strlen(const char *s)

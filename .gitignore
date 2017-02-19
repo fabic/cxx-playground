@@ -12,8 +12,8 @@ cscope.in.out
 cscope.out
 cscope.po.out
 
-/build/
-#/CMakeFiles/
+build/
+CMakeFiles/
 
 *.o
 *.so
