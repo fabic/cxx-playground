@@ -2,105 +2,105 @@
 // Created by fabi on 11/14/15.
 //
 
-#ifndef FABIC_SYSCALL_SYSCALL_H
-#define FABIC_SYSCALL_SYSCALL_H
+#ifndef NSTD_KERNEL_SYSCALL_H
+#define NSTD_KERNEL_SYSCALL_H
 
 #include <types.h>
 
 namespace kernel {
 
-    /**
-     * * see `musl/arch/x86_64/syscall_arch.h`
-     * * https://github.com/android/platform_bionic/tree/master/libc/arch-x86_64/syscalls
-     *
-     * TODO: rename to Kernel ? and namespace to linux ?
-     *
-     */
-    class Syscall {
-    public:
-        // see `misc/musl-libc/arch/x86_64/bits/syscall.h`
-        static const long SYS_read           =   0;
-        static const long SYS_write          =   1;
-        static const long SYS_open           =   2;
-        static const long SYS_close          =   3;
+  /**
+   * * see `musl/arch/x86_64/syscall_arch.h`
+   * * https://github.com/android/platform_bionic/tree/master/libc/arch-x86_64/syscalls
+   *
+   * TODO: rename to Kernel ? and namespace to linux ?
+   *
+   */
+  class Syscall {
+  public:
+    // see `musl-libc/arch/x86_64/bits/syscall.h`
+    static const long SYS_read           =   0;
+    static const long SYS_write          =   1;
+    static const long SYS_open           =   2;
+    static const long SYS_close          =   3;
 
-        static const long SYS_brk            =  12;
-        static const long SYS_getpid         =  39;
-        static const long SYS_exit           =  60;
-        static const long SYS_gettimeofday   =  96;
+    static const long SYS_brk            =  12;
+    static const long SYS_getpid         =  39;
+    static const long SYS_exit           =  60;
+    static const long SYS_gettimeofday   =  96;
 
-        static const long SYS_getuid         = 102;
-        static const long SYS_getgid         = 104;
-        static const long SYS_gettid         = 186;
+    static const long SYS_getuid         = 102;
+    static const long SYS_getgid         = 104;
+    static const long SYS_gettid         = 186;
 
-        static inline long syscall0(long n) {
-            unsigned long ret;
-            __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n) : "rcx", "r11", "memory");
-            return ret;
-        }
+    static inline long syscall0(long n) {
+      unsigned long ret;
+      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n) : "rcx", "r11", "memory");
+      return ret;
+    }
 
-        static inline long syscall1(long n, long a1)
-        {
-            unsigned long ret;
-            __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1) : "rcx", "r11", "memory");
-            return ret;
-        }
+    static inline long syscall1(long n, long a1)
+    {
+      unsigned long ret;
+      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1) : "rcx", "r11", "memory");
+      return ret;
+    }
 
-        static inline long syscall2(long n, long a1, long a2)
-        {
-            unsigned long ret;
-            __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2)
-                                  : "rcx", "r11", "memory");
-            return ret;
-        }
+    static inline long syscall2(long n, long a1, long a2)
+    {
+      unsigned long ret;
+      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2)
+                            : "rcx", "r11", "memory");
+      return ret;
+    }
 
-        static inline long syscall3(long n, long a1, long a2, long a3)
-        {
-          unsigned long ret;
+    static inline long syscall3(long n, long a1, long a2, long a3)
+    {
+      unsigned long ret;
 
-          __asm__ __volatile__ (
-              "syscall"
-              : "=a"(ret)
-              : "a"(n), "D"(a1), "S"(a2), "d"(a3)
-              : "rcx", "r11", "memory"
-            );
+      __asm__ __volatile__ (
+          "syscall"
+          : "=a"(ret)
+          : "a"(n), "D"(a1), "S"(a2), "d"(a3)
+          : "rcx", "r11", "memory"
+        );
 
-          return ret;
-        }
+      return ret;
+    }
 
 #if 0
-        static __inline long __syscall4(long n, long a1, long a2, long a3, long a4)
-        {
-          unsigned long ret;
-          register long r10 __asm__("r10") = a4;
-          __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
-              "d"(a3), "r"(r10): "rcx", "r11", "memory");
-          return ret;
-        }
+    static __inline long __syscall4(long n, long a1, long a2, long a3, long a4)
+    {
+      unsigned long ret;
+      register long r10 __asm__("r10") = a4;
+      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
+          "d"(a3), "r"(r10): "rcx", "r11", "memory");
+      return ret;
+    }
 
-        static __inline long __syscall5(long n, long a1, long a2, long a3, long a4, long a5)
-        {
-          unsigned long ret;
-          register long r10 __asm__("r10") = a4;
-          register long r8 __asm__("r8") = a5;
-          __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
-              "d"(a3), "r"(r10), "r"(r8) : "rcx", "r11", "memory");
-          return ret;
-        }
+    static __inline long __syscall5(long n, long a1, long a2, long a3, long a4, long a5)
+    {
+      unsigned long ret;
+      register long r10 __asm__("r10") = a4;
+      register long r8 __asm__("r8") = a5;
+      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
+          "d"(a3), "r"(r10), "r"(r8) : "rcx", "r11", "memory");
+      return ret;
+    }
 
-        static __inline long __syscall6(long n, long a1, long a2, long a3, long a4, long a5, long a6)
-        {
-          unsigned long ret;
-          register long r10 __asm__("r10") = a4;
-          register long r8 __asm__("r8") = a5;
-          register long r9 __asm__("r9") = a6;
-          __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
-              "d"(a3), "r"(r10), "r"(r8), "r"(r9) : "rcx", "r11", "memory");
-          return ret;
-        }
+    static __inline long __syscall6(long n, long a1, long a2, long a3, long a4, long a5, long a6)
+    {
+      unsigned long ret;
+      register long r10 __asm__("r10") = a4;
+      register long r8 __asm__("r8") = a5;
+      register long r9 __asm__("r9") = a6;
+      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
+          "d"(a3), "r"(r10), "r"(r8), "r"(r9) : "rcx", "r11", "memory");
+      return ret;
+    }
 #endif // 0
-    };
+  };
 
 } // kernel ns.
 
-#endif //FABIC_SYSCALL_SYSCALL_H
+#endif // NSTD_KERNEL_SYSCALL_H

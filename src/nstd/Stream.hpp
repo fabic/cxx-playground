@@ -5,10 +5,11 @@
 
 namespace kernel {
 
-
   using nstd::ssize_t;
   using nstd::size_t;
 
+  /** File/descriptor related syscalls.
+   */
   class Stream {
     public:
       static inline ssize_t read(int fd, void *buffer, size_t count);
