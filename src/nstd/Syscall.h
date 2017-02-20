@@ -31,6 +31,7 @@ namespace kernel {
 
         static const long SYS_getuid         = 102;
         static const long SYS_getgid         = 104;
+        static const long SYS_gettid         = 186;
 
         static inline long syscall0(long n) {
             unsigned long ret;

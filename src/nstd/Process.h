@@ -33,6 +33,29 @@ namespace kernel {
             return static_cast<gid_t>( Syscall::syscall0(Syscall::SYS_getgid) );
         }
 
+        /** Get thread identification.
+         *
+         * * `pid_t gettid(void);`  (`sys/types.h`)
+         * * <http://man7.org/linux/man-pages/man2/gettid.2.html>
+         * * Note: There is no glibc wrapper for this system call.
+         * * `gettid()` returns the caller's __thread ID (TID)__.
+         * * In a single-threaded process, the thread ID is equal to the
+         *   process ID (PID, as returned by `getpid()`).
+         * * In a multithreaded process, all threads have the _same PID_,
+         *   but each one has a __unique TID__.
+         * * For further details, see the discussion of `CLONE_THREAD`
+         *   in `clone()`.
+         * * __ERRORS:__ This call is always successful.
+         * * __CONFORMING TO:__ `gettid()` is Linux-specific and should not be
+         *   used in programs that are intended to be portable.
+         * * __NOTES:__ The thread ID returned by this call is not the same
+         *   thing as a POSIX thread ID (i.e., the opaque value returned by
+         *   `pthread_self()`).
+         *
+         * \return The thread ID of the calling process.
+         */
+        inline static pid_t gettid(void);
+
         /**
          * musl-libc/src/malloc/__brk.c
          * \link http://man7.org/linux/man-pages/man2/brk.2.html
@@ -45,6 +68,14 @@ namespace kernel {
         }
 
     };
+
+
+    // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+
+    Process::pid_t Process::gettid(void) {
+        return static_cast<pid_t>( Syscall::syscall0(Syscall::SYS_gettid) );
+    }
 
 } // kernel rs.
 

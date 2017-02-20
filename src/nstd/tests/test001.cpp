@@ -15,6 +15,8 @@ int main() {
     cout << "Hello, World!" << endl << endl;
 
     cout << "PID " << Process::getpid() << endl;
+    cout << "TID " << Process::gettid() << endl;
+
     cout << "UID " << Process::getuid() << endl;
     cout << "GID " << Process::getgid() << endl;
 

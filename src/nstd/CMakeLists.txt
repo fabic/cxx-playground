@@ -81,7 +81,7 @@ target_compile_options( test_aad PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( test_aad PROPERTIES LINK_FLAGS -nostdlib)
 
 add_executable( test_aae tests/test_aae.cpp
-    c/_start.cpp malloc/malloc.cpp
+    c/_start.cpp malloc/malloc.cpp c/assert.cpp
   )
 target_compile_options( test_aae PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( test_aae PROPERTIES LINK_FLAGS -nostdlib)
