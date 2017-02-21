@@ -6,8 +6,7 @@ namespace sf {
 
 
     Event::EventDescription_cref_t
-      Event::description()
-          const throw( base_exception )
+      Event::description() const
     {
       const auto it = this->_event_descriptions.find( this->type() );
 

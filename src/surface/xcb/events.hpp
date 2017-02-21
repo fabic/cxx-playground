@@ -152,7 +152,6 @@ namespace sf {
     private:
       /// Assert guard that ensures the `union_` property ain't nullptr.
       void _assert_not_null_union() const
-        throw (base_exception)
       {
         if (this->union_ == nullptr)
           throw base_exception();
@@ -160,7 +159,6 @@ namespace sf {
 
       /// Helper for asserting the current exception is of the given `type`.
       void _throw_if_not_typed(EventType type) const
-        throw( event_type_mismatch_ex )
       {
         if (this->type() != type)
           throw event_type_mismatch_ex();
@@ -184,7 +182,7 @@ namespace sf {
       }
 
       /// @return a description for the current event.
-      EventDescription_cref_t description() const throw( base_exception );
+      EventDescription_cref_t description() const;
 
       /**
        * @return the target window X ID for this event; or 0 if n/a.

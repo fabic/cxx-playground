@@ -11,4 +11,6 @@ project(FabicExperiments)
 
 add_subdirectory(X11)
 add_subdirectory(misc)
-add_subdirectory(clang)
+
+#add_subdirectory(clang)
+# ^ broken 2017-02-21 w/ Clang 4.0.0

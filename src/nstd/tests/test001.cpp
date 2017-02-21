@@ -1,7 +1,7 @@
 #include <iostream>
 
-#include "Process.h"
-#include "Time.h"
+#include "nstd/Process.h"
+#include "nstd/Time.h"
 
 using namespace std;
 using namespace kernel;

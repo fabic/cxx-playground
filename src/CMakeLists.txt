@@ -5,8 +5,8 @@ cmake_minimum_required(VERSION 3.3)
 
 ## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 # Symf / DIC experiments.
-#
-if (true)
+# todo: move this down into surface/...
+if (false)
   project(Symf)
 
   add_executable(
@@ -42,12 +42,12 @@ if (true)
   # “ Modules ” ~~shared~libraries~~> libmodule-xxx.so
   add_subdirectory(dic-modules)
 
-endif (true)
+endif()
 # ^ Symf
 ## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-add_subdirectory(clong)
+#add_subdirectory(clong)
 
 add_subdirectory(surface)
 

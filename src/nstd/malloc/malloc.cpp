@@ -1,6 +1,6 @@
 
-#include <malloc/malloc.h>
-#include <Process.h>
+#include <nstd/malloc/malloc.h>
+#include <nstd/Process.h>
 
 using kernel::Process;
 using nstd::uintptr_t;

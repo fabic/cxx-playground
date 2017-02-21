@@ -84,8 +84,8 @@ add_definitions(
 
 
 # Replacing these `set ...` by add_compile_options(...) :
-#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++")
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 
@@ -237,20 +237,20 @@ add_compile_options(
 #   - ${LibCppNetlibServerParsers}
 #
 # FIXME: hard-coded paths, can't get my way 'round those CMake stuff...
-if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/boost)
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib)
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/deps/uri/include)
+if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp-netlib/boost)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp-netlib)
+  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp-netlib/deps/uri/include)
 
   find_file(
     LibCppNetlibClientConnections
     libcppnetlib-client-connections.so
-    PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
+    PATHS ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp-netlib/build/libs/network/src
     )
 
   find_file(
     LibCppNetlibServerParsers
     libcppnetlib-server-parsers.so
-    PATHS ${CMAKE_CURRENT_SOURCE_DIR}/../misc/cpp-netlib/build/libs/network/src
+    PATHS ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp-netlib/build/libs/network/src
     )
 endif()
 # ^ cpp-netlib

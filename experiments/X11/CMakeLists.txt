@@ -7,7 +7,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 # BINARY: build/experiment/gtk
   pkg_check_modules(GTKMM gtkmm-3.0)
 
-  if (GTKMM_FOUND)
+  if (GTKMM_FOUND AND FALSE)
     # FIXME: it appears CMake doesn't have a target_link_directories().
     link_directories(
       ${GTKMM_LIBRARY_DIRS}

@@ -5,7 +5,7 @@
 #ifndef FABIC_SYSCALL_TIME_H
 #define FABIC_SYSCALL_TIME_H
 
-#include "Syscall.h"
+#include "nstd/Syscall.h"
 
 namespace kernel {
 

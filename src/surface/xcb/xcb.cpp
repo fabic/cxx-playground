@@ -124,7 +124,6 @@ namespace sf {
 
     Xcb *
       Xcb::registerWindow(window_shared_ptr win_)
-        throw(window_already_registered_ex)
     {
       auto window_xid = win_->getXid();
 

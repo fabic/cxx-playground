@@ -5,7 +5,7 @@
 #ifndef NSTD_KERNEL_PROCESS_H
 #define NSTD_KERNEL_PROCESS_H
 
-#include "Syscall.h"
+#include "nstd/Syscall.h"
 
 namespace kernel {
 

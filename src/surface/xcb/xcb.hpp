@@ -231,8 +231,7 @@ namespace sf {
        *
        * @return this
        */
-      self registerWindow(window_shared_ptr win_)
-      throw(window_already_registered_ex);
+      self registerWindow(window_shared_ptr win_);
 
       window_shared_ptr lookupWindow(xcb_window_t window_xid);
 
