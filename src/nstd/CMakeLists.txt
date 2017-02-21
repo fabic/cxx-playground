@@ -1,10 +1,10 @@
 
 cmake_minimum_required(VERSION 3.3)
 
-project(FabicSyscalls)
+project(NStd)
 
-set (FabicSyscalls_VERSION_MAJOR 0)
-set (FabicSyscalls_VERSION_MINOR 1)
+set (NStd_VERSION_MAJOR 0)
+set (NStd_VERSION_MINOR 1)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
