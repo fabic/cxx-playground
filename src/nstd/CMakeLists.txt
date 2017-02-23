@@ -99,6 +99,10 @@ target_compile_options( test_strlen PUBLIC -nostdinc -nostdinc++ )
 target_link_libraries( test_strlen nstd )
 set_target_properties( test_strlen PROPERTIES LINK_FLAGS -nostdlib)
 
+add_executable( test_aaf tests/test_aaf.cpp )
+target_compile_options( test_aaf PUBLIC -nostdinc -nostdinc++ )
+target_link_libraries( test_aaf nstd )
+set_target_properties( test_aaf PROPERTIES LINK_FLAGS -nostdlib)
 
 # ~ ~ ~ * ~ ~ ~
 

@@ -20,20 +20,20 @@ namespace kernel {
    */
   class Syscall {
   public:
-    static const long SYS_read           =   0;
-    static const long SYS_write          =   1;
-    static const long SYS_open           =   2;
-    static const long SYS_close          =   3;
+    static constexpr long SYS_read           =   0;
+    static constexpr long SYS_write          =   1;
+    static constexpr long SYS_open           =   2;
+    static constexpr long SYS_close          =   3;
 
-    static const long SYS_brk            =  12;
-    static const long SYS_getpid         =  39;
-    static const long SYS_exit           =  60;
-    static const long SYS_gettimeofday   =  96;
+    static constexpr long SYS_brk            =  12;
+    static constexpr long SYS_getpid         =  39;
+    static constexpr long SYS_exit           =  60;
+    static constexpr long SYS_gettimeofday   =  96;
 
-    static const long SYS_getuid         = 102;
-    static const long SYS_getgid         = 104;
-    static const long SYS_gettid         = 186;
-    static const long SYS_tgkill         = 234;
+    static constexpr long SYS_getuid         = 102;
+    static constexpr long SYS_getgid         = 104;
+    static constexpr long SYS_gettid         = 186;
+    static constexpr long SYS_tgkill         = 234;
 
     static inline long syscall0(long n) {
       unsigned long ret;
