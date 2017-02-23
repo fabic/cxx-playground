@@ -5,7 +5,7 @@
 #ifndef NSTD_KERNEL_SYSCALL_H
 #define NSTD_KERNEL_SYSCALL_H
 
-#include <nstd/types.h>
+#include <nstd/types.hpp>
 
 namespace kernel {
 

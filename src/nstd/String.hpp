@@ -1,7 +1,7 @@
 #ifndef _NSTD_STRING_H
 #define _NSTD_STRING_H
 
-#include <nstd/types.h>
+#include <nstd/types.hpp>
 
 namespace nstd {
 

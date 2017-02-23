@@ -1,7 +1,7 @@
 #ifndef __NSTD_MALLOC_H
 #define __NSTD_MALLOC_H
 
-#include <nstd/types.h>
+#include <nstd/types.hpp>
 
 // todo: throw bad_alloc.
 

@@ -1,6 +1,6 @@
 
 #include <nstd/String.hpp>
-#include <nstd/Stream.hpp>
+#include <nstd/kernel/linux/Stream.hpp>
 
 /**
  * MAIN !

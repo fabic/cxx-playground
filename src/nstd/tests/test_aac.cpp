@@ -1,5 +1,5 @@
 
-#include <nstd/Process.h>
+#include <nstd/kernel/linux/Process.hpp>
 #include <nstd/c/assert.h>
 
 using namespace kernel;

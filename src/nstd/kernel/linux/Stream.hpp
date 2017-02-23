@@ -1,7 +1,7 @@
 #ifndef _NSTD_KERNEL_STREAM_H
 #define _NSTD_KERNEL_STREAM_H
 
-#include <nstd/Syscall.h>
+#include <nstd/kernel/linux/Syscall.hpp>
 
 namespace kernel {
 

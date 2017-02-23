@@ -1,5 +1,5 @@
 
-#include <nstd/Stream.hpp>
+#include <nstd/kernel/linux/Stream.hpp>
 
 
 /**
