@@ -91,6 +91,7 @@ set_target_properties( test_aae PROPERTIES LINK_FLAGS -nostdlib)
 add_library( nstd STATIC
     c/_start.cpp c/memset.cpp malloc/malloc.cpp c/assert.cpp
     String/length.cpp
+    Process.cpp
   )
 
 

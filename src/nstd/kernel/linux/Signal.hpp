@@ -1,9 +1,11 @@
 #ifndef NSTD_KERNEL_SIGNAL_H
 #define NSTD_KERNEL_SIGNAL_H
 
-#include <nstd/kernel/linux/Syscall.hpp>
+#include <nstd/kernel/linux/Process.hpp>
 
 namespace kernel {
+
+  using pid_t = Process::pid_t;
 
   /**
    * * <http://man7.org/linux/man-pages/man7/signal.7.html>
@@ -11,40 +13,40 @@ namespace kernel {
    */
   class Signal {
   public:
-    static constexpr long SIGHUP    =  1
-    static constexpr long SIGINT    =  2
-    static constexpr long SIGQUIT   =  3
-    static constexpr long SIGILL    =  4
-    static constexpr long SIGTRAP   =  5
-    static constexpr long SIGABRT   =  6
-    static constexpr long SIGIOT    = SIGABRT
-    static constexpr long SIGBUS    =  7
-    static constexpr long SIGFPE    =  8
-    static constexpr long SIGKILL   =  9
-    static constexpr long SIGUSR1   = 10
-    static constexpr long SIGSEGV   = 11
-    static constexpr long SIGUSR2   = 12
-    static constexpr long SIGPIPE   = 13
-    static constexpr long SIGALRM   = 14
-    static constexpr long SIGTERM   = 15
-    static constexpr long SIGSTKFLT = 16
-    static constexpr long SIGCHLD   = 17
-    static constexpr long SIGCONT   = 18
-    static constexpr long SIGSTOP   = 19
-    static constexpr long SIGTSTP   = 20
-    static constexpr long SIGTTIN   = 21
-    static constexpr long SIGTTOU   = 22
-    static constexpr long SIGURG    = 23
-    static constexpr long SIGXCPU   = 24
-    static constexpr long SIGXFSZ   = 25
-    static constexpr long SIGVTALRM = 26
-    static constexpr long SIGPROF   = 27
-    static constexpr long SIGWINCH  = 28
-    static constexpr long SIGIO     = 29
-    static constexpr long SIGPOLL   = 29
-    static constexpr long SIGPWR    = 30
-    static constexpr long SIGSYS    = 31
-    static constexpr long SIGUNUSED = SIGSYS
+    static constexpr long SIGHUP    =  1;
+    static constexpr long SIGINT    =  2;
+    static constexpr long SIGQUIT   =  3;
+    static constexpr long SIGILL    =  4;
+    static constexpr long SIGTRAP   =  5;
+    static constexpr long SIGABRT   =  6;
+    static constexpr long SIGIOT    = SIGABRT;
+    static constexpr long SIGBUS    =  7;
+    static constexpr long SIGFPE    =  8;
+    static constexpr long SIGKILL   =  9;
+    static constexpr long SIGUSR1   = 10;
+    static constexpr long SIGSEGV   = 11;
+    static constexpr long SIGUSR2   = 12;
+    static constexpr long SIGPIPE   = 13;
+    static constexpr long SIGALRM   = 14;
+    static constexpr long SIGTERM   = 15;
+    static constexpr long SIGSTKFLT = 16;
+    static constexpr long SIGCHLD   = 17;
+    static constexpr long SIGCONT   = 18;
+    static constexpr long SIGSTOP   = 19;
+    static constexpr long SIGTSTP   = 20;
+    static constexpr long SIGTTIN   = 21;
+    static constexpr long SIGTTOU   = 22;
+    static constexpr long SIGURG    = 23;
+    static constexpr long SIGXCPU   = 24;
+    static constexpr long SIGXFSZ   = 25;
+    static constexpr long SIGVTALRM = 26;
+    static constexpr long SIGPROF   = 27;
+    static constexpr long SIGWINCH  = 28;
+    static constexpr long SIGIO     = 29;
+    static constexpr long SIGPOLL   = 29;
+    static constexpr long SIGPWR    = 30;
+    static constexpr long SIGSYS    = 31;
+    static constexpr long SIGUNUSED = SIGSYS;
 
   public:
 

@@ -84,14 +84,14 @@ add_definitions(
 
 
 # Replacing these `set ...` by add_compile_options(...) :
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++")
+#set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++1z -stdlib=libc++")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -stdlib=libc++")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 
 
 add_compile_options(
-  # -std=c++1z
+  -std=c++1z
   # -stdlib=libc++
   -fPIC
   -Wall
