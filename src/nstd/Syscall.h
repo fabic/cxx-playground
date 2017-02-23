@@ -10,15 +10,16 @@
 namespace kernel {
 
   /**
-   * * see `musl/arch/x86_64/syscall_arch.h`
-   * * https://github.com/android/platform_bionic/tree/master/libc/arch-x86_64/syscalls
    *
-   * TODO: rename to Kernel ? and namespace to linux ?
+   * * See `lib/musl/arch/x86_64/syscall_arch.h`
+   *   for the __syscallX(...) implementations.
+   * * See `lib/musl/arch/x86_64/bits/syscall.h.in`
+   *   for the system call numbers.
+   * * [Google's Bionic libc x86_64 sys. calls impl.](https://github.com/android/platform_bionic/tree/master/libc/arch-x86_64/syscalls)
    *
    */
   class Syscall {
   public:
-    // see `musl-libc/arch/x86_64/bits/syscall.h`
     static const long SYS_read           =   0;
     static const long SYS_write          =   1;
     static const long SYS_open           =   2;
@@ -32,24 +33,25 @@ namespace kernel {
     static const long SYS_getuid         = 102;
     static const long SYS_getgid         = 104;
     static const long SYS_gettid         = 186;
+    static const long SYS_tgkill         = 234;
 
     static inline long syscall0(long n) {
       unsigned long ret;
-      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n) : "rcx", "r11", "memory");
+      asm volatile ("syscall" : "=a"(ret) : "a"(n) : "rcx", "r11", "memory");
       return ret;
     }
 
     static inline long syscall1(long n, long a1)
     {
       unsigned long ret;
-      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1) : "rcx", "r11", "memory");
+      asm volatile ("syscall" : "=a"(ret) : "a"(n), "D"(a1) : "rcx", "r11", "memory");
       return ret;
     }
 
     static inline long syscall2(long n, long a1, long a2)
     {
       unsigned long ret;
-      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2)
+      asm volatile ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2)
                             : "rcx", "r11", "memory");
       return ret;
     }
@@ -58,7 +60,7 @@ namespace kernel {
     {
       unsigned long ret;
 
-      __asm__ __volatile__ (
+      asm volatile (
           "syscall"
           : "=a"(ret)
           : "a"(n), "D"(a1), "S"(a2), "d"(a3)
@@ -73,7 +75,7 @@ namespace kernel {
     {
       unsigned long ret;
       register long r10 __asm__("r10") = a4;
-      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
+      __asm__ volatile ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
           "d"(a3), "r"(r10): "rcx", "r11", "memory");
       return ret;
     }
@@ -83,7 +85,7 @@ namespace kernel {
       unsigned long ret;
       register long r10 __asm__("r10") = a4;
       register long r8 __asm__("r8") = a5;
-      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
+      __asm__ volatile ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
           "d"(a3), "r"(r10), "r"(r8) : "rcx", "r11", "memory");
       return ret;
     }
@@ -94,7 +96,7 @@ namespace kernel {
       register long r10 __asm__("r10") = a4;
       register long r8 __asm__("r8") = a5;
       register long r9 __asm__("r9") = a6;
-      __asm__ __volatile__ ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
+      __asm__ volatile ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2),
           "d"(a3), "r"(r10), "r"(r8), "r"(r9) : "rcx", "r11", "memory");
       return ret;
     }

@@ -6,6 +6,7 @@
 #define NSTD_KERNEL_PROCESS_H
 
 #include "nstd/Syscall.h"
+#include "nstd/Signal.hpp"
 
 namespace kernel {
 
@@ -50,7 +51,7 @@ namespace kernel {
      *   used in programs that are intended to be portable.
      * * __NOTES:__ The thread ID returned by this call is not the same
      *   thing as a POSIX thread ID (i.e., the opaque value returned by
-     *   `pthread_self()`).
+     *   `pthread_self()`).)
      *
      * \return The thread ID of the calling process.
      */
