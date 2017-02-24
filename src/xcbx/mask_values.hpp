@@ -3,7 +3,7 @@
 
 #include <array>
 
-# include "xcb/typedefs.hpp"
+# include "xcbx/typedefs.hpp"
 # include "util/bits.hpp"
 
 namespace sf {

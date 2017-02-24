@@ -1,6 +1,6 @@
 
-#include "xcb/xcb.hpp"
-#include "xcb/inline-decls.hpp"
+#include "xcbx/xcb.hpp"
+#include "xcbx/inline-decls.hpp"
 #include "logging.hpp"
 
 namespace sf {

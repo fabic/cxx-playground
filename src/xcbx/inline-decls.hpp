@@ -1,7 +1,7 @@
 #ifndef SF_XCB_INLINES_H
 #define SF_XCB_INLINES_H
 
-#include "xcb/xcb.hpp"
+#include "xcbx/xcb.hpp"
 
 namespace sf {
   namespace xcb {

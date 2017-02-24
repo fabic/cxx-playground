@@ -1,7 +1,7 @@
 #ifndef SF_XCB_WINDOW_H
 #define SF_XCB_WINDOW_H
 
-#include "xcb/xcb.hpp"
+#include "xcbx/xcb.hpp"
 #include "util/pointers.hpp"
 
 namespace sf {
