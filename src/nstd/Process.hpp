@@ -9,8 +9,11 @@ namespace nstd {
   class Process : protected kernel::Process,
                   protected kernel::Signal {
   public:
-    /**
+    /** Causes abnormal process termination.
+     *
      * * `lib/musl/src/exit/abort.c`
+     * * `stdlib.h`
+     *
      * * <http://man7.org/linux/man-pages/man3/abort.3.html>
      * * <http://en.cppreference.com/w/cpp/utility/program/abort>
      *
