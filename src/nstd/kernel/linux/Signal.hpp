@@ -7,8 +7,9 @@ namespace kernel {
 
   using pid_t = Process::pid_t;
 
-  /**
-   * * <http://man7.org/linux/man-pages/man7/signal.7.html>
+  /** Process signals.
+   *
+   * * [Overview of signals – signal(7) man page](http://man7.org/linux/man-pages/man7/signal.7.html)
    * * `lib/musl/arch/x86_64/bits/signal.h`
    */
   class Signal {
