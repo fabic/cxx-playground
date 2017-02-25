@@ -1,22 +1,19 @@
 
-#include <nstd/kernel/linux/Process.hpp>
+//#include <nstd/kernel/linux/Process.hpp>
+#include <nstd/Process.hpp>
 #include <nstd/c/assert.h>
 
-using namespace kernel;
+using nstd::Process;
 
-
-//void _init() __attribute__((weak));
-//void _fini() __attribute__((weak));
+void _init() __attribute__((weak));
+void _fini() __attribute__((weak));
 
 extern "C"
 void _start_c(
-    int (*main_)(),
+    long *stack_top_ptr,
     int argc, char **argv,
-    void (*init_)(),
-    void (*fini_)(),
-    void(*atexit_wtf)()
-    ) __attribute__((noreturn));
-// NOTE: Clang issues a warning if compiled with -fno-omit-frame-pointer.
+    void(*atexit_thing_wtf)()
+  ) __attribute__((noreturn));
 
 extern "C" int main(int argc, char *argv[], char *env[]);
 
@@ -26,6 +23,10 @@ extern "C" int main(int argc, char *argv[], char *env[]);
  *
  * * Borrowed from musl-libc: `crt/x86_64/crt1.s`
  * * Written 2011 Nicholas J. Kain, released as Public Domain
+ * * See Musl-libc commit c5e34dabbb47d8e97a4deccbb421e0cd93c0094b (2013)
+ *   “new mostly-C crt1 implementation” ;
+ * * and commit 6fef8cafbd0f6f185897bc87feb1ff66e2e204e1 (2015).
+ *   “remove hand-written crt1.s and Scrt1.s files for all archs”
  *
  * From \href http://refspecs.linuxbase.org/elf/x86-64-abi-0.99.pdf (page 29, 30):
  *
@@ -58,13 +59,16 @@ extern "C" int main(int argc, char *argv[], char *env[]);
  *     |                 | (low addresses)
  *     +-----------------+-----------------------------------------------------
  */
-__asm__
+#if 0 // This was the version for statically linked programs.
+asm
 (
   ".weak _init    \n"
   ".weak _fini    \n"
 
-  ".text          \n"
-  ".global _start \n"
+  ".text                  \n"
+  ".global _start         \n"
+  ".p2align 4, 0x90       \n"
+  ".type _start,@function \n"
 
   "_start:                \n"
   "  xor %rbp, %rbp       \n" /* rbp:undefined -> mark as zero 0 (abi) */
@@ -76,11 +80,30 @@ __asm__
   "    mov $_init, %rcx   \n" /* 4th arg: init/ctors function */
   "    mov $main, %rdi    \n" /* 1st arg: application entry ip */
   "  call _start_c        \n"/* musl init will run the program */
+  "  hlt                  \n"
+);
+#else // rdi, rsi, rdx, rcx, r8, r9.
+asm
+(
+  ".text                  \n"
+  ".global _start         \n"
+  ".p2align 8, 0x90       \n" // admittedly useless -_- but I'm a nood for now.
+  ".type _start,@function \n"
 
-  "nop\nnop\nnop\nnop\n"
+  "_start:                \n"
+  "  xor %rbp, %rbp       \n" /* rbp:undefined -> mark as zero 0 (abi) */
+  "  mov %rsp, %rdi       \n" /* 1st arg: pointer to top of stack. */
+  "    mov %rdx, %rcx     \n" /* 4th arg: ptr to register with atexit() */
+  "    mov  (%rsp), %rsi  \n" /* 2nd arg: argc */
+  "    mov 8(%rsp), %rdx  \n" /* 3rd arg: argv */
+  "  andq $-16, %rsp      \n" /* align stack pointer */
+  "  call _start_c        \n"/* musl init will run the program */
+
+  "  hlt                  \n"
+
   "nop\nnop\nnop\nnop\n" /* padding, alignment */
 );
-
+#endif // 0
 
 /**
  * `musl-libc/crt/crt1.c`
@@ -91,13 +114,18 @@ __asm__
  */
 extern "C" // _Noreturn
 void _start_c(
-    int (*main_)(),
+    long *stack_top_ptr,
     int argc, char **argv,
-    void (*init_)(),
-    void (*fini_)(),
-    void(*atexit_wtf)()
+    void(*atexit_thing_wtf)()
     )
 {
+  /* For information: argc & argv may simply have been inferred here,
+   * instead of being setup by the _start assembly. */
+  {
+    int    _argc = static_cast<int>( *stack_top_ptr );
+    char **_argv = reinterpret_cast<char**>( stack_top_ptr + 1 );
+  }
+
   assert( argv[argc] == nullptr );
 
   char **envp = &argv[ argc + 1 ];
@@ -107,5 +135,16 @@ void _start_c(
   // TODO: See src/exit/atexit.c: __cxa_atexit(), __cxa_finalize() and atexit().
 
   Process::exit(100 + ec);
+
+  // Unreachable; prevents Clang from generating a warning
+  Process::abort();
 }
 
+extern "C"
+void _bootstrap_stub(
+    decltype(_init) init,
+    decltype(_fini) fini,
+    void(*atexit_thing_wtf)()
+  )
+{
+}

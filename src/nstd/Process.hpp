@@ -6,8 +6,8 @@
 
 namespace nstd {
 
-  class Process : protected kernel::Process,
-                  protected kernel::Signal {
+  class Process : public kernel::Process,
+                  public kernel::Signal {
   public:
     /** Causes abnormal process termination.
      *

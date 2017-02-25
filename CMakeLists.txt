@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.3)
 ## CCACHE
 # https://crascit.com/2016/04/09/using-ccache-with-cmake/
 find_program(CCACHE_PROGRAM ccache)
-if (CCACHE_PROGRAM)
+if (false AND CCACHE_PROGRAM)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
   message(STATUS "Dude! Found ccache, so we're setting CMake var. RULE_LAUNCH_COMPILE to '${CCACHE_PROGRAM}'.")
 endif()

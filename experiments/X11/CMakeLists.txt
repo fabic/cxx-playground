@@ -38,7 +38,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
       unwind dl # for hack_cxa_throw_exception.cpp
       pthread
       )
-  endif (GTKMM_FOUND)
+  endif()
 # ^ GTK
 ###
 
@@ -75,7 +75,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
       unwind dl # for hack_cxa_throw_exception.cpp
       pthread
       )
-  endif (X11_FOUND)
+  endif()
 
 # ^ Xlib
 ###
@@ -118,6 +118,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
       unwind dl # for hack_cxa_throw_exception.cpp
       pthread
       )
-  endif (XCB_FOUND)
+  endif()
 # ^ Xcb1
 ###
