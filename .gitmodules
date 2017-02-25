@@ -22,3 +22,6 @@
 [submodule "nnen-doxygen-theme"]
 	path = docs/nnen-doxygen-theme
 	url = https://github.com/nnen/doxygen-theme.git
+[submodule "dvdhrm-drm-howto"]
+	path = docs/dvdhrm-drm-howto
+	url = git@github.com:dvdhrm/docs.git
