@@ -17,8 +17,12 @@ namespace kernel {
       static constexpr int STDERR = 2;
     public:
       static inline ssize_t read(int fd, void *buffer, size_t count);
-      static inline ssize_t write(int fd, const void *buffer, size_t count);
-      static inline int     close(int fd);
+
+      template<typename T>
+        static inline ssize_t write(int fd, const T* buffer, size_t count);
+
+      static inline int close(int fd);
+
       // todo: does the kernel actually returns an 'int' ?? or is it libc ?
   };
 
@@ -26,7 +30,7 @@ namespace kernel {
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
   //
 
-  ///
+
   ssize_t Stream::read(int fd, void *buffer, size_t count)
   {
     long buf = reinterpret_cast<long>( buffer );
@@ -34,19 +38,21 @@ namespace kernel {
     return Syscall::syscall3(Syscall::SYS_read, fd, buf, count);
   }
 
-  ///
-  ssize_t Stream::write(int fd, const void *buffer, size_t count)
-  {
-    long buf = reinterpret_cast<long>( buffer );
 
-    return Syscall::syscall3(Syscall::SYS_write, fd, buf, count);
-  }
+  template<typename T>
+    ssize_t Stream::write(int fd, const T* buffer, size_t count)
+    {
+      long buf = reinterpret_cast<long>( buffer );
+      long size = sizeof(T) * count;
+      return Syscall::syscall3(Syscall::SYS_write, fd, buf, size);
+    }
 
-  ///
+
   int Stream::close(int fd)
   {
     return Syscall::syscall1(Syscall::SYS_close, fd);
   }
+
 
 } // kernel ns.
 

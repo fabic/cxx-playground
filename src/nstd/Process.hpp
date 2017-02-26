@@ -13,6 +13,11 @@ namespace nstd {
                   public kernel::Stream
   {
   public:
+    using kernel::Stream::STDIN;
+    using kernel::Stream::STDOUT;
+    using kernel::Stream::STDERR;
+
+  public:
     /** Causes abnormal process termination.
      *
      * * `lib/musl/src/exit/abort.c`
@@ -29,7 +34,8 @@ namespace nstd {
      * * This function never returns -- _warning:_ an infinite loop lies there.
      */
     static void abort() __attribute__((noreturn));
-    static ssize_t write(const char *str, int fd = kernel::Stream::STDOUT);
+    static ssize_t write(const char *str, int fd = STDOUT);
+    static ssize_t writeln(const char *str, int fd = STDOUT);
 
   };
 

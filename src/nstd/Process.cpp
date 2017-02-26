@@ -19,8 +19,12 @@ namespace nstd {
   ssize_t Process::write(const char *str, int fd)
   {
     size_t len = String::strlen( str );
+    return kernel::Stream::write(fd, str, len);
+  }
 
-    return kernel::Stream::write(fd, reinterpret_cast<const void *>(str), len);
+  ssize_t Process::writeln(const char *str, int fd)
+  {
+    return write(str, fd) + write("\n", fd);
   }
 
 } // nstd ns.
