@@ -91,16 +91,20 @@ set_source_files_properties( c/_start.cpp PROPERTIES COMPILE_FLAGS -Wno-main )
 # We need an object file `nstd_start.o` that has to be linked along programs ;
 # (basically this is our custom `crt1.o` program low-level bootstrapping "pipework".
 add_library( nstd_start OBJECT c/_start.cpp )
+add_library( nstd_crti  OBJECT c/_init_n_fini_prolog.cpp )
+add_library( nstd_crtn  OBJECT c/_init_n_fini_epilog.cpp )
 
 # ~ ~ ~ Das `nstd` lib. ~ ~ ~
 add_library( nstd SHARED
     #c/_start.cpp
+    $<TARGET_OBJECTS:nstd_crti>
     $<TARGET_OBJECTS:nstd_start>
     c/memset.cpp
     c/assert.cpp
     malloc/malloc.cpp
     String/length.cpp
     Process.cpp
+    $<TARGET_OBJECTS:nstd_crtn>
   )
 target_compile_options( nstd PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( nstd PROPERTIES LINK_FLAGS -nostdlib)
@@ -136,7 +140,12 @@ if (true)
     message(STATUS "Huh! ${file}")
     get_filename_component(file_we ${file} NAME_WE)
     # Link against our custom crt1.o thing :
-    add_executable( ${file_we} ${file} $<TARGET_OBJECTS:nstd_start>)
+    add_executable( ${file_we}
+        $<TARGET_OBJECTS:nstd_crti>
+        $<TARGET_OBJECTS:nstd_start>
+        ${file}
+        $<TARGET_OBJECTS:nstd_crtn>
+      )
     target_compile_options( ${file_we} PUBLIC -nostdinc -nostdinc++ )
     target_link_libraries( ${file_we} -nostdlib nstd)
   endforeach()

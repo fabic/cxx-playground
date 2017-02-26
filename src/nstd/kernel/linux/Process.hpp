@@ -59,8 +59,8 @@ namespace kernel {
     }
 
     /**
-     * musl-libc/src/malloc/__brk.c
-     * \link http://man7.org/linux/man-pages/man2/brk.2.html
+     * * `musl-libc/src/malloc/__brk.c`
+     * * <http://man7.org/linux/man-pages/man2/brk.2.html>
      */
     inline static uintptr_t brk(uintptr_t newbrk = nullptr)
     {
@@ -69,10 +69,6 @@ namespace kernel {
     }
 
   };
-
-
-    // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-
 
 } // kernel ns.
 

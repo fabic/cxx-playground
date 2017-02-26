@@ -22,6 +22,7 @@ namespace nstd {
     return kernel::Stream::write(fd, str, len);
   }
 
+
   ssize_t Process::writeln(const char *str, int fd)
   {
     return write(str, fd) + write("\n", fd);
