@@ -56,13 +56,13 @@ extern "C" int main(int argc, char *argv[], char *env[]);
  *
  * ## From [the AMD64 x86-64-abi-0.99.pdf (page 29, 30)](http://refspecs.linuxbase.org/elf/x86-64-abi-0.99.pdf) :
  *
- * __%rsp__ : The stack pointer holds the address of the byte with lowest address
- *            which is part of the stack. It is guaranteed to be 16-byte aligned
- *            at process entry.
- * __%rbp__ : The content of this register is unspecified at process initialization
- *            time, but the user code should mark the deepest stack frame by setting
- *            the frame pointer to zero.
- * __%rdx__ : A function pointer that the application should register with `atexit()`.
+ * * __%rsp__ : The stack pointer holds the address of the byte with lowest address
+ *              which is part of the stack. It is guaranteed to be 16-byte aligned
+ *              at process entry.
+ * * __%rbp__ : The content of this register is unspecified at process initialization
+ *              time, but the user code should mark the deepest stack frame by setting
+ *              the frame pointer to zero.
+ * * __%rdx__ : A function pointer that the application should register with `atexit()`.
  *
  * ### Initial process stack :
  *
