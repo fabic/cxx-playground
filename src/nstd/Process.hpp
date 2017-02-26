@@ -3,11 +3,15 @@
 
 #include <nstd/kernel/linux/Process.hpp>
 #include <nstd/kernel/linux/Signal.hpp>
+#include <nstd/kernel/linux/Stream.hpp>
+#include <nstd/String.hpp>
 
 namespace nstd {
 
   class Process : public kernel::Process,
-                  public kernel::Signal {
+                  public kernel::Signal,
+                  public kernel::Stream
+  {
   public:
     /** Causes abnormal process termination.
      *
@@ -25,6 +29,7 @@ namespace nstd {
      * * This function never returns -- _warning:_ an infinite loop lies there.
      */
     static void abort() __attribute__((noreturn));
+    static ssize_t write(const char *str, int fd = kernel::Stream::STDOUT);
 
   };
 

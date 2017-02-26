@@ -80,7 +80,7 @@ add_compile_options(
 # ~ ~ ~ TARGETS ~ ~ ~
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-add_compile_options( -nostdinc -nostdinc++ )
+#add_compile_options( -nostdinc -nostdinc++ )
 # NOTE: Clang also has `-nobuiltininc` but complains
 #       that is wasn't used during compilation.
 
@@ -88,30 +88,65 @@ add_compile_options( -nostdinc -nostdinc++ )
 #   “ISO C++ does not allow 'main' to be used by a program [-Wmain,Semantic Issue]”
 set_source_files_properties( c/_start.cpp PROPERTIES COMPILE_FLAGS -Wno-main )
 
+# We need an object file `nstd_start.o` that has to be linked along programs ;
+# (basically this is our custom `crt1.o` program low-level bootstrapping "pipework".
+add_library( nstd_start OBJECT c/_start.cpp )
+
 # ~ ~ ~ Das `nstd` lib. ~ ~ ~
 add_library( nstd SHARED
-    c/_start.cpp
+    #c/_start.cpp
+    $<TARGET_OBJECTS:nstd_start>
     c/memset.cpp
     c/assert.cpp
     malloc/malloc.cpp
     String/length.cpp
     Process.cpp
   )
+target_compile_options( nstd PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( nstd PROPERTIES LINK_FLAGS -nostdlib)
 
-link_libraries( -nostdlib nstd )
-#               ^ manual says it's ok to pass linker flags in this way.
+#link_libraries( -nostdlib nstd )
+#               ^ manual says it's ok to pass linker flags in this way. )
 #                 Alternate solution was :
 #set_target_properties( test_aac PROPERTIES LINK_FLAGS -nostdlib)
 
-#add_subdirectory(tests)
 
-add_executable( test_aab tests/test_aab.cpp )
-add_executable( test_aac tests/test_aac.cpp )
-add_executable( test_aad tests/test_aad.cpp )
-add_executable( test_aae tests/test_aae.cpp )
-add_executable( test_strlen String/test_length.cpp)
-add_executable( test_aaf tests/test_aaf.cpp )
+
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+# ~ ~ ~ TESTS & DEV. PROTOTYPES ~ ~ ~
+# ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+# add_subdirectory(tests)
+
+# add_executable( test_aab tests/test_aab.)pp )
+# add_executable( test_aac tests/test_aac.cpp )
+# ...
+
+if (true)
+  set(test_sources_list
+      tests/test_aab.cpp
+      tests/test_aac.cpp
+      tests/test_aad.cpp
+      tests/test_aae.cpp
+      tests/test_aaf.cpp
+      String/test_length.cpp
+    )
+
+  foreach(file ${test_sources_list})
+    message(STATUS "Huh! ${file}")
+    get_filename_component(file_we ${file} NAME_WE)
+    # Link against our custom crt1.o thing :
+    add_executable( ${file_we} ${file} $<TARGET_OBJECTS:nstd_start>)
+    target_compile_options( ${file_we} PUBLIC -nostdinc -nostdinc++ )
+    target_link_libraries( ${file_we} -nostdlib nstd)
+  endforeach()
+
+  # Initial dev/test impl. of _start & _start_c
+  set_source_files_properties( tests/test_aac.cpp PROPERTIES COMPILE_FLAGS -Wno-main )
+
+  add_executable(test001 tests/test001.cpp)
+  target_link_libraries( ${file_we} nstd)
+endif()
 
 # ~ ~ ~ * ~ ~ ~
 

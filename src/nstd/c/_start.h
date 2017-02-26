@@ -29,6 +29,7 @@ void _start_c(
     void(*atexit_thing_wtf)()
   ) __attribute__((noreturn));
 
+
 /**
  */
 extern "C"
@@ -39,7 +40,11 @@ void _bootstrap_stub(
     void(*atexit_thing_wtf)()
   );
 
-extern "C" int main(int argc, char *argv[], char *env[]);
+
+/**
+ * The traditional `main()` C-style program entry point.
+ */
+extern "C" int main(int argc, char *argv[], char *env[]) __attribute__((weak));
 
 
 /** `_start()` program low-level entry point, invoques _start_c(),

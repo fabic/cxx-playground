@@ -15,5 +15,13 @@ namespace nstd {
     while(true) {} // noreturn (else compiler complains).
   }
 
+
+  ssize_t Process::write(const char *str, int fd)
+  {
+    size_t len = String::strlen( str );
+
+    return kernel::Stream::write(fd, reinterpret_cast<const void *>(str), len);
+  }
+
 } // nstd ns.
 

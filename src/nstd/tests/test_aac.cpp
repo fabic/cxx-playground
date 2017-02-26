@@ -7,7 +7,7 @@ using namespace kernel;
 
 //void _init() __attribute__((weak));
 //void _fini() __attribute__((weak));
-extern "C" void _start() __attribute__((noreturn));
+extern "C" void _start_x() __attribute__((noreturn));
 
 int main(int argc, char *argv[], char *env[]);
 
@@ -45,15 +45,15 @@ int main(int argc, char *argv[], char *env[]);
  *   |                 | <PROCESS STACK TOP>
  *   |                 | (low addresses)
  */
-__asm__
+asm
 (
   ".weak _init    \n"
   ".weak _fini    \n"
 
-  ".text          \n"
-  ".global _start \n"
+  ".text            \n"
+  ".global _start_x \n"
 
-  "_start:                \n"
+  "_start_x:              \n"
   "  xor %rbp, %rbp       \n" /* rbp:undefined -> mark as zero 0 (abi) */
   "    mov %rdx, %r9      \n" /* 6th arg: ptr to register with atexit() */
   "    pop %rsi           \n" /* 2nd arg: argc */
@@ -62,7 +62,7 @@ __asm__
   "    mov $_fini, %r8    \n" /* 5th arg: fini/dtors function */
   "    mov $_init, %rcx   \n" /* 4th arg: init/ctors function */
   "    mov $main, %rdi    \n" /* 1st arg: application entry ip */
-  "  call _start_c        \n"/* musl init will run the program */
+  "  call _start_x_c        \n"/* musl init will run the program */
 
   "nop\nnop\nnop\nnop\n"
 );
@@ -72,7 +72,7 @@ __asm__
  * musl-libc/crt/crt1.c
  */
 extern "C" // _Noreturn
-void _start_c(
+void _start_x_c(
     int (*main_)(),
     int argc, char **argv,
     void (*init_)(),

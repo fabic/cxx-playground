@@ -17,6 +17,46 @@ if (false AND CCACHE_PROGRAM)
 endif()
 
 
+## Add new `` MinSizeDeb `` build type configuration
+#
+# https://cmake.org/Wiki/CMake_FAQ#How_can_I_specify_my_own_configurations_.28for_generators_that_allow_it.29_.3F
+# https://cmake.org/Wiki/CMake_FAQ#How_can_I_extend_the_build_modes_with_a_custom_made_one_.3F
+
+# 1st add it to the list of configuration types [optional it appears (?)]
+# (note that it may not be supported by CMake, seamingly, see FAQ).
+if(CMAKE_CONFIGURATION_TYPES)
+  list(APPEND CMAKE_CONFIGURATION_TYPES MinSizeDeb)
+  list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
+    "Add the configurations that we need, dah!" FORCE)
+endif()
+
+# There it is.
+set( CMAKE_C_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
+    "Flags used by the C compiler during maintainer builds." FORCE )
+set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
+    "Flags used by the C++ compiler during maintainer builds." FORCE )
+
+set( CMAKE_EXE_LINKER_FLAGS_MINSIZEDEB
+    "-Wl,--warn-unresolved-symbols,--warn-once" CACHE STRING
+    "Flags used for linking binaries during maintainer builds." FORCE )
+set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEDEB
+    "-Wl,--warn-unresolved-symbols,--warn-once" CACHE STRING
+    "Flags used by the shared libraries linker during maintainer builds." FORCE )
+
+## Set default build type.
+# https://cmake.org/Wiki/CMake_FAQ#How_can_I_change_the_default_build_mode_and_see_it_reflected_in_the_GUI.3F
+IF(NOT CMAKE_BUILD_TYPE)
+  #SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+  SET(CMAKE_BUILD_TYPE MinSizeDeb CACHE STRING
+    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel MinSizeDeb."
+      FORCE)
+ENDIF(NOT CMAKE_BUILD_TYPE)
+
+
+# ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`
+
+
 project(FabicCppWanderings)
 
 set (FabicCppWanderings_VERSION_MAJOR 0)
@@ -275,7 +315,7 @@ add_subdirectory(src)
 ##
 # http://stackoverflow.com/questions/9298278/cmake-print-out-all-accessible-variables-in-a-script
 
-  if (false)
+  if (true)
     get_cmake_property(_variableNames VARIABLES)
     foreach (_variableName ${_variableNames})
      message(STATUS "${_variableName}=${${_variableName}}")

@@ -13,5 +13,14 @@ void __assert_fail(const char *expr, const char *file, int line, const char *fun
 {
 	//fprintf(stderr, "Assertion failed: %s (%s: %s: %d)\n", expr, file, func, line);
 	//fflush(NULL);
+  if (expr != nullptr)
+    Process::write(expr);
+
+  if (file != nullptr)
+    Process::write(file);
+
+  if (func != nullptr)
+    Process::write(func);
+
   Process::abort();
 }

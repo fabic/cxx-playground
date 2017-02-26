@@ -1,5 +1,6 @@
 
 #include <nstd/String.hpp>
+#include <nstd/c/assert.h>
 
 namespace nstd {
 
@@ -55,6 +56,8 @@ namespace nstd {
    */
   size_t String::strlen(const char *s)
   {
+    assert( s != nullptr );
+
     using word_t = const unsigned long;
 
     constexpr size_t Alignment = sizeof(word_t);

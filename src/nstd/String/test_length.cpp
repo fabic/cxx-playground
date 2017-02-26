@@ -13,8 +13,8 @@ int main(int argc, char *argv[], char *env[])
   for(int i = 0; i < argc; i++) {
     auto str = argv[i];
     auto len = String::strlen(str);
-    Stream::write(2, str, len);
-    Stream::write(2, "\n", 1);
+    Stream::write(Stream::STDOUT, str, len);
+    Stream::write(Stream::STDOUT, "\n", 1);
   }
 
   return 0;

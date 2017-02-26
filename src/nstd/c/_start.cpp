@@ -16,10 +16,10 @@ asm
 
   "_start:                \n"
   "  xor %rbp, %rbp       \n" /* rbp:undefined -> mark as zero 0 (abi) */
-  "  mov %rsp, %rdi       \n" /* 1st arg: pointer to top of stack. */
+  "    mov %rsp, %rdi     \n" /* 1st arg: pointer to top of stack. */
   "    mov %rdx, %rcx     \n" /* 4th arg: ptr to register with atexit() */
   "    mov  (%rsp), %rsi  \n" /* 2nd arg: argc */
-  "    mov 8(%rsp), %rdx  \n" /* 3rd arg: argv */
+  "    lea 8(%rsp), %rdx  \n" /* 3rd arg: argv */
   "  andq $-16, %rsp      \n" /* align stack pointer */
   "  call _start_c        \n" /* hand over execution to _start_c */
 
@@ -53,11 +53,16 @@ void _start_c(
      argc, argv, envp,
      _init, _fini, atexit_thing_wtf );
 
-  int ec = main(argc, argv, envp);
+  if (main != nullptr) {
+    int ec = main(argc, argv, envp);
+    Process::exit( ec );
+  }
+  else {
+    Process::write("_start_c(): C-style `main()` program entry point is undefined ?!");
+    Process::abort();
+  }
 
   // TODO: See src/exit/atexit.c: __cxa_atexit(), __cxa_finalize() and atexit().
-
-  Process::exit(100 + ec);
 
   // Unreachable; prevents Clang from generating a warning
   Process::abort();
