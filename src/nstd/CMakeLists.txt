@@ -104,7 +104,7 @@ add_library( nstd SHARED
     malloc/malloc.cpp
     String/length.cpp
     Process.cpp
-    $<TARGET_OBJECTS:nstd_crtn>
+    #FIXME: $<TARGET_OBJECTS:nstd_crtn>
   )
 target_compile_options( nstd PUBLIC -nostdinc -nostdinc++ )
 set_target_properties( nstd PROPERTIES LINK_FLAGS -nostdlib)
@@ -144,7 +144,7 @@ if (true)
         $<TARGET_OBJECTS:nstd_crti>
         $<TARGET_OBJECTS:nstd_start>
         ${file}
-        $<TARGET_OBJECTS:nstd_crtn>
+        #FIXME: $<TARGET_OBJECTS:nstd_crtn>
       )
     target_compile_options( ${file_we} PUBLIC -nostdinc -nostdinc++ )
     target_link_libraries( ${file_we} -nostdlib nstd)
