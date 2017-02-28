@@ -25,7 +25,7 @@ endif()
 # 1st add it to the list of configuration types [optional it appears (?)]
 # (note that it may not be supported by CMake, seamingly, see FAQ).
 if(CMAKE_CONFIGURATION_TYPES)
-  list(APPEND CMAKE_CONFIGURATION_TYPES MinSizeDeb)
+  list(APPEND CMAKE_CONFIGURATION_TYPES MinSizeDeb LTORelWithDebInfo)
   list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
     "Add the configurations that we need, dah!" FORCE)
@@ -33,16 +33,17 @@ endif()
 
 # There it is.
 set( CMAKE_C_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
-    "Flags used by the C compiler during maintainer builds." FORCE )
+  "Optimize for size, with debug informations (C compiler flags)." FORCE )
 set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
-    "Flags used by the C++ compiler during maintainer builds." FORCE )
+    "Optimize for size, with debug informations (C++ compiler flags)." FORCE )
 
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEDEB
-    "-Wl,--warn-unresolved-symbols,--warn-once" CACHE STRING
-    "Flags used for linking binaries during maintainer builds." FORCE )
+    "-Wl,--warn-unresolved-symbols" CACHE STRING
+    "Flags used for linking executables (MinSizeDev)." FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEDEB
-    "-Wl,--warn-unresolved-symbols,--warn-once" CACHE STRING
-    "Flags used by the shared libraries linker during maintainer builds." FORCE )
+    "-Wl,--warn-unresolved-symbols" CACHE STRING
+    "Flags used by the shared libraries linker (MinSizeDeb)." FORCE )
+
 
 ## Set default build type.
 # https://cmake.org/Wiki/CMake_FAQ#How_can_I_change_the_default_build_mode_and_see_it_reflected_in_the_GUI.3F
@@ -52,6 +53,11 @@ IF(NOT CMAKE_BUILD_TYPE)
     "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel MinSizeDeb."
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
+
+
+## Clang link-time-optimization thing (LTO).
+option(DUDE_LETS_TRY_LTO
+  "Will pass -flto to Clang (requires among other things: Binutils' ld.gold and LLVM/Clang built with LTO support)." ON)
 
 
 # ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`
@@ -134,6 +140,7 @@ add_compile_options(
   -std=c++1z
   # -stdlib=libc++
   -fPIC
+  -flto
   -Wall
   -pedantic
   # -Weverything
@@ -201,6 +208,29 @@ add_compile_options(
   # -Wno-nested-anon-types
   # -Wl,-allow-shlib-undefined
 )
+
+
+## LTO option
+find_program(LD_GOLD_PROGRAM ld.gold)
+if (LD_GOLD_PROGRAM)
+  message(STATUS "Dude! Found Binutils' « ld.gold » linker (which supports LTO and the `-plugin ...` argument, btw).")
+  message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
+  set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
+endif()
+
+if (DUDE_LETS_TRY_LTO)
+  if (LD_GOLD_PROGRAM)
+    add_compile_options( -flto )
+    link_libraries( -flto )
+    message(STATUS "Yeah man! Setting the -flto Clang compiler flag, fingers-crossed ^^")
+    if (CMAKE_CXX_FLAGS_MINSIZEDEB MATCHES "-Os")
+      message(WARNING "Clang won't let us compile with -Os while doing LTO.")
+      string(REPLACE "-Os" "-O2" CMAKE_CXX_FLAGS_MINSIZEDEB "${CMAKE_CXX_FLAGS_MINSIZEDEB}")
+    endif()
+  else()
+    message(WARNING "Argh! dude :-| Couldn't find the ld.gold binary (well CMake didn't, I'm cool).")
+  endif()
+endif()
 
 
 ### # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
