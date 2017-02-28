@@ -210,8 +210,11 @@ add_compile_options(
 )
 
 
-## LTO option
+## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+## ~ ~ ~ ~ LTO ~ ~ ~ ~
+## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 find_program(LD_GOLD_PROGRAM ld.gold)
+
 if (LD_GOLD_PROGRAM)
   message(STATUS "Dude! Found Binutils' « ld.gold » linker (which supports LTO and the `-plugin ...` argument, btw).")
   message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
@@ -223,12 +226,21 @@ if (DUDE_LETS_TRY_LTO)
     add_compile_options( -flto )
     link_libraries( -flto )
     message(STATUS "Yeah man! Setting the -flto Clang compiler flag, fingers-crossed ^^")
-    if (CMAKE_CXX_FLAGS_MINSIZEDEB MATCHES "-Os")
-      message(WARNING "Clang won't let us compile with -Os while doing LTO.")
-      string(REPLACE "-Os" "-O2" CMAKE_CXX_FLAGS_MINSIZEDEB "${CMAKE_CXX_FLAGS_MINSIZEDEB}")
+
+    # Replace -Os with -O2 from the CXXFLAGS.
+    # FIXME: We're not altering the CFLAGS.
+    if (true)
+      string(TOUPPER "${CMAKE_BUILD_TYPE}" uppercase_CMAKE_BUILD_TYPE)
+      #message(STATUS "HUH! ${CMAKE_CXX_FLAGS} -- ${uppercase_CMAKE_BUILD_TYPE} --- ${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}}")
+      if ( ${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}} MATCHES "-Os" )
+        message(STATUS "Beware! Clang won't let us compile with -Os while doing LTO (at least not as of February 2017).")
+        string(REPLACE "-Os" "-O2" CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE} "${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}}")
+        message(STATUS "Replaced -Os with -O2 from CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE} : ${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}}.")
+      endif()
+      unset( uppercase_CMAKE_BUILD_TYPE )
     endif()
   else()
-    message(WARNING "Argh! dude :-| Couldn't find the ld.gold binary (well CMake didn't, I'm cool).")
+    message(WARNING "Argh! dude :-| Couldn't find the `ld.gold` binary (well CMake didn't, I'm cool) ; we're _not_ passing -flto.")
   endif()
 endif()
 
@@ -253,7 +265,7 @@ endif()
     message(WARNING "Boost C++ location $ENV{BOOSTROOT} ain't no exit buddy.")
   endif()
 
-  # This one is for JetBrains' CLion bundled CMake (v3.5.2) :
+  # This one (with the '_' blankee) is for JetBrains' CLion bundled CMake (v3.5.2) :
   set(BOOST_ROOT ${BOOSTROOT})
 
   # These two ain't needed, actually...
@@ -332,7 +344,6 @@ include_directories(include)
 #                    along implementations.
 # ^ and have src/ as include dir. instead :
 include_directories(src)
-
 
 add_subdirectory(experiments)
 
