@@ -1,5 +1,5 @@
-#ifndef FABIC_LOGGING_HPP
-#define FABIC_LOGGING_HPP
+#ifndef _DUDE_UTIL_LOGGING_H
+#define _DUDE_UTIL_LOGGING_H
 
 /** include/fabic/logging.hpp
  *
@@ -23,8 +23,6 @@
 #else
 #  define logtrace (std::cerr << "TRACE: ")
 #endif
-
-
 
 
 /* !!! NOTE !!!
@@ -75,4 +73,4 @@
  *   - So that it passes `-DBOOST_LOG_DYN_LINK` as compiler argument.
  */
 
-#endif // FABIC_LOGGING_HPP
+#endif // _DUDE_UTIL_LOGGING_H

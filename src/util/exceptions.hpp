@@ -1,10 +1,10 @@
-#ifndef SF_COMMON_HPP
-#define SF_COMMON_HPP
+#ifndef _DUDE_BASE_EXCEPTIONS_H
+#define _DUDE_BASE_EXCEPTIONS_H
 
 #include <exception>
 # include <boost/exception/exception.hpp>
 
-namespace sf {
+namespace dude {
   namespace ex {
 
     /// Base exception class for Xcb...
@@ -27,6 +27,6 @@ namespace sf {
     };
 
   }
-} // sf ns.
+} // dude ns.
 
-#endif //SF_COMMON_HPP
+#endif //_DUDE_BASE_EXCEPTIONS_H

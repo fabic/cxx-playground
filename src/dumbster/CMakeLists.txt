@@ -61,10 +61,30 @@ add_compile_options(
   # -Wl,-allow-shlib-undefined
 )
 
+#
+# DEPENDENCIES
+#
+find_package (
+    Boost
+    COMPONENTS REQUIRED
+      log
+      # program_options
+      # filesystem
+      # system
+  )
+
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 # ~ ~ ~ TARGETS ~ ~ ~
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-add_executable( dumbster main.cpp )
+add_executable( dumbster
+    main.cpp
+    ../hacks/hack_cxa_throw_exception.cpp
+  )
 
+target_link_libraries( dumbster
+    ${Boost_LIBRARIES}
+    unwind dl # for hack_cxa_throw_exception.cpp
+    pthread
+  )
 

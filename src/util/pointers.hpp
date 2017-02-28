@@ -1,5 +1,5 @@
-#ifndef DUDE_UTIL_POINTERS_HPP
-#define DUDE_UTIL_POINTERS_HPP
+#ifndef _DUDE_UTIL_POINTERS_HPP
+#define _DUDE_UTIL_POINTERS_HPP
 
 #include <memory>
 #include <boost/format.hpp>
@@ -162,4 +162,4 @@ namespace dude {
 } // util ns
 } // dude ns
 
-#endif //DUDE_UTIL_POINTERS_HPP
+#endif //_DUDE_UTIL_POINTERS_HPP

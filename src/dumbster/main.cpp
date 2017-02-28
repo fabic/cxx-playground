@@ -4,43 +4,104 @@
 #include <string>
 #include <memory>
 
+# include "util/exceptions.hpp"
+# include "util/logging.hpp"
+
 namespace psr {
+
+  using dude::ex::yet_undefined_exception;
+
+
+  /**
+   */
+  struct Cursor {
+    int _line;
+    int _column;
+  };
+
+
+  /**
+   */
+  struct Selection {
+    Cursor _start;
+    Cursor _end;
+  };
 
 
   /**
    */
   struct Token {
-      unsigned int is_eof:1;
-      unsigned int is_blank_space:1;
-      unsigned int is_sharp:1;
-      unsigned int is_double_colon:1;
-      //unsigned int _unused:XXX;
-    int _start_line, _end_line;
-    int _start_col, _end_col;
-    Token() : is_eof(false), is_blank_space(false), is_sharp(false), is_double_colon(false) {}
+    public:
+      enum Kind : int {
+        blank, number, string, identifier,
+        symbol
+      };
+    public:
+      Selection _selection;
+      Kind      _kind;
   };
+
+
+  /**
+   */
+  class Lexer {
+    protected:
+      std::string   _fileName;
+      std::ifstream _file;
+      int _line   = 1;
+      int _column = 0;
+    public:
+      explicit Lexer(std::string fileName);
+      Token next_token();
+      static inline bool is_blank_character(char ch);
+  };
+
+  ///
+  Lexer::Lexer(std::string fileName)
+    : _fileName(fileName),
+      _file(_fileName)
+  {
+    logtrace << "Opening file " << _fileName;
+
+    _file.open(fileName);
+
+    if (_file.fail())
+      throw yet_undefined_exception();
+  }
+
+  ///
+  bool is_blank_character(char ch) {
+    return ch == ' ' || ch == '\t' || ch == '\n';
+  }
+
+
+  // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
 
   /**
    */
   class Parser {
   protected:
-  protected:
-    std::ifstream file;
-    int _line = 1, _column = 0;
+    Lexer _lexer;
   public:
-    void parseFile(std::string fileName);
-    void beginParseFile();
-    Token readToken();
+    explicit Parser(std::string fileName);
+    void parse();
   };
 
+  ///
+  Parser::Parser(std::string fileName)
+    : _lexer(fileName) {}
 
-  /**
-   */
-  struct Cursor {
-    int _lineStart = -1, _lineEnd = -1;
-    int _columnStart = -1, _columnEnd = -1;
-  };
+  ///
+  void Parser::parse()
+  {
+    while(true)
+    {
+      _lexer.next_token();
+    }
+  }
+
+  // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
 
   /**
@@ -65,42 +126,7 @@ namespace psr {
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
 
-  void Parser::parseFile(std::string fileName)
-  {
-    std::cout << "Hey! " << fileName << std::endl;
-
-    file.open(fileName);
-
-    if (file.fail()) {
-      std::cerr << "Could not open file: " << fileName << std::endl;
-      return;
-    }
-
-    beginParseFile();
-
-    file.close();
-
-    std::cout << "Bye! " << fileName << std::endl;
-  }
-
-
-  void Parser::beginParseFile()
-  {
-    Token token;
-
-    while(! (token = readToken()).is_eof) {
-      std::cout << "Read token" << std::endl;
-    };
-  }
-
-
-
-
-  inline bool is_blank_character(char ch) {
-    return ch == ' ' || ch == '\t' || ch == '\n';
-  }
-
-
+#if 0
   Token Parser::readToken() // todo: ren. nextToken().
   {
     Token token;
@@ -172,6 +198,7 @@ namespace psr {
 
     return token;
   }
+#endif // 0
 
 } // psr ns.
 
@@ -183,18 +210,18 @@ int main(int argc, const char *argv[])
   using namespace std;
   using psr::Parser;
 
-  cout << "Hey, I'm " << argv[0] << endl;
+  logdebug << "Hey, I'm " << argv[0];
 
-  Parser parser;
 
   for(int n = 1; n < argc; n++)
   {
     auto fileName = argv[n];
-    cout << "~ ~ ~" << " FILE `" << fileName << "` ~ ~ ~" << endl;
-    parser.parseFile( fileName );
+    Parser parser (fileName);
+    logdebug << "~ ~ ~" << " FILE `" << fileName << "` ~ ~ ~" << endl;
+    parser.parse();
   }
 
-  cout << "Good bye..." << endl << endl;
+  logdebug << "Good bye...";
 
   return 0;
 }
