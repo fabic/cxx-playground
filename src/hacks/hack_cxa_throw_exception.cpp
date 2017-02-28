@@ -29,7 +29,7 @@
 #include <stdexcept>
 #include <typeinfo>
 
-TL_NS_BEGIN
+namespace dude {
     namespace hack {
 
         // Forward decl.
@@ -270,7 +270,8 @@ TL_NS_BEGIN
             }
 
         } // extern "C"
+
     } // hack ns.
-TL_NS_END
+} // dude ns.
 
 #endif // FABIC_CXA_THROW_HACK

@@ -8,7 +8,7 @@ namespace sf {
   namespace xcb {
 
     /// Base exception class for Xcb...
-    struct base_exception : sf::ex::base_exception
+    struct base_exception : dude::ex::base_exception
     {  };
 
     class Window;
