@@ -33,12 +33,16 @@ namespace psr {
   struct Token {
     public:
       enum Kind : int {
-        blank, number, string, identifier,
-        symbol
+        NIL, eof, blank, number, string, identifier,
+        symbol, null_pointer, keyword
       };
     public:
       Selection _selection;
       Kind      _kind;
+    public:
+      Token() : _kind(Kind::NIL) {}
+      bool is_nil() const { return _kind == Kind::NIL; }
+      bool is_eof() const { return _kind == Kind::eof; }
   };
 
 
@@ -74,6 +78,21 @@ namespace psr {
     return ch == ' ' || ch == '\t' || ch == '\n';
   }
 
+  //
+  Token Lexer::next_token()
+  {
+    Token tok;
+
+    char ch = _file.get();
+
+    if (_file.eof()) {
+      tok._kind = Token::Kind::eof;
+      return tok;
+    }
+
+    return tok;
+  }
+
 
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
@@ -95,10 +114,24 @@ namespace psr {
   ///
   void Parser::parse()
   {
+    logtrace << "Parser says: let's lex it !";
+
     while(true)
     {
-      _lexer.next_token();
+      Token tok = _lexer.next_token();
+
+      if (tok.is_eof()) {
+        logtrace << "We reached EOF";
+        break;
+      }
+      else if (tok.is_nil()) {
+        logerror << "Met a NIL token, lexer no like -_-";
+      }
+
+      std::cerr << '.';
     }
+
+    logtrace << "Parser says: “I'm done, lad.”";
   }
 
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
