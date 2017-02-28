@@ -10,6 +10,7 @@ project(Symfony-module-http)
 
 ###
 # build/symfony/libmodule-http-server.so
+if (false)
   # https://cmake.org/cmake/help/v3.0/command/add_library.html
   add_library(
     module-http-server
@@ -20,9 +21,9 @@ project(Symfony-module-http)
   target_link_libraries(
     module-http-server
     ${Boost_LIBRARIES}
-    ${LibCppNetlibClientConnections}
-    ${LibCppNetlibServerParsers}
+    #${LibCppNetlibClientConnections}
+    #${LibCppNetlibServerParsers}
     )
-
+endif()
 # ^ build/symfony/libmodule-http-server.so
 ###

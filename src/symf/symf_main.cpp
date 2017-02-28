@@ -8,7 +8,7 @@
 
 # include "di/container.hpp"
 # include "di/dll_service_provider.hpp"
-# include "asio/IoService.hpp"
+# include "dic-modules/asio/IoService.hpp"
 
 TL_NS_BEGIN
   namespace symfony {

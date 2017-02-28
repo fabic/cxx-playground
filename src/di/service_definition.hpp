@@ -140,7 +140,7 @@
       }
 
       ///
-      virtual void construct() throw(base_exception) override {
+      virtual void construct() override {
         if (this->has_instance())
           BOOST_THROW_EXCEPTION( service_already_constructed() );
         else if (this->factory == nullptr)

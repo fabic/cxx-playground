@@ -53,7 +53,6 @@ TL_NS_BEGIN
 
     service_container::service_ptr_t
       service_container::service_map::find(string id)
-        throw(service_not_found_exception)
     {
       auto it = this->services_.find(id);
 
@@ -70,7 +69,6 @@ TL_NS_BEGIN
       service_container::service_map::insert(
           base_definition::pointer service
         )
-          throw(service_already_exists_exception)
     {
       auto pair = this->services_.insert(
           make_pair(

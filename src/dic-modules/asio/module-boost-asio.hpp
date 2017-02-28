@@ -2,7 +2,7 @@
 #include <boost/dll/alias.hpp>
 
 # include "di/container.hpp"
-# include "asio/IoService.hpp"
+# include "dic-modules/asio/IoService.hpp"
 
 TL_NS_BEGIN
   namespace module {
@@ -25,7 +25,7 @@ TL_NS_BEGIN
 
         ~BoostAsioService();
 
-        void construct() throw(di::base_exception) override;
+        void construct() override;
 
         bool is_startable() const override { return true; }
 

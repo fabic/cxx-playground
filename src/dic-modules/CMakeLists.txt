@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.3)
 # have a .cpp along with its companion .hpp in the same directory.
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_subdirectory(http)
+#add_subdirectory(http)
 
 # TODO ?
 #add_subdirectory(asio)

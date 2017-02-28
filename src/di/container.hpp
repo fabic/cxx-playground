@@ -66,12 +66,10 @@
         map_ref get_map_impl() { return this->services_; }
 
         service_ptr_t
-          find(string id)
-            throw(service_not_found_exception);
+          find(string id);
 
         reference
-          insert(base_definition::pointer service)
-            throw(service_already_exists_exception);
+          insert(base_definition::pointer service);
       };
 
     private:

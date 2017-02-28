@@ -11,7 +11,7 @@
 #include <boost/call_traits.hpp>
 #include <boost/throw_exception.hpp>
 
-#include "logging.hpp"
+#include "util/logging.hpp"
 #include "object.hpp"
 
   namespace di {

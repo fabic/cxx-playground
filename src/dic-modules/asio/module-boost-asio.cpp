@@ -19,7 +19,6 @@ TL_NS_BEGIN
 
       void
       BoostAsioService::construct()
-        throw(di::base_exception) // override
       {
         if (this->has_instance())
           BOOST_THROW_EXCEPTION( di::service_already_constructed() );

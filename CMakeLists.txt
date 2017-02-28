@@ -321,7 +321,6 @@ endif()
 # FIXME: hard-coded paths, can't get my way 'round those CMake stuff...
 if (IS_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp-netlib/boost)
   include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp-netlib)
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/cpp-netlib/deps/uri/include)
 
   find_file(
     LibCppNetlibClientConnections
