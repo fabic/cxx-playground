@@ -1,3 +1,6 @@
+/**
+ * ~~! executable: dumbster~~ !! see main() for target def.
+ */
 
 #include <iostream>
 #include <fstream>
@@ -7,6 +10,7 @@
 # include "util/exceptions.hpp"
 # include "util/logging.hpp"
 
+// psr abbr. "parser".
 namespace psr {
 
   using dude::ex::yet_undefined_exception;
@@ -237,6 +241,7 @@ namespace psr {
 
 
 /**
+ * ! executable: dumbster
  */
 int main(int argc, const char *argv[])
 {
