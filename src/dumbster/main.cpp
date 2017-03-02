@@ -32,12 +32,19 @@ namespace psr {
   };
 
 
+  /// Damn C header -__-
+  /// /usr/include/libio.h:62:14: note: expanded from macro 'EOF'
+  /// # define EOF (-1)
+# ifdef EOF
+#   undef EOF
+# endif
+
   /**
    */
   struct Token {
     public:
       enum Kind : int {
-        NIL, eof, blank, number, string, identifier,
+        NIL, EOF, blank, number, string, identifier,
         symbol, null_pointer, keyword
       };
     public:
@@ -46,7 +53,7 @@ namespace psr {
     public:
       Token() : _kind(Kind::NIL) {}
       bool is_nil() const { return _kind == Kind::NIL; }
-      bool is_eof() const { return _kind == Kind::eof; }
+      bool is_eof() const { return _kind == Kind::EOF; }
   };
 
 
@@ -66,15 +73,14 @@ namespace psr {
 
   ///
   Lexer::Lexer(std::string fileName)
-    : _fileName(fileName),
-      _file(_fileName)
+    : _fileName(fileName)
   {
     logtrace << "Opening file " << _fileName;
 
     _file.open(fileName);
 
     if (_file.fail())
-      throw yet_undefined_exception();
+      throw yet_undefined_exception("Could not open that file.");
   }
 
   ///
@@ -82,7 +88,7 @@ namespace psr {
     return ch == ' ' || ch == '\t' || ch == '\n';
   }
 
-  //
+  ///
   Token Lexer::next_token()
   {
     Token tok;
@@ -90,7 +96,7 @@ namespace psr {
     char ch = _file.get();
 
     if (_file.eof()) {
-      tok._kind = Token::Kind::eof;
+      tok._kind = Token::Kind::EOF;
       return tok;
     }
 
