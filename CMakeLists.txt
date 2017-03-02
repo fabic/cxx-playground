@@ -25,7 +25,7 @@ endif()
 # 1st add it to the list of configuration types [optional it appears (?)]
 # (note that it may not be supported by CMake, seamingly, see FAQ).
 if(CMAKE_CONFIGURATION_TYPES)
-  list(APPEND CMAKE_CONFIGURATION_TYPES MinSizeDeb LTORelWithDebInfo)
+  list(APPEND CMAKE_CONFIGURATION_TYPES MinSizeDeb )
   list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
     "Add the configurations that we need, dah!" FORCE)
@@ -57,7 +57,7 @@ ENDIF(NOT CMAKE_BUILD_TYPE)
 
 ## Clang link-time-optimization thing (LTO).
 option(DUDE_LETS_TRY_LTO
-  "Will pass -flto to Clang (requires among other things: Binutils' ld.gold and LLVM/Clang built with LTO support)." ON)
+  "Will pass -flto to Clang (requires among other things: Binutils' ld.gold and LLVM/Clang built with LTO support)." OFF)
 
 
 # ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`
@@ -140,7 +140,7 @@ add_compile_options(
   -std=c++1z
   # -stdlib=libc++
   -fPIC
-  -flto
+  #-flto
   -Wall
   -pedantic
   # -Weverything
@@ -217,15 +217,21 @@ find_program(LD_GOLD_PROGRAM ld.gold)
 
 if (LD_GOLD_PROGRAM)
   message(STATUS "Dude! Found Binutils' « ld.gold » linker (which supports LTO and the `-plugin ...` argument, btw).")
-  message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
-  set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
+  # message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
+  # set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
+  # ^ DON'T: enabling it for non-LTO compilation/linkage appears to fail with :
+  #          “main.cpp.o: unrecognized file format”
 endif()
 
 if (DUDE_LETS_TRY_LTO)
   if (LD_GOLD_PROGRAM)
+    message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
+    set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
+
     add_compile_options( -flto )
     link_libraries( -flto )
-    message(STATUS "Yeah man! Setting the -flto Clang compiler flag, fingers-crossed ^^")
+    message(STATUS "Yeah man! Setting the -flto Clang compiler flag, fingers-crossed o_o")
+    message(STATUS "          Setting the -flto linker flag too.")
 
     # Replace -Os with -O2 from the CXXFLAGS.
     # FIXME: We're not altering the CFLAGS.

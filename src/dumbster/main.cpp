@@ -19,8 +19,8 @@ namespace psr {
   /**
    */
   struct Cursor {
-    int _line;
-    int _column;
+    int _line   = 1; // there's always a first line, even if file is empty.
+    int _column = 0;
   };
 
 
@@ -63,12 +63,15 @@ namespace psr {
     protected:
       std::string   _fileName;
       std::ifstream _file;
-      int _line   = 1;
-      int _column = 0;
+      //int _line   = 1; int _column = 0;
+      Cursor _cursor;
     public:
       explicit Lexer(std::string fileName);
+      inline char next_character();
+      inline void put_back_character(char ch); // rewind() ?
       Token next_token();
       static inline bool is_blank_character(char ch);
+      Token try_lex_a_bunch_of_blank_space();
   };
 
   ///
@@ -84,8 +87,35 @@ namespace psr {
   }
 
   ///
-  bool is_blank_character(char ch) {
+  bool Lexer::is_blank_character(char ch) {
     return ch == ' ' || ch == '\t' || ch == '\n';
+  }
+
+  ///
+  char Lexer::next_character()
+  {
+    char ch = _file.get();
+
+    // is this ok ?
+    if (_file.eof()) {
+      return 0;
+    }
+
+    // We keep track of line returns as we go.
+    if (ch == '\n') {
+      _cursor._line++;
+      _cursor._column = 0;
+    }
+
+    _cursor._column++; // fixme: always ?
+
+    return ch;
+  }
+
+  ///
+  void Lexer::put_back_character(char ch)
+  {
+    _file.putback( ch );
   }
 
   ///
@@ -93,14 +123,47 @@ namespace psr {
   {
     Token tok;
 
-    char ch = _file.get();
+    char ch = next_character();
 
     if (_file.eof()) {
       tok._kind = Token::Kind::EOF;
       return tok;
     }
 
+    if (is_blank_character(ch)) {
+      put_back_character(ch);
+      try_lex_a_bunch_of_blank_space();
+    }
+
     return tok;
+  }
+
+  ///
+  Token Lexer::try_lex_a_bunch_of_blank_space()
+  {
+    logtrace << "Lexing blanks...";
+
+    Token toki;
+
+    toki._selection._start = _cursor;
+
+    do {
+      char ch = next_character();
+      if (ch == 0)
+        break; // EOF
+      else if (! is_blank_character(ch)) {
+        put_back_character(ch);
+        break;
+      }
+    } while( true );
+
+    toki._selection._end = _cursor;
+
+    // todo: check if we consumed anything at all.
+
+    toki._kind = Token::Kind::blank;
+
+    return toki;
   }
 
 
