@@ -14,58 +14,58 @@
 #include "util/logging.hpp"
 #include "object.hpp"
 
-  namespace di {
+namespace di {
 
-    using std::shared_ptr;
+  using std::shared_ptr;
 
-    // Forward decl.
-    class service_container;
+  // Forward decl.
+  class service_container;
 
-    /**
-     * The actual service container instance is managed through a shared pointer.
-     */
-    typedef shared_ptr<service_container> container_shared_ptr_t;
+  /**
+   * The actual service container instance is managed through a shared pointer.
+   */
+  typedef shared_ptr<service_container> container_shared_ptr_t;
 
-    // Forward decl.
-    template<class T, class PointerT>
-    class definition;
+  // Forward decl.
+  template<class T, class PointerT>
+  class definition;
 
-    /**
-     * Type of the _service definition_ of containers.
-     */
-    typedef definition<service_container, container_shared_ptr_t>
-      container_service_definition_t;
+  /**
+   * Type of the _service definition_ of containers.
+   */
+  typedef definition<service_container, container_shared_ptr_t>
+    container_service_definition_t;
 
-    /**
-     * The shared pointer type to the _service definition_ ``of service container instances``.
-     */
-    typedef shared_ptr< container_service_definition_t >
-      container_service_definition_ptr_t;
+  /**
+   * The shared pointer type to the _service definition_ ``of service container instances``.
+   */
+  typedef shared_ptr< container_service_definition_t >
+    container_service_definition_ptr_t;
 
-    // For
-    class base_definition;
-    typedef shared_ptr< base_definition >
-      base_definition_shared_ptr_t;
+  // For
+  class base_definition;
+  typedef shared_ptr< base_definition >
+    base_definition_shared_ptr_t;
 
-    //
-    // EXCEPTIONS
-    //
+  //
+  // EXCEPTIONS
+  //
 
-    struct base_exception
-      : virtual boost::exception,
-        virtual std::exception
-    { };
+  struct base_exception
+    : virtual boost::exception,
+      virtual std::exception
+  { };
 
-    struct service_not_found_exception      : base_exception {};
-    struct service_already_exists_exception : base_exception {};
-    struct service_down_cast_failed : base_exception {};
+  struct service_not_found_exception      : base_exception {};
+  struct service_already_exists_exception : base_exception {};
+  struct service_down_cast_failed : base_exception {};
 
-    struct no_defined_factory_functor : base_exception {};
-    struct service_already_constructed : base_exception {};
-    struct service_has_no_instance : base_exception {};
-    // ^ i.e. has not been constructed yet most probably.
+  struct no_defined_factory_functor : base_exception {};
+  struct service_already_constructed : base_exception {};
+  struct service_has_no_instance : base_exception {};
+  // ^ i.e. has not been constructed yet most probably.
 
-  } // di ns.
+} // di ns.
 
 /* Symbol visibility... relate to Link Time Optimization
  *

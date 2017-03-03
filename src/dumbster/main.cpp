@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <experimental/filesystem>
 #include <string>
 #include <memory>
 
@@ -30,6 +31,48 @@ namespace psr {
     Cursor _start;
     Cursor _end;
   };
+
+
+  /**
+   */
+  struct Line {
+    Selection _selection;
+  };
+
+
+  /**
+   */
+  class TextBuffer {
+    public:
+      using self = TextBuffer;
+      using self_r = self & ;
+      using self_p = self * ; // or std::shared_ptr<...>, inheritable_shared_from_this<>?
+    protected:
+      std::unique_ptr<char *> _buffer = nullptr;
+      std::vector<Line> _lines;
+      // fileName / source ?
+    public:
+      explicit TextBuffer();
+      self_r ReadFile(std::string fileName);
+  };
+
+  /// Ctor
+  TextBuffer::TextBuffer()
+    : _lines(1)
+  {  }
+
+  ///
+  typename TextBuffer::self_r
+  TextBuffer::ReadFile(std::string fileName)
+  {
+    namespace fs = std::experimental::filesystem;
+    auto fileSize = fs::file_size(fileName);
+    std::ifstream _file;
+    return *this;
+  }
+
+
+  //  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
 
   /// Damn C header -__-
@@ -65,6 +108,7 @@ namespace psr {
       std::ifstream _file;
       //int _line   = 1; int _column = 0;
       Cursor _cursor;
+      std::vector<Line> _lines;
     public:
       explicit Lexer(std::string fileName);
       inline char next_character();
@@ -102,7 +146,11 @@ namespace psr {
     }
 
     // We keep track of line returns as we go.
+    // (keeping information about the previous line
+    //  since we have to support rewinding characters).
     if (ch == '\n') {
+      // _lines.emplace_back(_cursor._line);
+      // _lines.push_back( _cursor );
       _cursor._line++;
       _cursor._column = 0;
     }
@@ -116,6 +164,13 @@ namespace psr {
   void Lexer::put_back_character(char ch)
   {
     _file.putback( ch );
+
+    if (ch == '\n') {
+      _cursor._line++;
+      _cursor._column = 0;
+    }
+
+    _cursor._column--;
   }
 
   ///
@@ -141,11 +196,13 @@ namespace psr {
   ///
   Token Lexer::try_lex_a_bunch_of_blank_space()
   {
-    logtrace << "Lexing blanks...";
-
     Token toki;
 
     toki._selection._start = _cursor;
+
+    logtrace << "Lexing blanks from ["
+             << toki._selection._start._line   << ','
+             << toki._selection._start._column << ']';
 
     do {
       char ch = next_character();
@@ -162,6 +219,10 @@ namespace psr {
     // todo: check if we consumed anything at all.
 
     toki._kind = Token::Kind::blank;
+
+    logtrace << "Lexed blanks end ["
+             << toki._selection._end._line   << ','
+             << toki._selection._end._column << ']';
 
     return toki;
   }
