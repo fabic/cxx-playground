@@ -158,6 +158,10 @@ add_compile_options(
   #     See Boost.DLL about symbol shadowing problem w/ Linux.
   # -fwhole-program-vtables
   #   ^ http://clang.llvm.org/docs/UsersManual.html#cmdoption-fwhole-program-vtables
+  -Wdocumentation
+  #-fparse-all-comments
+  #-Wno-documentation-unknown-command
+  # ^ http://clang.llvm.org/docs/UsersManual.html#comment-parsing-options
 )
 
 # add_compile_options( -flto )

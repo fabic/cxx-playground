@@ -17,27 +17,7 @@ namespace psr {
   using dude::ex::yet_undefined_exception;
 
 
-  /**
-   */
-  struct Cursor {
-    int _line   = 1; // there's always a first line, even if file is empty.
-    int _column = 0;
-  };
 
-
-  /**
-   */
-  struct Selection {
-    Cursor _start;
-    Cursor _end;
-  };
-
-
-  /**
-   */
-  struct Line {
-    Selection _selection;
-  };
 
 
   /**

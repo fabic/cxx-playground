@@ -3,6 +3,8 @@
  * @since 2016-06-17
  *
  * @link http://stackoverflow.com/a/11674810
+ *
+ * ! object (unwind dl pthread)
  */
 
 #ifndef FABIC_CXA_THROW_HACK

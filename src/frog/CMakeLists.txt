@@ -11,22 +11,20 @@ add_definitions()
 add_compile_options(
     -std=c++1z
     -stdlib=libc++
-    -fPIC
-    -Wall
-    -pedantic
-      -fcolor-diagnostics
-      -fdiagnostics-show-category=name
-      -fdiagnostics-show-template-tree
-      # So as to get better/meaninful stack traces in error messages :
-      -fno-omit-frame-pointer
-      # and disable tail call elimination
-      -fno-optimize-sibling-calls
-        -Wmissing-field-initializers
-        -Wcovered-switch-default
-        -Wnon-virtual-dtor
-        -Wdelete-non-virtual-dtor
-        -Woverloaded-virtual
+      -fPIC
+      -Wall
+      -pedantic
         -fcolor-diagnostics
+        -fdiagnostics-show-category=name
+        -fdiagnostics-show-template-tree
+          -fno-omit-frame-pointer
+          -fno-optimize-sibling-calls
+            -Wmissing-field-initializers
+            -Wcovered-switch-default
+            -Wnon-virtual-dtor
+            -Wdelete-non-virtual-dtor
+            -Woverloaded-virtual
+            -fcolor-diagnostics
   )
 
 

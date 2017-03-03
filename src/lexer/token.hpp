@@ -9,24 +9,61 @@
 #endif
 
 namespace dude {
+namespace lexer {
+
+  /**
+   */
+  struct Cursor {
+    /// There's always a first line, even if file is empty, true ?
+    int _line   = 1;
+    int _column = 0;
+  };
+
+
+  /**
+   */
+  struct Selection {
+    Cursor _start;
+    Cursor _end;
+  };
+
+  /**
+   */
+  struct Line {
+    Selection _selection;
+  };
 
   /**
    */
   struct Token {
     public:
-      enum Kind : int {
-        NIL, EOF, blank, number, string, identifier,
+      using size_t = std::string::size_type;
+
+      /** Token kinds.
+       */
+      enum Kind : unsigned short {
+        NIL, EOF, nullbyte, blank, number, string, identifier,
         symbol, null_pointer, keyword
       };
+
     public:
-      Selection _selection;
-      Kind      _kind;
+      Kind   _kind;
+      /// Start offset within the source text buffer.
+      size_t _offset;
+      /// Character count composing the lexem.
+      size_t _count;
+
     public:
-      Token() : _kind(Kind::NIL) {}
+      explicit Token(Kind k = Kind::NIL) : _offset(0), _count(0) {}
+
+      Token(Kind k, size_t offset, size_t count)
+        : _kind(k), _offset(offset), _count(count) {}
+
       bool is_nil() const { return _kind == Kind::NIL; }
       bool is_eof() const { return _kind == Kind::EOF; }
   };
 
+} // lexer ns.
 } // dude ns.
 
 #endif // _DUDE_LEXER_TOKEN_H
