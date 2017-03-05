@@ -48,6 +48,7 @@ namespace lexer {
 
     public:
       Kind   _kind;
+      Selection _selection; // fixme: remove.
       /// Start offset within the source text buffer.
       size_t _offset;
       /// Character count composing the lexem.

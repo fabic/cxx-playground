@@ -47,7 +47,7 @@ endif()
 ## # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 
-#add_subdirectory(clong)
+add_subdirectory(clong)
 #add_subdirectory(surface)
 add_subdirectory(xcbx)
 add_subdirectory(nstd)

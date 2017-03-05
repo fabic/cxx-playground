@@ -1,8 +1,9 @@
-#ifndef _DUDE_LEXER_H
-#define _DUDE_LEXER_H
+#ifndef _DUDE_LEXER_LEXER_H
+#define _DUDE_LEXER_LEXER_H
 
 #include <string>
 #include <istream>
+#include <vector>
 #include "lexer/token.hpp"
 
 namespace dude {
@@ -38,4 +39,4 @@ namespace lexer {
 } // lexer ns.
 } // dude ns.
 
-#endif // _DUDE_LEXER_H
+#endif // _DUDE_LEXER_LEXER_H

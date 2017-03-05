@@ -17,6 +17,15 @@ if (false AND CCACHE_PROGRAM)
 endif()
 
 
+## Add path for custom modules
+set(CMAKE_MODULE_PATH
+    ${CMAKE_MODULE_PATH}
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
+    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules"
+  )
+
+include(dude_please_dump_cmake_variables)
+
 ## Add new `` MinSizeDeb `` build type configuration
 #
 # https://cmake.org/Wiki/CMake_FAQ#How_can_I_specify_my_own_configurations_.28for_generators_that_allow_it.29_.3F
@@ -32,9 +41,9 @@ if(CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # There it is.
-set( CMAKE_C_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
+set( CMAKE_C_FLAGS_MINSIZEDEB "-Oz -g" CACHE STRING
   "Optimize for size, with debug informations (C compiler flags)." FORCE )
-set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
+set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Oz -g" CACHE STRING
     "Optimize for size, with debug informations (C++ compiler flags)." FORCE )
 
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEDEB
@@ -147,6 +156,9 @@ add_compile_options(
   #   ^ http://clang.llvm.org/docs/UsersManual.html#enabling-all-diagnostics
   )
 
+if (true)
+  add_compile_options( -march=native )
+endif()
 
 add_compile_options(
   -fcolor-diagnostics
@@ -158,7 +170,7 @@ add_compile_options(
   #     See Boost.DLL about symbol shadowing problem w/ Linux.
   # -fwhole-program-vtables
   #   ^ http://clang.llvm.org/docs/UsersManual.html#cmdoption-fwhole-program-vtables
-  -Wdocumentation
+  #-Wdocumentation
   #-fparse-all-comments
   #-Wno-documentation-unknown-command
   # ^ http://clang.llvm.org/docs/UsersManual.html#comment-parsing-options
@@ -361,16 +373,3 @@ add_subdirectory(lib)
 add_subdirectory(src)
 
 
-### DUMP ALL VARIABLES (DEBUG) ##############################################
-##
-# http://stackoverflow.com/questions/9298278/cmake-print-out-all-accessible-variables-in-a-script
-
-  if (false)
-    get_cmake_property(_variableNames VARIABLES)
-    foreach (_variableName ${_variableNames})
-     message(STATUS "${_variableName}=${${_variableName}}")
-    endforeach()
-  endif (false)
-
-##
-### ^ CMake defined variables debug dump. ###################################
