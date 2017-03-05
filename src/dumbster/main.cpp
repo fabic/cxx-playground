@@ -19,11 +19,11 @@ namespace dumbster {
   using dude::ex::yet_undefined_exception;
   using dude::fs::File;
 
+  using dude::lexer::Lexer;
+  using dude::lexer::Token;
+    ;
+
   namespace xfs = boost::filesystem;
-  // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-
-
-  // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /**
    */
@@ -45,7 +45,19 @@ namespace dumbster {
     Parser::parse()
     {
       logtrace << "Parser::parse(): begin.";
-      _file.read();
+
+      Lexer alex (_file);
+
+      while( true )
+      {
+        Token tok = alex.next_token();
+
+        if (tok.is_eof()) {
+          loginfo << "Parser reached EOF.";
+          break;
+        }
+      }
+
       logtrace << "Parser::parse(): end.";
     }
 

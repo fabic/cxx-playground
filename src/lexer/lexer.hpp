@@ -1,13 +1,17 @@
 #ifndef _DUDE_LEXER_LEXER_H
 #define _DUDE_LEXER_LEXER_H
 
-#include <string>
 #include <istream>
+#include <string>
 #include <vector>
+#include "util/logging.hpp"
 #include "lexer/token.hpp"
+#include "filesystem/file.hpp"
 
 namespace dude {
 namespace lexer {
+
+  using dude::fs::File;
 
   /**
    */
@@ -18,23 +22,62 @@ namespace lexer {
       /// Assuming lines of “80” characters = 8000 bytes.
       static constexpr int initial_buffer_size = 80 * initial_line_count_storage;
     protected:
-      std::istream&      _file;
-      std::string        _source_text;
-      std::vector<Line>  _lines;
-      Cursor             _cursor;
+      File&   _file;
+      File::string_t::const_iterator _it;
+      Cursor  _cursor;
     public:
       /**
        * * FIXME: we do strange things there setting the `istream` buffer
        *   to the `_source_text` buffer – see impl. notes :
        *   <http://en.cppreference.com/w/cpp/io/basic_filebuf/setbuf>
        */
-      explicit Lexer(std::istream& file);
+      explicit Lexer(File& file);
+
+      /**
+       * Check if we've reached the end of the file content buffer.
+       * Note that we do not consider a `\0` byte as a special marker
+       * for end-of-string.  */
+      inline bool have_reached_eof() const;
       inline char next_character();
       inline void put_back_character(char ch); // rewind() ?
+
       Token next_token();
-      static inline bool is_blank_character(char ch);
       Token try_lex_a_bunch_of_blank_space();
+
+      static inline bool is_blank_character(char ch);
   };
+
+
+  // ~ ~ INLINES DEFINITIONS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+  char
+    Lexer::next_character()
+    {
+      // todo: check EOF ?
+      auto ch = *_it++;
+      return ch;
+    }
+
+  bool
+    Lexer::have_reached_eof() const
+    {
+      return _it >= _file.content().cend();
+    }
+
+  bool
+    Lexer::is_blank_character(char ch)
+    {
+      return ch == ' ' || ch == '\t' || ch == '\n';
+    }
+
+  void
+    Lexer::put_back_character(char ch)
+    {
+      _it--;
+      if (*_it != ch)
+        logwarn << "Beware: the character you just put back doesn't match"
+                   " the one in the previous position.";
+    }
 
 } // lexer ns.
 } // dude ns.

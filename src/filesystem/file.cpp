@@ -11,11 +11,6 @@ namespace fs {
   // dtor
   File::~File()
   {
-    if (buffer_)
-      delete[] buffer_;
-
-    if (_fs.is_open())
-      _fs.close();
   }
 
 
@@ -23,6 +18,18 @@ namespace fs {
     File::size()
     {
       return xfs::file_size(_fileName);
+    }
+
+
+  File::string_ref
+    File::content()
+    {
+      // Read the whole file first if needed.
+      if (! hasContent()) {
+        read();
+      }
+
+      return _content;
     }
 
 
@@ -45,9 +52,11 @@ namespace fs {
       if (_fs.fail())
         throw dude::ex::yet_undefined_exception("Failed to open file.");
 
-      bufferAllocate(fileSize + 1);
+      _content.reserve(fileSize);
 
-      _fs.read(buffer_, fileSize);
+      _fs.read(
+          const_cast<char*>(_content.data()),
+          _content.capacity() );
 
       auto readCount = _fs.gcount();
       if (readCount != fileSize) {
@@ -63,18 +72,6 @@ namespace fs {
       }
 
       logtrace << "Finished reading whole content of file: " << _fileName;
-
-      return *this;
-    }
-
-
-  File::self
-    File::bufferAllocate(std::uintmax_t size)
-    {
-      if (buffer_ != nullptr)
-        delete[] buffer_;
-
-      buffer_ = new char_type [size];
 
       return *this;
     }

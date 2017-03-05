@@ -6,39 +6,9 @@ namespace dude {
 namespace lexer {
 
   // ctor
-  Lexer::Lexer(std::istream& file)
-    : _file(file),
-      _source_text()
+  Lexer::Lexer(File& file)
+    : _file(file), _it(file.content().cbegin())
   {
-    _source_text.reserve(initial_buffer_size);
-    _lines.reserve(initial_line_count_storage);
-  }
-
-
-  //
-  bool Lexer::is_blank_character(char ch) {
-    return ch == ' ' || ch == '\t' || ch == '\n';
-  }
-
-
-  //
-  char Lexer::next_character()
-  {
-    char ch = _file.get();
-
-    // is this ok ?
-    if (_file.eof()) {
-      return 0;
-    }
-
-    return ch;
-  }
-
-
-  //
-  void Lexer::put_back_character(char ch)
-  {
-    _file.putback( ch );
   }
 
 
@@ -47,13 +17,13 @@ namespace lexer {
   {
     char ch = next_character();
 
-    if (_file.eof()) {
+    if (have_reached_eof()) {
       return Token( Token::Kind::EOF );
     }
 
     // Branch upon "special" single characters".
     switch(ch) {
-      case 0x00:
+      case '\0':
         return Token( Token::Kind::nullbyte );
     }
 
@@ -62,6 +32,8 @@ namespace lexer {
       put_back_character(ch);
       return try_lex_a_bunch_of_blank_space();
     }
+
+    return Token();
   }
 
 
