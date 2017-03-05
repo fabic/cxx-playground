@@ -69,6 +69,7 @@ namespace lexer {
 
       bool is_nil() const { return _kind == Kind::NIL; }
       bool is_eof() const { return _kind == Kind::EOF; }
+      bool is_blank() const { return _kind == Kind::blank; }
       bool is_null_byte() const { return _kind == Kind::nullbyte; }
       bool is_whatever() const { return _kind == Kind::whatever; }
       bool is_comment() const { return _kind == Kind::comment; }

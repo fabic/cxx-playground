@@ -48,6 +48,8 @@ namespace lexer {
     // ERROR - Consume any character we do not know,
     //         and form a 'whatever' token with it.
     else {
+      const char * ptr_start = &*_it;
+      const char * ptr_end   = nullptr;
       do {
         switch(ch) {
           case '\0':
@@ -57,9 +59,10 @@ namespace lexer {
           default:
             ch = next_character();
         }
-      } while( true );
+      } while( !have_reached_eof());
+      ptr_end = &*_it;
       put_back_character(ch);
-      return Token(Token::Kind::whatever);
+      return Token(Token::Kind::whatever, ptr_start, ptr_end);
     }
 
     return Token();
@@ -69,13 +72,8 @@ namespace lexer {
   //
   Token Lexer::try_lex_a_bunch_of_blank_space()
   {
-    Token toki;
-
-    toki._selection._start = _cursor;
-
-    logtrace << "Lexing blanks from ["
-             << toki._selection._start._line   << ','
-             << toki._selection._start._column << ']';
+    const char * blank_start_ptr = &*_it;
+    const char * blank_end_ptr   = nullptr;
 
     do {
       char ch = next_character();
@@ -85,17 +83,9 @@ namespace lexer {
       }
     } while( true );
 
-    toki._selection._end = _cursor;
+    blank_end_ptr = &*_it;
 
-    // todo: check if we consumed anything at all.
-
-    toki._kind = Token::Kind::blank;
-
-    logtrace << "Lexed blanks end ["
-             << toki._selection._end._line   << ','
-             << toki._selection._end._column << ']';
-
-    return toki;
+    return Token(Token::Kind::blank, blank_start_ptr, blank_end_ptr);
   }
 
 

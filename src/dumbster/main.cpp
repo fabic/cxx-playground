@@ -63,8 +63,12 @@ namespace dumbster {
         else if (tok.is_null_byte()) {
           logwarn << "Parser got a \\0 byte, ignoring it.";
         }
+        else if (tok.is_blank()) {
+          logwarn << "Parser got blanks.";
+        }
         else if (tok.is_whatever()) {
-          logwarn << "Parser got a “whatever” token from the lexer.";
+          logwarn << "Parser got a “whatever” token from the lexer :"
+                  << tok.raw_text();
         }
         else if (tok.is_comment()) {
           loginfo << "Parser got a comment (!) : \n"
@@ -73,7 +77,6 @@ namespace dumbster {
         else {
           logwtf << "Got an unexpected token: "
                  << static_cast<short>(tok._kind);
-          break;
         }
       }
 
