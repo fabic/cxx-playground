@@ -77,6 +77,7 @@ namespace lexer {
       const char * cend() const { return start_ + _count; }
 
       std::string raw_text() const;
+      std::string text() const;
   };
 
 } // lexer ns.

@@ -72,7 +72,7 @@ namespace fs {
       }
 
       logtrace << "Finished reading whole content of file: " << _fileName;
-      logtrace << "Content :\n" << _content << "`- - - - - - - -";
+      // logtrace << "Content :\n" << _content << "`- - - - - - - -";
 
       return *this;
     }

@@ -68,7 +68,7 @@ namespace dumbster {
         }
         else if (tok.is_comment()) {
           loginfo << "Parser got a comment (!) : \n"
-                  << tok.raw_text() ;
+                  << tok.text() ;
         }
         else {
           logwtf << "Got an unexpected token: "
