@@ -52,10 +52,10 @@ namespace fs {
       if (_fs.fail())
         throw dude::ex::yet_undefined_exception("Failed to open file.");
 
-      _content.reserve(fileSize);
+      _content.resize(fileSize, '#');
 
       _fs.read(
-          const_cast<char*>(_content.data()),
+          const_cast<char*>(_content.data()), // Huh huh !
           _content.capacity() );
 
       auto readCount = _fs.gcount();
@@ -72,6 +72,7 @@ namespace fs {
       }
 
       logtrace << "Finished reading whole content of file: " << _fileName;
+      logtrace << "Content :\n" << _content << "`- - - - - - - -";
 
       return *this;
     }

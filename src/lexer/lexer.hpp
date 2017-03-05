@@ -23,7 +23,8 @@ namespace lexer {
       static constexpr int initial_buffer_size = 80 * initial_line_count_storage;
     protected:
       File&   _file;
-      File::string_t::const_iterator _it;
+      File::string_t::const_iterator _it; // use '_' suffix: it's a ptr
+      File::string_t::const_iterator _it_end;
       Cursor  _cursor;
     public:
       /**
@@ -43,6 +44,7 @@ namespace lexer {
 
       Token next_token();
       Token try_lex_a_bunch_of_blank_space();
+      Token try_lex_comment_block();
 
       static inline bool is_blank_character(char ch);
   };
@@ -61,18 +63,19 @@ namespace lexer {
   bool
     Lexer::have_reached_eof() const
     {
-      return _it >= _file.content().cend();
+      return _it >= _it_end;
     }
 
   bool
     Lexer::is_blank_character(char ch)
     {
-      return ch == ' ' || ch == '\t' || ch == '\n';
+      return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
     }
 
   void
     Lexer::put_back_character(char ch)
     {
+      // todo: check trying to put back character before the start of buffer.
       _it--;
       if (*_it != ch)
         logwarn << "Beware: the character you just put back doesn't match"

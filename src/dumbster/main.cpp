@@ -56,6 +56,25 @@ namespace dumbster {
           loginfo << "Parser reached EOF.";
           break;
         }
+        else if (tok.is_nil()) {
+          logwarn << "Parser got a NIL token";
+          break;
+        }
+        else if (tok.is_null_byte()) {
+          logwarn << "Parser got a \\0 byte, ignoring it.";
+        }
+        else if (tok.is_whatever()) {
+          logwarn << "Parser got a “whatever” token from the lexer.";
+        }
+        else if (tok.is_comment()) {
+          loginfo << "Parser got a comment (!) : \n"
+                  << tok.raw_text() ;
+        }
+        else {
+          logwtf << "Got an unexpected token: "
+                 << static_cast<short>(tok._kind);
+          break;
+        }
       }
 
       logtrace << "Parser::parse(): end.";

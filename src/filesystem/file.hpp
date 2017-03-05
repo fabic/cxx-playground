@@ -35,8 +35,8 @@ namespace fs {
       /// if needed.
       string_ref content();
       /// We assume that the file was read _if_ the string buffer
-      /// was allocated.
-      bool hasContent() const { return _content.capacity(); }
+      /// has characters (which is incorrect). [fixme]
+      bool hasContent() const { return _content.size() > 0; }
     protected:
   };
 

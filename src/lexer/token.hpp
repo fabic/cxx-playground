@@ -42,8 +42,9 @@ namespace lexer {
       /** Token kinds.
        */
       enum Kind : unsigned short {
-        NIL, EOF, nullbyte, blank, number, string, identifier,
-        symbol, null_pointer, keyword
+        NIL = 0, EOF, nullbyte, whatever, blank, number,
+        string, identifier, symbol, null_pointer, keyword,
+        slash, backslash, star, comment
       };
 
     public:
@@ -51,17 +52,31 @@ namespace lexer {
       Selection _selection; // fixme: remove.
       /// Start offset within the source text buffer.
       size_t _offset;
+
+      const char * start_ = nullptr;
+
       /// Character count composing the lexem.
       size_t _count;
-
     public:
-      explicit Token(Kind k = Kind::NIL) : _offset(0), _count(0) {}
+      explicit Token(Kind k = Kind::NIL)
+        : _kind(k), _offset(0), _count(0) {}
 
       Token(Kind k, size_t offset, size_t count)
         : _kind(k), _offset(offset), _count(count) {}
 
+      Token(Kind k, const char *start, const char *end)
+        : _kind(k), start_(start), _count(end-start) {}
+
       bool is_nil() const { return _kind == Kind::NIL; }
       bool is_eof() const { return _kind == Kind::EOF; }
+      bool is_null_byte() const { return _kind == Kind::nullbyte; }
+      bool is_whatever() const { return _kind == Kind::whatever; }
+      bool is_comment() const { return _kind == Kind::comment; }
+
+      const char * cbegin() const { return start_; }
+      const char * cend() const { return start_ + _count; }
+
+      std::string raw_text() const;
   };
 
 } // lexer ns.

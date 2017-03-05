@@ -20,6 +20,8 @@
 #  define logwarn   BOOST_LOG_TRIVIAL(warning)
 #  define logerror  BOOST_LOG_TRIVIAL(error)
 #  define logfatal  BOOST_LOG_TRIVIAL(fatal)
+// WTF !
+#  define logwtf    BOOST_LOG_TRIVIAL(info)
 #else
 #  define logtrace (std::cerr << "TRACE: ")
 #endif
