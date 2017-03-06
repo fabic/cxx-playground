@@ -6,6 +6,7 @@
 #include <fstream>
 #include <string>
 #include <memory>
+#include <list>
 
 # include "util/logging.hpp"
 # include "lexer/lexer.hpp"
@@ -28,19 +29,74 @@ namespace dumbster {
   class Parser {
     protected:
       File _file;
+      Lexer _alex;
+      std::list<Token> _tokens;
     public:
       explicit Parser(xfs::path fileName);
       void parse();
+      void dev_parse();
+      Token& next_token();
+      void begin_translation_unit();
+      void enter_parse_block();
   };
 
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
-  Parser::Parser(xfs::path fileName) : _file(fileName)
+  Parser::Parser(xfs::path fileName)
+    : _file(fileName),
+      _alex(_file)
   {
   }
 
+  Token&
+    Parser::next_token()
+    {
+      Token tok = _alex.next_token();
+      _tokens.push_back(std::move(tok));
+      return _tokens.back();
+    }
+
   void
     Parser::parse()
+    {
+      logtrace << "Parser::parse(): begin.";
+
+      while( true )
+      {
+        Token& tok = next_token();
+
+        if (tok.is_eof()) {
+          loginfo << "Parser reached EOF, bye...";
+          break;
+        }
+        else if (tok.is_nil()) {
+          logerror << "Parser got a NIL token, stopping now.";
+          break;
+        }
+        else if (tok.is_null_byte()) {
+          logwarn << "Parser got a \\0 byte, ignoring it.";
+        }
+        else if (tok.is_blank()) {
+          logtrace << "Parser ate some blanks -_-";
+        }
+        else if (tok.is_symbol('{')) {
+          enter_parse_block();
+        }
+        else {
+          logwtf << "Got an unexpected token, token kind : "
+                 << static_cast<short>(tok._kind);
+        }
+      }
+      logtrace << "Parser::parse(): end.";
+    }
+
+  void
+    Parser::enter_parse_block()
+    {
+    }
+
+  void
+    Parser::dev_parse()
     {
       logtrace << "Parser::parse(): begin.";
 
@@ -48,7 +104,8 @@ namespace dumbster {
 
       while( true )
       {
-        Token tok = alex.next_token();
+        //Token tok = alex.next_token();
+        Token& tok = next_token();
 
         if (tok.is_eof()) {
           loginfo << "Parser reached EOF.";
@@ -116,6 +173,7 @@ int main(int argc, const char *argv[])
     auto fileName = argv[n];
     logdebug << "~ ~ ~" << " FILE `" << fileName << "` ~ ~ ~";
     Parser parser (fileName);
+    //parser.dev_parse();
     parser.parse();
   }
 

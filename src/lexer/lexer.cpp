@@ -119,17 +119,23 @@ namespace lexer {
       const char * blank_start_ptr = &*_it;
       const char * blank_end_ptr   = nullptr;
 
+      bool has_eol_chr = false;
+
       do {
         char ch = next_character();
         if (! is_blank_character(ch)) {
           put_back_character(ch);
           break;
         }
+        else if (is_eol(ch)) {
+          has_eol_chr = true;
+          break;
+        }
       } while( true );
 
       blank_end_ptr = &*_it;
 
-      return Token(Token::Kind::blank, blank_start_ptr, blank_end_ptr);
+      return Token(Token::Kind::blank_w_eol, blank_start_ptr, blank_end_ptr);
     }
 
 

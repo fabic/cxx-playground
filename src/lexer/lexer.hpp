@@ -16,11 +16,6 @@ namespace lexer {
   /**
    */
   class Lexer {
-    public:
-      /// Have an initial buffer for about 2 times 50 lines.
-      static constexpr int initial_line_count_storage = 2*100;
-      /// Assuming lines of “80” characters = 8000 bytes.
-      static constexpr int initial_buffer_size = 80 * initial_line_count_storage;
     protected:
       File&   _file;
       File::string_t::const_iterator _it; // use '_' suffix: it's a ptr
@@ -51,6 +46,7 @@ namespace lexer {
       Token try_lex_double_slashed_consecutive_comment_lines();
 
       static inline bool is_blank_character(char ch);
+      static inline bool is_eol(char ch);
       static bool is_symbol_character(char ch);
       static inline bool is_ascii_letter(char ch);
       static inline bool is_digit_character(char ch);
@@ -78,6 +74,12 @@ namespace lexer {
     Lexer::is_blank_character(char ch)
     {
       return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
+    }
+
+  bool // static btw.
+    Lexer::is_eol(char ch)
+    {
+      return ch == '\n';
     }
 
   void

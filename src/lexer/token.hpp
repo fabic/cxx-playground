@@ -45,7 +45,7 @@ namespace lexer {
       /** Token kinds.
        */
       enum Kind : unsigned short {
-        NIL = 0, EOF, nullbyte, whatever, blank, number,
+        NIL = 0, EOF, nullbyte, whatever, blank, blank_w_eol, number,
         string, identifier, symbol, null_pointer, keyword,
         slash_symbol, backslash_symbol, star_symbol, comment
       };
@@ -75,7 +75,14 @@ namespace lexer {
 
       bool is_nil() const noexcept { return _kind == Kind::NIL; }
       bool is_eof() const noexcept { return _kind == Kind::EOF; }
-      bool is_blank() const noexcept { return _kind == Kind::blank; }
+
+      bool is_blank() const noexcept {
+        return _kind == Kind::blank || _kind == Kind::blank_w_eol ;
+      }
+
+      bool is_blank_with_eol() const { return _kind == Kind::blank_w_eol; }
+      bool is_eol() const { return is_blank_with_eol(); }
+
       bool is_null_byte() const noexcept { return _kind == Kind::nullbyte; }
       bool is_whatever() const noexcept { return _kind == Kind::whatever; }
       bool is_comment() const noexcept { return _kind == Kind::comment; }
