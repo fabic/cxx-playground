@@ -72,6 +72,10 @@ namespace dumbster {
           loginfo << "Parser got an identifier : "
                   << tok.text();
         }
+        else if (tok.is_number()) {
+          loginfo << "Parser got a number : "
+                  << tok.text();
+        }
         else if (tok.is_string()) {
           loginfo << "Parser got a string : "
                   << tok.text();
@@ -82,7 +86,8 @@ namespace dumbster {
         }
         else if (tok.is_comment()) {
           loginfo << "Parser got a comment (!) : \n"
-                  << tok.text() ;
+                  //<< tok.text() ;
+                  << tok.raw_text() ;
         }
         else {
           logwtf << "Got an unexpected token: "

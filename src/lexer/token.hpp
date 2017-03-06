@@ -81,6 +81,7 @@ namespace lexer {
       bool is_comment() const noexcept { return _kind == Kind::comment; }
       bool is_symbol() const noexcept { return _kind == Kind::symbol; }
       bool is_identifier() const noexcept { return _kind == Kind::identifier; }
+      bool is_number() const noexcept { return _kind == Kind::number; }
       bool is_string() const noexcept { return _kind == Kind::string; }
 
       /**

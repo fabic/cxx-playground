@@ -46,7 +46,9 @@ namespace lexer {
       Token try_lex_a_bunch_of_blank_space();
       Token try_lex_comment_block();
       Token try_lex_identifier();
+      Token try_lex_numeric_literal();
       Token try_lex_double_quoted_string();
+      Token try_lex_double_slashed_consecutive_comment_lines();
 
       static inline bool is_blank_character(char ch);
       static bool is_symbol_character(char ch);

@@ -59,7 +59,13 @@ namespace lexer {
           put_back_character(nch);
           put_back_character( ch);
           return try_lex_comment_block();
-        } else {
+        }
+        else if (nch == '/') {
+          put_back_character(nch);
+          put_back_character( ch);
+          return try_lex_double_slashed_consecutive_comment_lines();
+        }
+        else {
           put_back_character(nch);
           return Token(Token::Kind::symbol, &*_it, 1);
         }
@@ -77,6 +83,11 @@ namespace lexer {
       else if (may_character_start_identifier(ch)) {
         put_back_character(ch);
         return try_lex_identifier();
+      }
+      // Numbers
+      else if (is_digit_character(ch)) {
+        put_back_character(ch);
+        return try_lex_numeric_literal();
       }
       // ERROR - Consume any character we do not know,
       //         and form a 'whatever' token with it.
@@ -159,6 +170,34 @@ namespace lexer {
       return Token(Token::Kind::comment, lexem_start_ptr, lexem_end_ptr);
     }
 
+  Token
+    Lexer::try_lex_double_slashed_consecutive_comment_lines()
+    {
+      const char * lexem_start_ptr = &_it[0];
+      const char * lexem_end_ptr   = nullptr;
+
+      char ch = '\0', nch = '\0';
+
+      while( ! have_reached_eof() )
+      {
+         ch = next_character();
+        nch = next_character();
+
+        if (ch != '/' && nch != '/') {
+          put_back_character(nch);
+          put_back_character( ch);
+          break;
+        }
+
+        while(!have_reached_eof() && (ch = next_character() != '\n')) { }
+        // if (have_reached_eof()) { break; } // => end-of-file (hence we're not
+                                           //    putting back the character.
+      }
+
+      lexem_end_ptr = &_it[0];
+
+      return Token(Token::Kind::comment, lexem_start_ptr, lexem_end_ptr);
+    }
 
   Token
     Lexer::try_lex_identifier()
@@ -179,6 +218,27 @@ namespace lexer {
       lexem_end_ptr = &_it[0];
 
       return Token(Token::Kind::identifier, lexem_start_ptr, lexem_end_ptr);
+    }
+
+  Token
+    Lexer::try_lex_numeric_literal()
+    {
+      const char * lexem_start_ptr = &_it[0];
+      const char * lexem_end_ptr   = nullptr;
+
+      while( ! have_reached_eof() )
+      {
+        char ch = next_character();
+        if (!is_digit_character(ch)
+            && true) { // todo: continue impl.
+          put_back_character(ch);
+          break;
+        }
+      }
+
+      lexem_end_ptr = &_it[0];
+
+      return Token(Token::Kind::number, lexem_start_ptr, lexem_end_ptr);
     }
 
   Token

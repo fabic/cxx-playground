@@ -136,3 +136,11 @@ int main(int argc, const char *argv[])
 
   return 0;
 }
+
+/// Multi-line comment
+/// - this is the second line of it
+//  - and here the third with a missing 3rd slash
+/// - the fourth line
+////// - the fifth with many leading slashes
+// //  - the sixth with a space between two '//'.
+/// - the last line.
