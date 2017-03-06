@@ -11,6 +11,7 @@
 # include "util/logging.hpp"
 # include "lexer/lexer.hpp"
 # include "filesystem/file.hpp"
+# include "dumbster/fragments.hpp"
 
 // psr abbr. "parser".
 namespace dude {
@@ -31,22 +32,25 @@ namespace dumbster {
       File _file;
       Lexer _alex;
       std::list<Token> _tokens;
+      Fragment *fragments_;
     public:
       explicit Parser(xfs::path fileName);
       void parse();
       void dev_parse();
       Token& next_token();
-      void begin_translation_unit();
-      void enter_parse_block();
+      void nt_whatever(Fragment *previous);
+      void nt_block();
+      void debug_print_ast();
   };
 
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
   Parser::Parser(xfs::path fileName)
     : _file(fileName),
-      _alex(_file)
-  {
-  }
+      _alex(_file),
+      fragments_(nullptr)
+  { }
+
 
   Token&
     Parser::next_token()
@@ -56,10 +60,17 @@ namespace dumbster {
       return _tokens.back();
     }
 
+
   void
     Parser::parse()
     {
       logtrace << "Parser::parse(): begin.";
+
+      assert(fragments_ == nullptr);
+
+      fragments_ = new Fragment();
+
+      nt_whatever(fragments_);
 
       while( true )
       {
@@ -80,7 +91,7 @@ namespace dumbster {
           logtrace << "Parser ate some blanks -_-";
         }
         else if (tok.is_symbol('{')) {
-          enter_parse_block();
+          //enter_parse_block();
         }
         else {
           logwtf << "Got an unexpected token, token kind : "
@@ -90,10 +101,61 @@ namespace dumbster {
       logtrace << "Parser::parse(): end.";
     }
 
+
   void
-    Parser::enter_parse_block()
+    Parser::nt_whatever(Fragment *previous)
     {
+      logtrace << "nt_whatever: start.";
+
+      while(true)
+      {
+        Fragment *current = new Fragment();
+
+        current->set_previous_fragment(previous);
+        previous->set_next_fragment(current);
+
+        while (true)
+        {
+          Token& tok = next_token();
+
+          current->push_token(&tok);
+
+          if (tok.is_eof()) {
+            loginfo << "nt_whatever(): reached EOF, bye...";
+            goto my_first_goto_in_a_while;
+          }
+          else if (tok.is_symbol(';')) {
+            current->set_kind(Fragment::Kind::statement);
+            previous = current;
+            logtrace << "nt_whatever: got one fragment !";
+            break;
+          }
+        }
+      }
+
+my_first_goto_in_a_while:
+      logtrace << "nt_whatever: finished.";
     }
+
+
+  void
+    Parser::debug_print_ast()
+    {
+      loginfo << "Parser::debug_print_ast(): START.";
+
+      Fragment *current = fragments_;
+
+      do {
+        loginfo << "Fragment kind: " << (int)current->kind();
+        auto tokens = current->tokens();
+        for(Token *tok : tokens) {
+          loginfo << "» Token: " << tok->text();
+        }
+      } while( (current = current->next()) != nullptr );
+
+      loginfo << "Parser::debug_print_ast(): END.";
+    }
+
 
   void
     Parser::dev_parse()
@@ -175,6 +237,7 @@ int main(int argc, const char *argv[])
     Parser parser (fileName);
     //parser.dev_parse();
     parser.parse();
+    parser.debug_print_ast();
   }
 
   logdebug << "Good bye...";
