@@ -7,7 +7,6 @@
 #include <string>
 #include <memory>
 
-
 # include "util/logging.hpp"
 # include "lexer/lexer.hpp"
 # include "filesystem/file.hpp"
@@ -21,7 +20,6 @@ namespace dumbster {
 
   using dude::lexer::Lexer;
   using dude::lexer::Token;
-    ;
 
   namespace xfs = boost::filesystem;
 
