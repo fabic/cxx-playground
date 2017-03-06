@@ -13,6 +13,20 @@ namespace lexer {
   {
   }
 
+  bool // static btw.
+    Lexer::is_symbol_character(char ch)
+    {
+      switch(ch) {
+        case '/': case '*': case '#': case '@': case '^': case '%': case '&':
+        case '|': case '.': case ':': case '-': case '+': case '>': case '<':
+        case '=': case '(': case ')': case '~': case '!': case '"': case '\'':
+        case '`': case '[': case ']': case '{': case '}': case '$': case ';':
+        case ',': case '\\':
+          return true;
+        default:
+          return false;
+      }
+    }
 
   Token
     Lexer::next_token()
@@ -30,20 +44,39 @@ namespace lexer {
       }
 
       // Other branch conditions :
+
+      // Consume blank space.
       if (is_blank_character(ch)) {
         put_back_character(ch);
         return try_lex_a_bunch_of_blank_space();
       }
+      // Single slash '/' symbol, comment block `/* ... */`,
+      // multiple consecutive lines of `// ...` comments.
       else if (ch == '/') {
         char nch = next_character();
+        // ¿ Start of a comment block ?
         if (nch == '*') {
           put_back_character(nch);
           put_back_character( ch);
           return try_lex_comment_block();
         } else {
           put_back_character(nch);
-          return Token(Token::Kind::slash);
+          return Token(Token::Kind::symbol, &*_it, 1);
         }
+      }
+      // Double-quoted "..." string :
+      else if (ch == '"') {
+        put_back_character(ch);
+        return try_lex_double_quoted_string();
+      }
+      // Symbols
+      else if (is_symbol_character(ch)) {
+        return Token(Token::Kind::symbol, &_it[-1], 1);
+      }
+      // Identifier
+      else if (may_character_start_identifier(ch)) {
+        put_back_character(ch);
+        return try_lex_identifier();
       }
       // ERROR - Consume any character we do not know,
       //         and form a 'whatever' token with it.
@@ -127,6 +160,81 @@ namespace lexer {
     }
 
 
+  Token
+    Lexer::try_lex_identifier()
+    {
+      const char * lexem_start_ptr = &_it[0];
+      const char * lexem_end_ptr   = nullptr;
+
+      while( ! have_reached_eof() )
+      {
+        char ch = next_character();
+        if (!is_digit_character(ch)
+            && !may_character_start_identifier(ch)) {
+          put_back_character(ch);
+          break;
+        }
+      }
+
+      lexem_end_ptr = &_it[0];
+
+      return Token(Token::Kind::identifier, lexem_start_ptr, lexem_end_ptr);
+    }
+
+  Token
+    Lexer::try_lex_double_quoted_string()
+    {
+      const char * lexem_start_ptr = &_it[0];
+      const char * lexem_end_ptr   = nullptr;
+
+      // Consume start of string character '"' :
+      char ch = next_character();
+      if (ch != '"') {
+        throw dude::ex::yet_undefined_exception(
+            "Trying to lex a double-quoted string, "
+            "but first character is not '\"'" );
+      }
+
+      char nch = '\0';
+
+      while( ! have_reached_eof() )
+      {
+        ch = next_character();
+        // Skip escaped double-quote \" :
+        if (ch == '\\' && (nch = next_character()) == '"' )
+          continue;
+        else if (ch == '"')
+          break;
+      }
+
+      lexem_end_ptr = &_it[0];
+
+      return Token(Token::Kind::string, lexem_start_ptr, lexem_end_ptr);
+    }
+
+  bool // static btw.
+    Lexer::may_character_start_identifier(char ch)
+    {
+      // See Clang's `Lexer::LexTokenInternal(...)`
+      //     [src/clong/_clang/Lex/Lexer.cpp]
+      switch(ch) {
+        // C99 6.4.2: Identifiers.
+        case 'A': case 'B': case 'C': case 'D': case 'E': case 'F': case 'G':
+        case 'H': case 'I': case 'J': case 'K': case 'L': case 'M': case 'N':
+        case 'O': case 'P': case 'Q': case 'R': case 'S': case 'T': case 'U':
+        case 'V': case 'W': case 'X': case 'Y': case 'Z':
+        case 'a': case 'b': case 'c': case 'd': case 'e': case 'f': case 'g':
+        case 'h': case 'i': case 'j': case 'k': case 'l': case 'm': case 'n':
+        case 'o': case 'p': case 'q': case 'r': case 's': case 't': case 'u':
+        case 'v': case 'w': case 'x': case 'y': case 'z':
+        case '_':
+          return true;
+        default:
+          return false;
+      }
+    }
+
+
   std::string
     Token::raw_text() const
     {
@@ -193,7 +301,16 @@ namespace lexer {
         return retv;
       }
 
-      return std::string(cbegin(), cend());
+      return raw_text();
+    }
+
+
+  char
+    Token::first_character() const
+    {
+      if (start_ == nullptr || _count == 0)
+        throw dude::ex::yet_undefined_exception("No pointer or character count is 0.");
+      return start_[0];
     }
 
 } // lexer ns.

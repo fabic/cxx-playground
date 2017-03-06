@@ -62,7 +62,19 @@ namespace dumbster {
           logwarn << "Parser got a \\0 byte, ignoring it.";
         }
         else if (tok.is_blank()) {
-          logwarn << "Parser got blanks.";
+          loginfo << "Parser got blanks.";
+        }
+        else if (tok.is_symbol()) {
+          loginfo << "Parser got a symbol :"
+                  << tok.first_character();
+        }
+        else if (tok.is_identifier()) {
+          loginfo << "Parser got an identifier : "
+                  << tok.text();
+        }
+        else if (tok.is_string()) {
+          loginfo << "Parser got a string : "
+                  << tok.text();
         }
         else if (tok.is_whatever()) {
           logwarn << "Parser got a “whatever” token from the lexer :"

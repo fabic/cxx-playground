@@ -45,8 +45,14 @@ namespace lexer {
       Token next_token();
       Token try_lex_a_bunch_of_blank_space();
       Token try_lex_comment_block();
+      Token try_lex_identifier();
+      Token try_lex_double_quoted_string();
 
       static inline bool is_blank_character(char ch);
+      static bool is_symbol_character(char ch);
+      static inline bool is_ascii_letter(char ch);
+      static inline bool is_digit_character(char ch);
+      static bool may_character_start_identifier(char ch);
   };
 
 
@@ -66,7 +72,7 @@ namespace lexer {
       return _it >= _it_end;
     }
 
-  bool
+  bool // static btw.
     Lexer::is_blank_character(char ch)
     {
       return ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r';
@@ -80,6 +86,19 @@ namespace lexer {
       if (*_it != ch)
         logwarn << "Beware: the character you just put back doesn't match"
                    " the one in the previous position.";
+    }
+
+  bool // static btw.
+    Lexer::is_ascii_letter(char ch)
+    {
+      return (ch >= 'A' && ch <= 'Z')
+          || (ch >= 'a' && ch <= 'z');
+    }
+
+  bool
+    Lexer::is_digit_character(char ch)
+    {
+      return ch >= '0' && ch <= '9';
     }
 
 } // lexer ns.
