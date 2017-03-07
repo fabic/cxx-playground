@@ -28,7 +28,6 @@
 
 // #include "hack_cxa_throw_exception.cpp"
 
-TL_NS_BEGIN
     namespace plays {
 
         namespace po   = boost::program_options;
@@ -101,7 +100,6 @@ TL_NS_BEGIN
         }
 
     } // plays ns.
-TL_NS_END
 
 /**
  * Invoqued by main() within a try-catch
@@ -110,8 +108,8 @@ TL_NS_END
 int main_bis(int argc, const char *argv[])
 {
     try {
-        auto args = TLNS::plays::process_program_arguments(argc, argv);
-        auto exit_status = TLNS::plays::main(args);
+        auto args = plays::process_program_arguments(argc, argv);
+        auto exit_status = plays::main(args);
         return exit_status;
     }
     catch (std::exception& e) {

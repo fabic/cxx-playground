@@ -5,8 +5,6 @@
 #ifndef MIXED_DATATYPE_OBJECT_HPP
 #define MIXED_DATATYPE_OBJECT_HPP
 
-TL_NS_BEGIN
-
   /** Base _dependency container manageable_ object class.
    *
    * for type checking `dynamic_cast<object>(...)` ability
@@ -16,7 +14,5 @@ TL_NS_BEGIN
   public:
       virtual ~object() {}
   };
-
-TL_NS_END
 
 #endif //MIXED_DATATYPE_OBJECT_HPP

@@ -92,7 +92,7 @@ namespace frog {
   class Frog {
     public:
       using self = Frog& ;
-      constexpr size_t file_he
+      constexpr size_t file_he;
     protected:
     public:
       explicit Frog();

@@ -4,11 +4,8 @@
 # include "di/container.hpp"
 # include "dic-modules/asio/IoService.hpp"
 
-TL_NS_BEGIN
   namespace module {
     namespace asio {
-
-      namespace di = TLNS::di;
 
       /**
        * todo: FABIC_SYMBOL_EXPORT ?
@@ -38,7 +35,7 @@ TL_NS_BEGIN
          * from `symfony/module/asio/module-boost-asio.cpp` :
          *
          *     BOOST_DLL_ALIAS(
-         *         TLNS::module::asio::BoostAsioService::__di_register_services,
+         *         module::asio::BoostAsioService::__di_register_services,
          *         di_register_services
          *     )
          */
@@ -49,4 +46,3 @@ TL_NS_BEGIN
 
     }
   }
-TL_NS_END

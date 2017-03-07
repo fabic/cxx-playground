@@ -40,7 +40,7 @@ namespace dumbster {
       Token& next_token();
       void nt_whatever(Fragment *previous);
       void nt_block();
-      void debug_print_ast();
+      void debug_print_ast(std::ostream& os);
   };
 
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
@@ -124,6 +124,9 @@ namespace dumbster {
             loginfo << "nt_whatever(): reached EOF, bye...";
             goto my_first_goto_in_a_while;
           }
+          else if (tok.is_blank()) {
+            loginfo << "nt_whatever(): skipping blank(s) token.";
+          }
           else if (tok.is_symbol(';')) {
             current->set_kind(Fragment::Kind::statement);
             previous = current;
@@ -139,17 +142,18 @@ my_first_goto_in_a_while:
 
 
   void
-    Parser::debug_print_ast()
+    Parser::debug_print_ast(std::ostream& os)
     {
       loginfo << "Parser::debug_print_ast(): START.";
 
       Fragment *current = fragments_;
 
       do {
-        loginfo << "Fragment kind: " << (int)current->kind();
+        os << "FRAGMENT KIND: " << (int)current->kind();
         auto tokens = current->tokens();
         for(Token *tok : tokens) {
-          loginfo << "» Token: " << tok->text();
+          //loginfo << "» Token: " << tok->text();
+          os << tok->text();
         }
       } while( (current = current->next()) != nullptr );
 
@@ -237,7 +241,7 @@ int main(int argc, const char *argv[])
     Parser parser (fileName);
     //parser.dev_parse();
     parser.parse();
-    parser.debug_print_ast();
+    parser.debug_print_ast(std::cout);
   }
 
   logdebug << "Good bye...";

@@ -5,10 +5,9 @@
 #include <memory>
 #include <forward_list>
 #include <string>
-//#include <ostream>
+#include <iostream>
 //#include <typeinfo>
 
-TL_NS_BEGIN
     namespace types {
 
         using std::string;
@@ -48,6 +47,5 @@ TL_NS_BEGIN
         };
 
     } // types ns.
-TL_NS_END
 
 #endif // FABIC_MIXED_DATATYPE

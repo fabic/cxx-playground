@@ -1,7 +1,6 @@
 #ifndef FABIC_TK_MATHS_2D_HPP
 #define FABIC_TK_MATHS_2D_HPP
 
-TL_NS_BEGIN
 namespace tk {
 
   namespace unit {
@@ -145,6 +144,5 @@ typedef dimensions_t< unit::pixels<> > pixels_position_t;
   };
 
 } // tk ns
-TL_NS_END
 
 #endif //FABIC_TK_MATHS_2D_HPP

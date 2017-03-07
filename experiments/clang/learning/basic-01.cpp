@@ -85,7 +85,7 @@ static cl::opt<bool>
 
 namespace {
 
-  using namespace TLNS::clong;
+  using namespace clong;
 
   class HelloWorldActionFactory {
   public:

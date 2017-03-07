@@ -41,9 +41,9 @@ if(CMAKE_CONFIGURATION_TYPES)
 endif()
 
 # There it is.
-set( CMAKE_C_FLAGS_MINSIZEDEB "-Oz -g" CACHE STRING
+set( CMAKE_C_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
   "Optimize for size, with debug informations (C compiler flags)." FORCE )
-set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Oz -g" CACHE STRING
+set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
     "Optimize for size, with debug informations (C++ compiler flags)." FORCE )
 
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEDEB
@@ -130,12 +130,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 ### # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 
 # Top-level namespace #define-s
-# FIXME: drop this.
-add_definitions(
-  -DTL_NS_BEGIN=
-  -DTL_NS_END=
-  -DTLNS=
-  )
+add_definitions()
 
 
 # Replacing these `set ...` by add_compile_options(...) :

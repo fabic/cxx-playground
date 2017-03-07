@@ -9,7 +9,6 @@
 # include "di/container.hpp"
 # include "http/handler_functor.hpp"
 
-TL_NS_BEGIN
   namespace module {
     namespace http {
 
@@ -51,7 +50,7 @@ TL_NS_BEGIN
          * from `symfony/module/http/module-http-server.cpp` :
          *
          *     BOOST_DLL_ALIAS(
-         *         TLNS::module::http::http_server::__di_register_services,
+         *         module::http::http_server::__di_register_services,
          *         di_register_services
          *     )
          */
@@ -80,4 +79,3 @@ TL_NS_BEGIN
 
     }
   }
-TL_NS_END

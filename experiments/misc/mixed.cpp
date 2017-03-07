@@ -24,7 +24,7 @@ using std::endl;
  */
 void test_fabic_mixed_datatype()
 {
-    using TLNS::types::mixed;
+    using types::mixed;
 
     cout << "`mixed` typeinfo: " << typeid(mixed).name() << endl;
     std::cout << "sizeof(mixed) : " << sizeof(mixed) << endl;

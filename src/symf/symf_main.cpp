@@ -10,7 +10,6 @@
 # include "di/dll_service_provider.hpp"
 # include "dic-modules/asio/IoService.hpp"
 
-TL_NS_BEGIN
   namespace symfony {
 
     namespace po   = boost::program_options;
@@ -28,8 +27,6 @@ TL_NS_BEGIN
       loginfo << "  » address : " << args["address"].as<std::string>();
       loginfo << "  » port : " << args["port"].as<int>();
       loginfo << "";
-
-      namespace di = TLNS::di;
 
       auto cnt = di::service_container::new_container_instance();
 
@@ -177,16 +174,15 @@ TL_NS_BEGIN
     }
 
   } // symfony ns.
-TL_NS_END
 
 
 /**
  * MAIN (the libc) !
  */
 int main(int argc, const char *argv[]) {
-  auto args = TLNS::symfony::process_program_arguments(argc, argv);
+  auto args = symfony::process_program_arguments(argc, argv);
 
-  auto exit_status = TLNS::symfony::main(args);
+  auto exit_status = symfony::main(args);
 
   return exit_status;
 }

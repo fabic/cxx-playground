@@ -1,11 +1,8 @@
 
 # include "module-boost-asio.hpp"
 
-TL_NS_BEGIN
   namespace module {
     namespace asio {
-
-    namespace di = TLNS::di;
 
       // Ctor.
       BoostAsioService::BoostAsioService()
@@ -70,11 +67,10 @@ TL_NS_BEGIN
 
     }
   }
-TL_NS_END
 
 
 BOOST_DLL_ALIAS_SECTIONED(
-    TLNS::module::asio::BoostAsioService::__di_register_services,
+    module::asio::BoostAsioService::__di_register_services,
     module_asio_di_register_services,
     Anna
   )

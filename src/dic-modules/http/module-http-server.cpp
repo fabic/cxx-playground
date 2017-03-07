@@ -1,9 +1,8 @@
 
 # include "module-http-server.hpp"
 
-namespace ioc = TLNS::di;
+namespace ioc = di;
 
-TL_NS_BEGIN
   namespace module {
     namespace http {
 
@@ -97,18 +96,17 @@ TL_NS_BEGIN
 
     }
   }
-TL_NS_END
 
 
 // http://www.boost.org/doc/libs/1_61_0/doc/html/boost_dll/tutorial.html
 // BOOST_DLL_ALIAS(
-//     TLNS::module::http::http_server::__di_register_services,
+//     module::http::http_server::__di_register_services,
 //     di_register_services
 // )
 
 
 BOOST_DLL_ALIAS_SECTIONED(
-    TLNS::module::http::http_server::__di_register_services,
+    module::http::http_server::__di_register_services,
     howdy,
     Anna
   )

@@ -1,7 +1,6 @@
 
 # include "dic-modules/asio/IoService.hpp"
 
-TL_NS_BEGIN
   namespace module {
     namespace asio {
 
@@ -14,4 +13,3 @@ TL_NS_BEGIN
 
     }
   }
-TL_NS_END
