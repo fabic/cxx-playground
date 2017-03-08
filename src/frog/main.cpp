@@ -76,63 +76,36 @@
 
 #include <iostream>
 #include <fstream>
-#include <experimental/filesystem>
-#include <string>
 #include <memory>
 
-# include "util/exceptions.hpp"
-# include "util/logging.hpp"
-# include "util/would_you_please.hpp"
-
-// psr abbr. "parser".
-namespace frog {
-
-  using dude::ex::yet_undefined_exception;
-
-  class Frog {
-    public:
-      using self = Frog& ;
-      constexpr size_t file_he;
-    protected:
-    public:
-      explicit Frog();
-      self parseSourceFile(std::string filename);
-  };
-
-  // ctor
-  Frog::Frog() {}
-
-  //
-  Frog::self
-    Frog::parseSourceFile(std::string filename)
-    {
-      would_you_please::read_file_contents(fileName);
-      return *this;
-    }
-
-} // frog ns.
-
+# include "frog/frog.hpp"
 
 /**
  * ! executable: dumbster
  */
 int main(int argc, const char *argv[])
 {
-  using namespace std;
-  using namespace frog;
+  logtrace << "Hey, I'm " << argv[0];
 
-  logdebug << "Hey, I'm " << argv[0];
+  namespace fs = boost::filesystem;
+
+  using namespace dude::frog;
 
   Frog frog;
 
   for(int n = 1; n < argc; n++)
   {
-    auto fileName = argv[n];
-    logdebug << "~ ~ ~" << " FILE `" << fileName << "` ~ ~ ~" << endl;
-    frog.parseSourceFile( fileName );
+    auto path = fs::path( argv[n] );
+    if (fs::is_directory(path)) {
+      logdebug << "Directory: " << path;
+      frog.collect_sources(path);
+    }
+    else if (fs::is_regular_file(path)) {
+      logdebug << "File: " << path << " SKIPPING (TODO impl)";
+    }
   }
 
-  logdebug << "Good bye...";
+  logtrace << "Good bye...";
 
   return 0;
 }

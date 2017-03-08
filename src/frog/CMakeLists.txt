@@ -6,28 +6,6 @@ project(Frog)
 set (Frog_VERSION_MAJOR 0)
 set (Frog_VERSION_MINOR 1)
 
-add_definitions()
-
-add_compile_options(
-    -std=c++1z
-    -stdlib=libc++
-      -fPIC
-      -Wall
-      -pedantic
-        -fcolor-diagnostics
-        -fdiagnostics-show-category=name
-        -fdiagnostics-show-template-tree
-          -fno-omit-frame-pointer
-          -fno-optimize-sibling-calls
-            -Wmissing-field-initializers
-            -Wcovered-switch-default
-            -Wnon-virtual-dtor
-            -Wdelete-non-virtual-dtor
-            -Woverloaded-virtual
-            -fcolor-diagnostics
-  )
-
-
 # ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~
 # DEPENDENCIES
 # ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~   ~
@@ -47,6 +25,7 @@ find_package (
 
 add_executable( frog
     main.cpp
+    frog.cpp
     ../hacks/hack_cxa_throw_exception.cpp
   )
 
