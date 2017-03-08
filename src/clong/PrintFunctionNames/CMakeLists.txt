@@ -1,21 +1,20 @@
-# If we don't need RTTI or EH, there's no reason to export anything
-# from the plugin.
-if( NOT MSVC ) # MSVC mangles symbols differently, and
-                # PrintFunctionNames.export contains C++ symbols.
-  if( NOT LLVM_REQUIRES_RTTI )
-    if( NOT LLVM_REQUIRES_EH )
-      set(LLVM_EXPORTED_SYMBOL_FILE ${CMAKE_CURRENT_SOURCE_DIR}/PrintFunctionNames.exports)
-    endif()
-  endif()
-endif()
 
-add_llvm_loadable_module(PrintFunctionNames PrintFunctionNames.cpp PLUGIN_TOOL clang)
+message(STATUS "Hello! said “Clang PrintFunctionNames example (as-is)”.")
 
-if(LLVM_ENABLE_PLUGINS AND (WIN32 OR CYGWIN))
-  target_link_libraries(PrintFunctionNames PRIVATE
-    clangAST
-    clangBasic
-    clangFrontend
-    LLVMSupport
-    )
-endif()
+# add_llvm_loadable_module(PrintFunctionNames PrintFunctionNames.cpp PLUGIN_TOOL clang)
+#
+# if(LLVM_ENABLE_PLUGINS AND (WIN32 OR CYGWIN))
+#   target_link_libraries(PrintFunctionNames PRIVATE
+#     clangAST
+#     clangBasic
+#     clangFrontend
+#     LLVMSupport
+#     )
+# endif()
+
+add_library(PrintFunctionNames MODULE PrintFunctionNames.cpp)
+target_link_libraries(PrintFunctionNames
+
+  )
+
+#dude_please_dump_cmake_variables()

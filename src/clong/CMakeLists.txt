@@ -37,3 +37,5 @@ target_link_libraries(
 #    clangTooling
 #    ${LLVM_CLANG_LIBS}
 )
+
+add_subdirectory(PrintFunctionNames)
