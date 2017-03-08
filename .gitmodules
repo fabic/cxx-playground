@@ -25,3 +25,9 @@
 [submodule "dvdhrm-drm-howto"]
 	path = docs/dvdhrm-drm-howto
 	url = git@github.com:dvdhrm/docs.git
+[submodule "fabic-clang"]
+	path = lib/clang
+	url = git@github.com:fabic/clang.git
+[submodule "lib/clang-tools-extra"]
+	path = lib/clang-tools-extra
+	url = git@github.com:llvm-mirror/clang-tools-extra.git
