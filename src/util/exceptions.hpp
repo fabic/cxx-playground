@@ -24,6 +24,7 @@ namespace dude {
         : narratives_( narratives != nullptr ? narratives : "???")
       { }
 
+      decltype(auto) text() const { return narratives_; }
     };
 
   }

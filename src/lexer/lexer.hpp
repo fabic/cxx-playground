@@ -4,8 +4,9 @@
 #include <istream>
 #include <string>
 #include <vector>
-#include "util/logging.hpp"
+
 #include "lexer/token.hpp"
+#include "util/logging.hpp"
 #include "filesystem/file.hpp"
 
 namespace dude {

@@ -4,7 +4,6 @@
 #include <memory>
 #include <list>
 # include "lexer/token.hpp"
-# include "util/logging.hpp"
 
 namespace dude {
 namespace dumbster {
@@ -16,7 +15,8 @@ namespace dumbster {
   class Fragment {
     public:
       enum Kind : short {
-        NIL = 0, statement, block, parenthesized, bracketized
+        NIL = 0, statement, block, parenthesized, bracketized,
+        block_antecedent
       };
       using tokens_list_ref_t = std::list<Token *> & ;
     protected:
@@ -26,13 +26,18 @@ namespace dumbster {
       std::list<Token *> _tokens;
       Kind _kind;
     public:
-      explicit Fragment() : _kind(Kind::NIL) {}
-      inline void push_token(Token *tok);
+      explicit Fragment(Kind k = Kind::NIL);
+
+      void push_token(Token *tok);
+      void pop_token();
+
       inline void set_kind(Kind k) { _kind = k; }
-      inline void set_previous_fragment(Fragment *frag);
-      inline void set_next_fragment(Fragment *frag);
       inline Kind kind() const { return _kind; }
       inline Fragment * next() { return next_; }
+
+      void set_previous_fragment(Fragment *frag);
+      void set_next_fragment(Fragment *frag);
+
       tokens_list_ref_t tokens() { return _tokens; }
   };
 
@@ -43,27 +48,6 @@ namespace dumbster {
     protected:
       //std::shared_ptr<Fragment> inner_;
   };
-
-  void Fragment::push_token(Token *tok)
-  {
-    _tokens.push_back(tok);
-  }
-
-  void
-    Fragment::set_previous_fragment(Fragment *prev)
-    {
-      if (previous_ != nullptr)
-        logwarn << "Fragment's previous ptr is not null o_o";
-      previous_ = prev;
-    }
-
-  void
-    Fragment::set_next_fragment(Fragment *nex)
-    {
-      if (next_ != nullptr)
-        logwarn << "Fragment's next ptr is not null o_o";
-      next_ = nex;
-    }
 
 } // dumbster ns.
 } // dude ns.

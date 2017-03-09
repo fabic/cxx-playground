@@ -28,7 +28,10 @@ message(STATUS "Clong: Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 add_executable( dumbster
     main.cpp
+    parser.cpp
+    fragments.cpp
     ../lexer/lexer.cpp
+    ../lexer/token.cpp
     ../filesystem/file.cpp
     ../hacks/hack_cxa_throw_exception.cpp
   )
