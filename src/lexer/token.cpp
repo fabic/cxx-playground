@@ -18,7 +18,7 @@ namespace lexer {
       else if (_count == 0)
         throw dude::ex::yet_undefined_exception("Argh! Token#count_ is 0 (no characters, wtf?).");
 
-      if (is_comment()) {
+      if (false && is_comment()) { // FIXME -_-
         size_t i = 0, j = 0, k = 0;
         std::string retv (_count, '^');
         const char *str = start_;

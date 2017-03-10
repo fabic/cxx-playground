@@ -19,7 +19,10 @@ namespace lexer {
   class Lexer {
     protected:
       File&   _file;
-      File::string_t::const_iterator _it; // use '_' suffix: it's a ptr
+      /// Iterator into the string buffer – points at the next character that
+      /// will be consumed.
+      File::string_t::const_iterator _it; // todo: use '_' suffix: it's a ptr
+      File::string_t::const_iterator _it_begin;
       File::string_t::const_iterator _it_end;
       Cursor  _cursor;
     public:
@@ -35,9 +38,13 @@ namespace lexer {
        * Note that we do not consider a `\0` byte as a special marker
        * for end-of-string.  */
       inline bool have_reached_eof() const;
-      inline char next_character();
-      inline void put_back_character(char ch); // rewind() ?
+      char next_character();
 
+      /// Rewind the `_it` iterator one character backward.
+      void put_back_character(char ch); // rewind() ?
+
+      /** Consume characters and produce a token.
+       */
       Token next_token();
       Token try_lex_a_bunch_of_blank_space();
       Token try_lex_comment_block();
@@ -57,14 +64,6 @@ namespace lexer {
 
   // ~ ~ INLINES DEFINITIONS ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
-  char
-    Lexer::next_character()
-    {
-      // todo: check EOF ?
-      auto ch = *_it++;
-      return ch;
-    }
-
   bool
     Lexer::have_reached_eof() const
     {
@@ -83,16 +82,6 @@ namespace lexer {
       return ch == '\n';
     }
 
-  void
-    Lexer::put_back_character(char ch)
-    {
-      // todo: check trying to put back character before the start of buffer.
-      _it--;
-      if (*_it != ch)
-        logwarn << "Beware: the character you just put back doesn't match"
-                   " the one in the previous position.";
-    }
-
   bool // static btw.
     Lexer::is_ascii_letter(char ch)
     {
@@ -100,7 +89,7 @@ namespace lexer {
           || (ch >= 'a' && ch <= 'z');
     }
 
-  bool
+  bool // static btw.
     Lexer::is_digit_character(char ch)
     {
       return ch >= '0' && ch <= '9';

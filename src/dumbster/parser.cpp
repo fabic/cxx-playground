@@ -61,7 +61,7 @@ namespace dumbster {
 
 
   void
-    Parser::pushExpectedSymbol(char * mch)
+    Parser::pushExpectedSymbol(const char * mch)
     {
       //_stack.emplace_front(Token::Kind::symbol, mch);
       pushExpectedToken(Token::Kind::symbol, mch);
@@ -113,8 +113,11 @@ namespace dumbster {
 
       // Consume tokens that where not lexed
       // and issue warnings about these.
+      int notLexedCount = 0;
       while(true) {
         Token& tok = next_token();
+
+        notLexedCount++;
 
         if (tok.is_eof()) {
           logdebug << "Parser::parse(): Got EOF, ok";
@@ -123,6 +126,11 @@ namespace dumbster {
 
         logwarn << "Parser::parse(): Remaining token that wasn't parsed: "
                 << tok.kind_as_text();
+      }
+
+      if (notLexedCount > 1) {
+        logerror << "Parser::parse(): " << notLexedCount
+                 << " tokens were not lexed, that's not okay." ;
       }
 
       logtrace << "Parser::parse(): END";
@@ -147,7 +155,7 @@ namespace dumbster {
 
           if (isExpected(tok)) {
             rewind_token();
-            logdebug << "nt_whatever: matched an expected token: "
+            logdebug << depth << ") nt_whatever: matched an expected token: "
                      << tok.kind_as_text()
                      << " [RETURNING TO CALLER]" ;
             goto my_first_goto_in_a_while;
@@ -169,7 +177,7 @@ namespace dumbster {
           if (tok.is_symbol(';')) {
             current->set_kind(Fragment::Kind::statement);
             previous = current;
-            logtrace << "nt_whatever: got one fragment !";
+            logtrace << depth << ") nt_whatever: got one fragment !";
             break;
           }
           // {...} BLOCK
@@ -178,8 +186,6 @@ namespace dumbster {
             current->pop_token();
             rewind_token();
             Fragment * block = nt_curly_block(current, depth+1);
-            current->set_next_fragment( block );
-            block->set_previous_fragment( current );
           }
         }
       }
@@ -201,6 +207,9 @@ my_first_goto_in_a_while:
 
       Fragment *block = new Fragment(Fragment::Kind::block);
       block->push_token(&tok);
+      block->set_previous_fragment( preceding );
+      if (preceding != nullptr)
+        preceding->set_next_fragment( block );
 
       while(true) {
         nt_whatever(block, depth+1);
@@ -228,12 +237,12 @@ my_first_goto_in_a_while:
       Fragment *current = fragments_;
 
       do {
-        os << "FRAGMENT KIND: " << (int)current->kind();
+        os << "FRAGMENT KIND: " << (int)current->kind() << " {" << std::endl;
         auto tokens = current->tokens();
         for(Token *tok : tokens) {
-          //loginfo << "» Token: " << tok->text();
-          os << tok->text();
+          os << '[' << tok->text() << ']';
         }
+        os << "} [" << (int)current->kind() << "]" << std::endl;
       } while( (current = current->next()) != nullptr );
 
       loginfo << "Parser::debug_print_ast(): END.";

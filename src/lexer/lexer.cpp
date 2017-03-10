@@ -9,9 +9,43 @@ namespace lexer {
   Lexer::Lexer(File& file)
     : _file(file),
       _it(file.content().cbegin()),
+      _it_begin(file.content().begin()),
       _it_end(file.content().cend())
   {
   }
+
+
+  char
+    Lexer::next_character()
+    {
+      if (have_reached_eof()) {
+        throw dude::ex::yet_undefined_exception(
+            "Lexer::next_character(): EOF -_-"
+            " can't read past the end-of-file.");
+      }
+
+      char ch = *_it++;
+
+      return ch;
+    }
+
+
+  void
+    Lexer::put_back_character(char ch)
+    {
+      if (_it == _it_begin) {
+        throw dude::ex::yet_undefined_exception(
+            "Lexer::put_back_character(): Can't reasonably put back a character"
+            " before the start of the string -_-");
+      }
+
+      _it--;
+
+      if (*_it != ch) {
+        logwarn << "Beware: the character you just put back doesn't match"
+                   " the one in the previous position.";
+      }
+    }
 
 
   bool // static btw.
@@ -62,6 +96,7 @@ namespace lexer {
           put_back_character( ch);
           return try_lex_comment_block();
         }
+        // Start of a '//' line comment ?
         else if (nch == '/') {
           put_back_character(nch);
           put_back_character( ch);
@@ -69,7 +104,7 @@ namespace lexer {
         }
         else {
           put_back_character(nch);
-          return Token(Token::Kind::symbol, &*_it, 1);
+          return Token(Token::Kind::symbol, &_it[-1], 1);
         }
       }
       // Double-quoted "..." string :
@@ -161,6 +196,7 @@ namespace lexer {
       {
         ch = next_character();
 
+        // Match the `*/` end of block comment.
         if (ch == '*') {
           nch = next_character();
           if (nch == '/') {
@@ -182,7 +218,7 @@ namespace lexer {
   Token
     Lexer::try_lex_double_slashed_consecutive_comment_lines()
     {
-      const char * lexem_start_ptr = &_it[0];
+      const char * lexem_start_ptr = &*_it;
       const char * lexem_end_ptr   = nullptr;
 
       char ch = '\0', nch = '\0';
@@ -201,9 +237,12 @@ namespace lexer {
         while(!have_reached_eof() && (ch = next_character() != '\n')) { }
         // if (have_reached_eof()) { break; } // => end-of-file (hence we're not
                                            //    putting back the character.
+
+        // TODO: comsume leading blanks in hope of matching '//' again and
+        //       have other comment lines (with trailing blanks) consumed.
       }
 
-      lexem_end_ptr = &_it[0];
+      lexem_end_ptr = &*_it;
 
       return Token(Token::Kind::comment, lexem_start_ptr, lexem_end_ptr);
     }
@@ -212,7 +251,7 @@ namespace lexer {
   Token
     Lexer::try_lex_identifier()
     {
-      const char * lexem_start_ptr = &_it[0];
+      const char * lexem_start_ptr = &*_it;
       const char * lexem_end_ptr   = nullptr;
 
       while( ! have_reached_eof() )
@@ -225,7 +264,7 @@ namespace lexer {
         }
       }
 
-      lexem_end_ptr = &_it[0];
+      lexem_end_ptr = &*_it;
 
       return Token(Token::Kind::identifier, lexem_start_ptr, lexem_end_ptr);
     }
@@ -234,7 +273,7 @@ namespace lexer {
   Token
     Lexer::try_lex_numeric_literal()
     {
-      const char * lexem_start_ptr = &_it[0];
+      const char * lexem_start_ptr = &*_it;
       const char * lexem_end_ptr   = nullptr;
 
       while( ! have_reached_eof() )
@@ -247,7 +286,7 @@ namespace lexer {
         }
       }
 
-      lexem_end_ptr = &_it[0];
+      lexem_end_ptr = &*_it;
 
       return Token(Token::Kind::number, lexem_start_ptr, lexem_end_ptr);
     }
@@ -256,7 +295,7 @@ namespace lexer {
   Token
     Lexer::try_lex_double_quoted_string()
     {
-      const char * lexem_start_ptr = &_it[0];
+      const char * lexem_start_ptr = &*_it;
       const char * lexem_end_ptr   = nullptr;
 
       // Consume start of string character '"' :
@@ -279,7 +318,7 @@ namespace lexer {
           break;
       }
 
-      lexem_end_ptr = &_it[0];
+      lexem_end_ptr = &*_it;
 
       return Token(Token::Kind::string, lexem_start_ptr, lexem_end_ptr);
     }

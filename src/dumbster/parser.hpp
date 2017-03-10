@@ -45,7 +45,7 @@ namespace dumbster {
 
       /// Push onto the parsing `_stack` a (possibly multi-byte character `mch`
       /// that is expected by some [non-]terminal.
-      void pushExpectedSymbol(char *mch);
+      void pushExpectedSymbol(const char *mch);
 
       template<typename... TokenCtorArgs>
         void pushExpectedToken(TokenCtorArgs&&... args)
