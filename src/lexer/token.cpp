@@ -97,5 +97,41 @@ namespace lexer {
       return first_character() == ch;
     }
 
+
+  const char *
+    Token::kind_as_text()
+  {
+    switch(_kind) {
+      case Kind::NIL:
+        return "NIL (undefined Nil token)";
+      case Kind::EOF:
+        return "EOF – end-of-file";
+      case Kind::nullbyte:
+        return "NULL \\0 byte";
+      case Kind::whatever:
+        return "whatever";
+      case Kind::blank:
+        return "blank";
+      case Kind::blank_w_eol:
+        return "blank_w_eol";
+      case Kind::number:
+        return "number";
+      case Kind::string:
+        return "string";
+      case Kind::identifier:
+        return "identifier";
+      case Kind::symbol:
+        return "symbol";
+      case Kind::null_pointer:
+        return "null_pointer";
+      case Kind::keyword:
+        return "keyword";
+      case Kind::comment:
+        return "comment";
+      default:
+        return "UNKNOWN TOKEN KIND !";
+    }
+  }
+
 } // lexer ns.
 } // dude ns.

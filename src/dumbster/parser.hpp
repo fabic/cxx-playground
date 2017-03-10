@@ -53,6 +53,13 @@ namespace dumbster {
           _stack.emplace_front(std::forward<TokenCtorArgs>(args)...);
         }
 
+      /// Pop one token off the top of the “expected tokens stack”.
+      /// `tok` argument is compared against the token about to be poped off,
+      /// (and an exception is thrown in case both do not match).
+      Token popExpectedToken(const Token& tok);
+
+      /// Tells whether `tok` matches a token that is expected by some
+      /// non-terminal.
       bool isExpected(const Token& tok);
 
       void parse();

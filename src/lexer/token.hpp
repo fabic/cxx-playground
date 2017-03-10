@@ -100,6 +100,8 @@ namespace lexer {
       std::string raw_text() const;
       std::string text() const;
       char first_character() const;
+
+      const char *kind_as_text();
   };
 
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
@@ -116,6 +118,14 @@ namespace lexer {
             || (0 == strncmp(lhs.start_, rhs.start_, lhs._count))
            );
       ;
+    }
+
+  /// Return TRUE if tokens `lhs` and `rhs` are different, i.e. do not
+  /// represent the same lexed thing.
+  inline bool
+    operator!=(const Token& lhs, const Token& rhs)
+    {
+      return false == operator==(lhs, rhs);
     }
 
 } // lexer ns.

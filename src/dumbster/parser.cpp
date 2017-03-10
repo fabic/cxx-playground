@@ -68,6 +68,24 @@ namespace dumbster {
     }
 
 
+  Token
+    Parser::popExpectedToken(const Token& tok)
+    {
+      Token kot = _stack.front();
+
+      _stack.pop_front();
+
+      if (kot != tok) {
+        throw dude::ex::yet_undefined_exception(
+            "Parser::popExpectedToken(): Dude, that's bad, the token you're"
+            "trying to pop off the stack does _not_ match the token sitting"
+            "at the top: ");
+      }
+
+      return kot;
+    }
+
+
   bool
     Parser::isExpected(const Token& tok)
     {
@@ -83,7 +101,7 @@ namespace dumbster {
   void
     Parser::parse()
     {
-      logtrace << "Parser::parse(): begin.";
+      logtrace << "Parser::parse(): BEGIN.";
 
       assert(fragments_ == nullptr);
 
@@ -93,40 +111,28 @@ namespace dumbster {
 
       nt_whatever(fragments_, 1);
 
-      while( true )
-      {
+      // Consume tokens that where not lexed
+      // and issue warnings about these.
+      while(true) {
         Token& tok = next_token();
 
         if (tok.is_eof()) {
-          loginfo << "Parser reached EOF, bye...";
+          logdebug << "Parser::parse(): Got EOF, ok";
           break;
         }
-        else if (tok.is_nil()) {
-          logerror << "Parser got a NIL token, stopping now.";
-          break;
-        }
-        else if (tok.is_null_byte()) {
-          logwarn << "Parser got a \\0 byte, ignoring it.";
-        }
-        else if (tok.is_blank()) {
-          logtrace << "Parser ate some blanks -_-";
-        }
-        else if (tok.is_symbol('{')) {
-          //enter_parse_block();
-        }
-        else {
-          logwtf << "Got an unexpected token, token kind : "
-                 << static_cast<short>(tok._kind);
-        }
+
+        logwarn << "Parser::parse(): Remaining token that wasn't parsed: "
+                << tok.kind_as_text();
       }
-      logtrace << "Parser::parse(): end.";
+
+      logtrace << "Parser::parse(): END";
     }
 
 
   void
     Parser::nt_whatever(Fragment *previous, int depth)
     {
-      logtrace << "nt_whatever: start.";
+      logtrace << depth << ") nt_whatever: start.";
 
       while(true)
       {
@@ -141,27 +147,32 @@ namespace dumbster {
 
           if (isExpected(tok)) {
             rewind_token();
-            logdebug << "nt_whatever: matched an expected token.";
+            logdebug << "nt_whatever: matched an expected token: "
+                     << tok.kind_as_text()
+                     << " [RETURNING TO CALLER]" ;
             goto my_first_goto_in_a_while;
           }
 
           current->push_token(&tok);
 
-          if (tok.is_eof()) {
-            loginfo << "nt_whatever(): reached EOF, bye...";
-            goto my_first_goto_in_a_while;
-          }
-          else if (tok.is_blank()) {
-            loginfo << "nt_whatever(): skipping blank(s) token."
-                    << tok.text();
-          }
-          else if (tok.is_symbol(';')) {
+          // if (tok.is_eof()) {
+          //   loginfo << "nt_whatever(): reached EOF, bye...";
+          //   goto my_first_goto_in_a_while;
+          // }
+          // else if (tok.is_blank()) {
+          //   loginfo << "nt_whatever(): skipping blank(s) token."
+          //           << tok.text();
+          // }
+          // else
+
+          // ;-terminated STATEMENT
+          if (tok.is_symbol(';')) {
             current->set_kind(Fragment::Kind::statement);
             previous = current;
             logtrace << "nt_whatever: got one fragment !";
             break;
           }
-          // Enter block.
+          // {...} BLOCK
           else if (tok.is_symbol('{')) {
             current->set_kind(Fragment::Kind::block_antecedent);
             current->pop_token();
@@ -170,46 +181,40 @@ namespace dumbster {
             current->set_next_fragment( block );
             block->set_previous_fragment( current );
           }
-          else if (tok.is_symbol('}')) {
-          }
         }
       }
 
 my_first_goto_in_a_while:
-      logtrace << "nt_whatever: finished.";
+      logtrace << depth << ") nt_whatever: finished.";
     }
 
 
   Fragment *
     Parser::nt_curly_block(Fragment *preceding, int depth)
     {
-      logtrace << "nt_curly_block: begin.";
+      logtrace << depth << ") nt_curly_block: begin.";
 
       Token& tok = next_token();
 
       assert( matchSymbol('{') );
+      pushExpectedSymbol("}");
 
       Fragment *block = new Fragment(Fragment::Kind::block);
       block->push_token(&tok);
 
       while(true) {
-        tok = next_token();
-
         nt_whatever(block, depth+1);
 
-        if (tok.is_eof()) {
-          logdebug << "nt_curly_block: reached eof.";
-          break;
-        }
-        else if (tok.is_symbol('}')) {
-          logdebug << "nt_curly_block: matched '}' end-of-block.";
+        tok = next_token();
+        if (tok.is_symbol('}')) {
+          logdebug << depth << ") nt_curly_block: matched expected '}' symbol"
+                               "– end-of-block – ok, returning to caller.";
           break;
         }
 
-        //nt_whatever();
       }
 
-      logtrace << "nt_curly_block: end.";
+      logtrace << depth << ") nt_curly_block: end.";
 
       return block;
     }
@@ -294,6 +299,8 @@ my_first_goto_in_a_while:
 
       logtrace << "Parser::parse(): end.";
     }
+
+
 
 } // psr ns.
 } // dude ns.
