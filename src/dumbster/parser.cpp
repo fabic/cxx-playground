@@ -7,7 +7,7 @@ namespace dumbster {
   Parser::Parser(xfs::path fileName)
     : _file(fileName),
       _alex(_file),
-      current_token_it_(std::end(_tokens)),
+      current_token_it_(_tokens.begin()),
       fragments_(nullptr)
   { }
 
@@ -15,21 +15,68 @@ namespace dumbster {
   Token&
     Parser::next_token()
     {
+      current_token_it_++;
+
       if (current_token_it_ == _tokens.end()) {
         Token tok = _alex.next_token();
         _tokens.push_back(std::move(tok));
-        return _tokens.back();
+        current_token_it_--;
       }
-      else {
-        return *current_token_it_++;
-      }
+
+      return *current_token_it_ ;
     }
 
 
   Token&
     Parser::rewind_token()
     {
-      return *(--current_token_it_);
+      --current_token_it_ ;
+
+      if (current_token_it_ == _tokens.end()) {
+        throw dude::ex::yet_undefined_exception(
+            "Parser::rewind_token(): can't rewind past the beginning lad -_-");
+      }
+
+      return *current_token_it_ ;
+    }
+
+
+  Token&
+    Parser::token()
+    {
+      if (current_token_it_ == _tokens.end()) {
+        throw dude::ex::yet_undefined_exception(
+            "Parser::token(): Huh! We've got _no_ current token !");
+      }
+
+      return *current_token_it_;
+    }
+
+
+  bool
+    Parser::matchSymbol(char ch)
+    {
+      return token().is_symbol(ch);
+    }
+
+
+  void
+    Parser::pushExpectedSymbol(char * mch)
+    {
+      //_stack.emplace_front(Token::Kind::symbol, mch);
+      pushExpectedToken(Token::Kind::symbol, mch);
+    }
+
+
+  bool
+    Parser::isExpected(const Token& tok)
+    {
+      for(const Token& kot : _stack) {
+        if (tok == kot)
+          return true;
+      }
+
+      return false;
     }
 
 
@@ -39,6 +86,8 @@ namespace dumbster {
       logtrace << "Parser::parse(): begin.";
 
       assert(fragments_ == nullptr);
+
+      pushExpectedToken(Token::Kind::EOF);
 
       fragments_ = new Fragment();
 
@@ -90,6 +139,12 @@ namespace dumbster {
         {
           Token& tok = next_token();
 
+          if (isExpected(tok)) {
+            rewind_token();
+            logdebug << "nt_whatever: matched an expected token.";
+            goto my_first_goto_in_a_while;
+          }
+
           current->push_token(&tok);
 
           if (tok.is_eof()) {
@@ -97,7 +152,8 @@ namespace dumbster {
             goto my_first_goto_in_a_while;
           }
           else if (tok.is_blank()) {
-            loginfo << "nt_whatever(): skipping blank(s) token.";
+            loginfo << "nt_whatever(): skipping blank(s) token."
+                    << tok.text();
           }
           else if (tok.is_symbol(';')) {
             current->set_kind(Fragment::Kind::statement);
@@ -129,16 +185,17 @@ my_first_goto_in_a_while:
     {
       logtrace << "nt_curly_block: begin.";
 
-      Fragment *block = new Fragment(Fragment::Kind::block);
-
       Token& tok = next_token();
 
-      assert( tok.is_symbol('{') );
+      assert( matchSymbol('{') );
 
+      Fragment *block = new Fragment(Fragment::Kind::block);
       block->push_token(&tok);
 
       while(true) {
         tok = next_token();
+
+        nt_whatever(block, depth+1);
 
         if (tok.is_eof()) {
           logdebug << "nt_curly_block: reached eof.";
@@ -240,5 +297,3 @@ my_first_goto_in_a_while:
 
 } // psr ns.
 } // dude ns.
-
-

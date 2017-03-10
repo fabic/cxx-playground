@@ -78,10 +78,24 @@ namespace lexer {
     Token::first_character() const
     {
       if (start_ == nullptr || _count == 0)
-        throw dude::ex::yet_undefined_exception("No pointer or character count is 0.");
+        throw dude::ex::yet_undefined_exception("Token: No pointer or character count is 0.");
       return start_[0];
     }
 
+
+  bool
+    Token::is_symbol(char ch) const
+    {
+      if (!is_symbol())
+        return false;
+      else if (_count != 1) {
+        throw dude::ex::yet_undefined_exception(
+            "Token::is_symbol(char): character _count is != 1, impl. is"
+            "limited to one-byte characters at the moment.");
+      }
+
+      return first_character() == ch;
+    }
 
 } // lexer ns.
 } // dude ns.

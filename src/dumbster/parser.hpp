@@ -1,6 +1,8 @@
 #ifndef _DUDE_DUMBSTER_PARSER_H
 #define _DUDE_DUMBSTER_PARSER_H
 
+#include <list>
+
 # include "dumbster/fragments.hpp"
 # include "lexer/lexer.hpp"
 # include "filesystem/file.hpp"
@@ -24,14 +26,37 @@ namespace dumbster {
       Lexer _alex;
       std::list<Token> _tokens;
       std::list<Token>::iterator current_token_it_;
+      std::list<Token> _stack;
       Fragment *fragments_;
     public:
       explicit Parser(xfs::path fileName);
+
+      /// Fetch one more token from the lexer.
+      Token& next_token();
+
+      /// Rewind back one token.
+      Token& rewind_token();
+
+      /// Returns the current token from the `_tokens` list (of lexed tokens).
+      Token& token();
+
+      /// TRUE if current token is a single-byte character matching `ch`.
+      bool matchSymbol(char ch);
+
+      /// Push onto the parsing `_stack` a (possibly multi-byte character `mch`
+      /// that is expected by some [non-]terminal.
+      void pushExpectedSymbol(char *mch);
+
+      template<typename... TokenCtorArgs>
+        void pushExpectedToken(TokenCtorArgs&&... args)
+        {
+          _stack.emplace_front(std::forward<TokenCtorArgs>(args)...);
+        }
+
+      bool isExpected(const Token& tok);
+
       void parse();
       void dev_parse();
-
-      Token& next_token();
-      Token& rewind_token();
 
       void nt_whatever(Fragment *previous, int depth);
       Fragment * nt_curly_block(Fragment *preceding, int depth);

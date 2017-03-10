@@ -52,26 +52,24 @@ namespace lexer {
 
     public:
       Kind   _kind;
-      Selection _selection; // fixme: remove.
-      /// Start offset within the source text buffer.
-      size_t _offset;
 
-      const char * start_ = nullptr;
+      /// Pointer into the source buffer to the start of the lexed token.
+      const char * start_;
 
-      /// Character count composing the lexem.
+      /// Character count composing the lexem, from the `start_`.
       size_t _count;
     public:
       explicit Token(Kind k = Kind::NIL)
-        : _kind(k), _offset(0), _count(0) {}
-
-      Token(Kind k, size_t offset, size_t count)
-        : _kind(k), _offset(offset), _count(count) {}
+        : _kind(k), start_(nullptr), _count(0) {}
 
       Token(Kind k, const char *start, const char *end)
         : _kind(k), start_(start), _count(end-start) {}
 
       Token(Kind k, const char *start, size_t count)
         : _kind(k), start_(start), _count(count) {}
+
+      Token(Kind k, const char *start)
+        : _kind(k), start_(start), _count(strlen(start)) {}
 
       bool is_nil() const noexcept { return _kind == Kind::NIL; }
       bool is_eof() const noexcept { return _kind == Kind::EOF; }
@@ -94,20 +92,7 @@ namespace lexer {
       /**
        * Test if this token is a single character symbol matching `ch`.
        */
-      bool is_symbol(char ch) const {
-        if (!is_symbol()) return false;
-        else if (start_ == nullptr) {
-          throw dude::ex::yet_undefined_exception(
-              "Symbol token it is, but no pointer"
-              " into the originating buffer !" );
-        }
-        else if (_count == 0) {
-          throw dude::ex::yet_undefined_exception(
-              "Symbol token with a valid pointer into some buffer"
-              ", but character count is zero" );
-        }
-        else return start_[0] == ch;
-      }
+      bool is_symbol(char ch) const;
 
       const char * cbegin() const { return start_; }
       const char * cend() const { return start_ + _count; }
@@ -116,6 +101,22 @@ namespace lexer {
       std::string text() const;
       char first_character() const;
   };
+
+  // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
+
+  /**
+   * Comparison operator== of two tokens.
+   */
+  inline bool
+    operator==(const Token& lhs, const Token& rhs)
+    {
+      return lhs._kind == rhs._kind
+        && lhs._count == rhs._count
+        && ( (lhs.start_ == nullptr && rhs.start_ == nullptr)
+            || (0 == strncmp(lhs.start_, rhs.start_, lhs._count))
+           );
+      ;
+    }
 
 } // lexer ns.
 } // dude ns.
