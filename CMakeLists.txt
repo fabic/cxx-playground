@@ -122,7 +122,10 @@ find_package(PkgConfig)
 # EDIT/2016-07-27 : Enabling thing project-wide, having definitions (headers)
 #                   separated from the sources provide no added value at the
 #                   moment, and gets in my way.
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# EDIT/2017-03-12 : Feels not right even though it's common practice – let's try
+#                   to _always_ ressort to relative paths _from the src/ sources
+#                   root.
+#set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 
 ### # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
@@ -144,13 +147,13 @@ add_compile_options(
   -std=c++1z
   # -stdlib=libc++
   -fPIC
-  #-flto
   -Wall
   -pedantic
   # -Weverything
   #   ^ http://clang.llvm.org/docs/UsersManual.html#enabling-all-diagnostics
   )
 
+# /me want.
 if (true)
   add_compile_options( -march=native )
 endif()
@@ -212,7 +215,6 @@ add_compile_options(
   -Wnon-virtual-dtor
   -Wdelete-non-virtual-dtor
   -Woverloaded-virtual
-  -fcolor-diagnostics
   # -ffunction-sections
   # -fdata-sections
   # -fno-common
@@ -305,7 +307,7 @@ endif()
   #   problem for the `log` module only.
   add_definitions(-DBOOST_LOG_DYN_LINK)
 
-  find_package(Boost 1.61.0 REQUIRED)
+  find_package(Boost 1.61.0 OPTIONAL)
 
   if (Boost_FOUND)
   	include_directories(${Boost_INCLUDE_DIR})

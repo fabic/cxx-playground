@@ -15,6 +15,12 @@ namespace kernel {
       static constexpr int STDIN  = 0;
       static constexpr int STDOUT = 1;
       static constexpr int STDERR = 2;
+
+      struct OpenFlags {
+        static constexpr int READ_ONLY  = 0;
+        static constexpr int WRITE_ONLY = 1;
+        static constexpr int READ_WRITE = 2;
+      };
     public:
       static inline long    open(const char *pathname, int flags, int mode = 0);
       static inline ssize_t read(int fd, void *buffer, size_t count);
@@ -32,10 +38,15 @@ namespace kernel {
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
   //
 
-  static inline long
+  long
     Stream::open(const char *pathname, int flags, int mode)
     {
-      return Syscall::syscall3(Syscall::SYS_open, pathname, flags, mode);
+      return Syscall::syscall3(
+          Syscall::SYS_open,
+          reinterpret_cast<long>(pathname),
+          flags,
+          mode
+        );
     }
 
 

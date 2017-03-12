@@ -119,7 +119,7 @@ add_library( nstd_crtn  OBJECT c/_init_n_fini_epilog.cpp )
 # ~ ~ ~ Das `nstd` lib. ~ ~ ~
 add_library( nstd SHARED
     #c/_start.cpp
-    $<TARGET_OBJECTS:nstd_crti>
+    #FIXME: $<TARGET_OBJECTS:nstd_crti>
     $<TARGET_OBJECTS:nstd_start>
     c/memset.cpp
     c/assert.cpp
@@ -164,7 +164,7 @@ if (true)
     get_filename_component(file_we ${file} NAME_WE)
     # Link against our custom crt1.o thing :
     add_executable( ${file_we}
-        $<TARGET_OBJECTS:nstd_crti>
+        #FIXME: $<TARGET_OBJECTS:nstd_crti>
         $<TARGET_OBJECTS:nstd_start>
         ${file}
         #FIXME: $<TARGET_OBJECTS:nstd_crtn>
