@@ -6,6 +6,7 @@
 #define NSTD_KERNEL_SYSCALL_H
 
 #include <nstd/types.hpp>
+#include <nstd/kernel/linux/errno.hpp>
 
 namespace kernel {
 

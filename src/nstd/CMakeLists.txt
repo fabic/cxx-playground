@@ -1,6 +1,31 @@
 
 cmake_minimum_required(VERSION 3.3)
 
+# MinSizeDeb build type
+set( CMAKE_C_FLAGS_MINSIZEDEB "-Oz -g" CACHE STRING
+  "Optimize for size, with debug informations (C compiler flags)." FORCE )
+set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Oz -g" CACHE STRING
+    "Optimize for size, with debug informations (C++ compiler flags)." FORCE )
+set( CMAKE_EXE_LINKER_FLAGS_MINSIZEDEB
+    "-Wl,--warn-unresolved-symbols" CACHE STRING
+    "Flags used for linking executables (MinSizeDev)." FORCE )
+set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEDEB
+    "-Wl,--warn-unresolved-symbols" CACHE STRING
+    "Flags used by the shared libraries linker (MinSizeDeb)." FORCE )
+
+## Set default build type.
+# https://cmake.org/Wiki/CMake_FAQ#How_can_I_change_the_default_build_mode_and_see_it_reflected_in_the_GUI.3F
+if(NOT CMAKE_BUILD_TYPE)
+  #SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+  set(CMAKE_BUILD_TYPE MinSizeDeb CACHE STRING
+    "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel MinSizeDeb."
+    FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
+
+##
+##
+##
+
 project(NStd)
 
 set (NStd_VERSION_MAJOR 0)
@@ -11,16 +36,18 @@ if(NOT "${CMAKE_SYSTEM_PROCESSOR}" MATCHES "x86")
 endif()
 
 if(false)
-# https://cmake.org/Wiki/CMake/Assembler
-enable_language(ASM-ATT)
+  # https://cmake.org/Wiki/CMake/Assembler
+  enable_language(ASM-ATT)
 
-if (NOT CMAKE_ASM-ATT_COMPILER_WORKS)
-  message(WARNING "Dude! CMake says the assembler does not work -_-")
+  if (NOT CMAKE_ASM-ATT_COMPILER_WORKS)
+    message(WARNING "Dude! CMake says the assembler does not work -_-")
+  endif()
 endif()
 
-endif()
+#set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# ^ DON'T ! (it sucks)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/.. )
 
 add_definitions()
 
@@ -30,16 +57,15 @@ add_compile_options(
   -fPIC
   -Wall
   -pedantic
-  # -Weverything
+  #-Weverything
   #   ^ http://clang.llvm.org/docs/UsersManual.html#enabling-all-diagnostics
   )
-
 
 add_compile_options(
   -fcolor-diagnostics
   -fdiagnostics-show-category=name
   -fdiagnostics-show-template-tree
-  #   ^ http://clang.llvm.org/docs/UsersManual.html#formatting-of-diagnostics
+  # ^ http://clang.llvm.org/docs/UsersManual.html#formatting-of-diagnostics
 
   # -fvisibility=hidden
   #   ^ http://clang.llvm.org/docs/LTOVisibility.html
@@ -50,9 +76,6 @@ add_compile_options(
 )
 
 add_compile_options(
-  # -O0 -ggdb
-  # ^ this is automatically handled by CMake build type thing.
-
   # So as to get better/meaninful stack traces in error messages :
   -fno-omit-frame-pointer
   # and disable tail call elimination
@@ -68,7 +91,6 @@ add_compile_options(
   -Wnon-virtual-dtor
   -Wdelete-non-virtual-dtor
   -Woverloaded-virtual
-  -fcolor-diagnostics
   # -ffunction-sections
   # -fdata-sections
   # -fno-common
@@ -133,6 +155,7 @@ if (true)
       tests/test_aad.cpp
       tests/test_aae.cpp
       tests/test_aaf.cpp
+      tests/test_sys_open.cpp
       String/test_length.cpp
     )
 

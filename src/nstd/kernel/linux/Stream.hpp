@@ -16,6 +16,7 @@ namespace kernel {
       static constexpr int STDOUT = 1;
       static constexpr int STDERR = 2;
     public:
+      static inline long    open(const char *pathname, int flags, int mode = 0);
       static inline ssize_t read(int fd, void *buffer, size_t count);
 
       template<typename T>
@@ -31,28 +32,37 @@ namespace kernel {
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
   //
 
-
-  ssize_t Stream::read(int fd, void *buffer, size_t count)
-  {
-    long buf = reinterpret_cast<long>( buffer );
-
-    return Syscall::syscall3(Syscall::SYS_read, fd, buf, count);
-  }
-
-
-  template<typename T>
-    ssize_t Stream::write(int fd, const T* buffer, size_t count)
+  static inline long
+    Stream::open(const char *pathname, int flags, int mode)
     {
-      long buf = reinterpret_cast<long>( buffer );
-      long size = sizeof(T) * count;
-      return Syscall::syscall3(Syscall::SYS_write, fd, buf, size);
+      return Syscall::syscall3(Syscall::SYS_open, pathname, flags, mode);
     }
 
 
-  int Stream::close(int fd)
-  {
-    return Syscall::syscall1(Syscall::SYS_close, fd);
-  }
+  ssize_t
+    Stream::read(int fd, void *buffer, size_t count)
+    {
+      long buf = reinterpret_cast<long>( buffer );
+
+      return Syscall::syscall3(Syscall::SYS_read, fd, buf, count);
+    }
+
+
+  template<typename T>
+    ssize_t
+      Stream::write(int fd, const T* buffer, size_t count)
+      {
+        long buf = reinterpret_cast<long>( buffer );
+        long size = sizeof(T) * count;
+        return Syscall::syscall3(Syscall::SYS_write, fd, buf, size);
+      }
+
+
+  int
+    Stream::close(int fd)
+    {
+      return Syscall::syscall1(Syscall::SYS_close, fd);
+    }
 
 
 } // kernel ns.
