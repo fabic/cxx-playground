@@ -13,8 +13,7 @@ namespace nstd {
   class File
   {
     public:
-      /// File descriptor integral type.
-      using descriptor_t = int ;
+      using descriptor_t = Stream::descriptor_t;
     protected:
       /// The file descriptor identifier.
       descriptor_t  _fd;
@@ -25,12 +24,17 @@ namespace nstd {
       File(const char *pathName,
            int flags = Stream::OpenFlags::RDONLY);
 
+      /// Dtor
+      ~File();
+
       descriptor_t
         open(
             const char *pathName,
             int flags = Stream::OpenFlags::RDONLY,
             int mode = 0
           );
+
+      kernel::ErrorNo close();
 
       ssize_t write(const char *str);
       ssize_t writeln(const char *str);

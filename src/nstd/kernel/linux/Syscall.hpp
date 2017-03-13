@@ -37,6 +37,25 @@ namespace kernel {
     static constexpr long SYS_gettid         = 186;
     static constexpr long SYS_tgkill         = 234;
 
+  public:
+    /**
+     * Basically returns a kernel error code from the enum `ErrorNo`
+     * which is obtained by negating `r` since Linux syscalls return
+     * a negative value so as to indicate an error condition.
+     *
+     * * NOTE: this must be invoqued only with `r` being negative!
+     * * NOTE: an exception may be thrown if casting to ErrorNo fails.
+     * * See `musl-libc/src/internal/syscall_ret.c`
+     *
+     * \return -r
+     */
+    static inline ErrorNo return_error_code(long r) {
+      return static_cast<ErrorNo>(-r);
+    }
+
+    /// TODO: not impl.
+    static void die(const char *text) __attribute((noreturn));
+
     static inline long syscall0(long n) {
       unsigned long ret;
       asm volatile ("syscall" : "=a"(ret) : "a"(n) : "rcx", "r11", "memory");

@@ -13,24 +13,37 @@ namespace nstd {
 
   File::File(const char *pathName, int flags)
     : File()
-      // ^ invoque the default ctor which will set `_fd` to -1.
+      // ^ default ctor will set `_fd` to -1.
   {
     open(pathName, flags);
   }
 
 
+  File::~File()
+  {
+    if (_fd >= 0)
+      close();
+  }
+
   File::descriptor_t
     File::open(const char *pathName, int flags, int mode)
     {
-      assert(_fd < 0);
+      debug_if(_fd >= 0, "File should have been closed prior to calling `open()`.");
 
-      auto fd = Stream::open(pathName, flags, mode);
+      _fd = Stream::open(pathName, flags, mode);
 
-      debug_if(fd < 0, kernel::error_description(_fd));
-
-      _fd = fd;
+      debug_if(_fd < 0, kernel::error_description(_fd));
 
       return _fd;
+    }
+
+
+  kernel::ErrorNo
+    File::close()
+    {
+      long ec = Stream::close(_fd);
+      debug_if(ec < 0, kernel::error_description(_fd));
+      return kernel::Syscall::return_error_code(ec);
     }
 
 

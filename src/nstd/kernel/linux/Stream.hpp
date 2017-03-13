@@ -14,6 +14,10 @@ namespace kernel {
    */
   class Stream {
     public:
+      /// File descriptor integral type.
+      using descriptor_t = int ;
+
+    public:
       static constexpr int STDIN  = 0;
       static constexpr int STDOUT = 1;
       static constexpr int STDERR = 2;
@@ -48,13 +52,13 @@ namespace kernel {
         static constexpr int ACCMODE   = 03 | SEARCH ;
       };
     public:
-      static inline long    open(const char *pathname, int flags, int mode = 0);
+      static inline long open(const char *pathname, int flags, int mode = 0);
       static inline ssize_t read(int fd, void *buffer, size_t count);
 
       template<typename T>
         static inline ssize_t write(int fd, const T* buffer, size_t count);
 
-      static inline int close(int fd);
+      static inline long close(int fd);
 
       // todo: does the kernel actually returns an 'int' ?? or is it libc ?
   };
@@ -77,7 +81,7 @@ namespace kernel {
 
 
   ssize_t
-    Stream::read(int fd, void *buffer, size_t count)
+    Stream::read(descriptor_t fd, void *buffer, size_t count)
     {
       long buf = reinterpret_cast<long>( buffer );
 
@@ -87,7 +91,7 @@ namespace kernel {
 
   template<typename T>
     ssize_t
-      Stream::write(int fd, const T* buffer, size_t count)
+      Stream::write(descriptor_t fd, const T* buffer, size_t count)
       {
         long buf = reinterpret_cast<long>( buffer );
         long size = sizeof(T) * count;
@@ -95,8 +99,8 @@ namespace kernel {
       }
 
 
-  int
-    Stream::close(int fd)
+  long
+    Stream::close(descriptor_t fd)
     {
       return Syscall::syscall1(Syscall::SYS_close, fd);
     }

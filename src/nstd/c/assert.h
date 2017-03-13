@@ -27,7 +27,7 @@ extern "C" {
 #ifdef NDEBUG
 #  define debug_if(x, s) ((void)0)
 #else
-#  define debug_if(x, s) ((void)((x) || (__debug_if(#x, s, __FILE__, __LINE__, __func__),0)))
+#  define debug_if(x, s) ((void)((x) && (__debug_if(#x, s, __FILE__, __LINE__, __func__),0)))
 #endif
 
 #endif // __NSTD_ASSERT_H
