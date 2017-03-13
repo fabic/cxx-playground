@@ -10,13 +10,20 @@ namespace kernel {
 //#undef errno
 //#endif
 
+
+  /**
+   * Return a string with some detail about the error code `ec`.
+   */
+  const char * error_description(long ec);
+
+
   /**
    * * Replaced the first `Exxx` letter with `E_xxx` so that we do not conflict
    *   with kernel macros.
    * * `linux-headers/include/asm-generic/errno-base.h`
    * * `linux-headers/include/asm-generic/errno.h`
    */
-  enum ErrorNo {
+  enum ErrorNo : long {
     /* From `linux-headers/include/asm-generic/errno-base.h` */
     E_PERM     =   1,  /* Operation not permitted */
     E_NOENT    =   2,  /* No such file or directory */
@@ -55,6 +62,7 @@ namespace kernel {
 
     /* From `linux-headers/include/asm-generic/errno.h` */
     E_DEADLK       = 35,  /* Resource deadlock would occur */
+    E_DEADLOCK     = E_DEADLK,
     E_NAMETOOLONG  = 36,  /* File name too long */
     E_NOLCK        = 37,  /* No record locks available */
 
@@ -86,8 +94,6 @@ namespace kernel {
     E_NOANO       = 55,      /* No anode */
     E_BADRQC      = 56,      /* Invalid request code */
     E_BADSLT      = 57,      /* Invalid slot */
-
-    E_DEADLOCK    = E_DEADLK,
 
     E_BFONT          =  59,  /* Bad font file format */
     E_NOSTR          =  60,  /* Device not a stream */

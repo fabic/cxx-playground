@@ -1,8 +1,10 @@
 #include <nstd/File.hpp>
 #include <nstd/String.hpp>
 #include <nstd/c/assert.h>
+#include <nstd/kernel/linux/errno.hpp>
 
 namespace nstd {
+
 
   File::File(int fd)
     : _fd(fd)
@@ -10,16 +12,25 @@ namespace nstd {
 
 
   File::File(const char *pathName, int flags)
-    : File( open(pathName, flags) )
+    : File()
+      // ^ invoque the default ctor which will set `_fd` to -1.
   {
+    open(pathName, flags);
   }
 
 
-  File // static btw.
+  File::descriptor_t
     File::open(const char *pathName, int flags, int mode)
     {
-      int fd = Stream::open(pathName, flags, mode);
-      return File( fd );
+      assert(_fd < 0);
+
+      auto fd = Stream::open(pathName, flags, mode);
+
+      debug_if(fd < 0, kernel::error_description(_fd));
+
+      _fd = fd;
+
+      return _fd;
     }
 
 

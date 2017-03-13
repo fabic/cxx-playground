@@ -19,9 +19,33 @@ namespace kernel {
       static constexpr int STDERR = 2;
 
       struct OpenFlags {
-        static constexpr int READ_ONLY  = 0;
-        static constexpr int WRITE_ONLY = 1;
-        static constexpr int READ_WRITE = 2;
+        // `musl-libc/include/fcntl.h`
+        static constexpr int RDONLY    =         0 ;
+        static constexpr int WRONLY    =         1 ;
+        static constexpr int RDWR      =         2 ;
+        // `musl-libc/arch/x86_64/bits/fcntl.h`
+        static constexpr int CREAT     =      0100 ;
+        static constexpr int EXCL      =      0200 ;
+        static constexpr int NOCTTY    =      0400 ;
+        static constexpr int TRUNC     =     01000 ;
+        static constexpr int APPEND    =     02000 ;
+        static constexpr int NONBLOCK  =     04000 ;
+        static constexpr int DSYNC     =    010000 ;
+        static constexpr int ASYNC     =    020000 ;
+        static constexpr int DIRECT    =    040000 ;
+        static constexpr int DIRECTORY =   0200000 ;
+        static constexpr int NOFOLLOW  =   0400000 ;
+        static constexpr int NOATIME   =  01000000 ;
+        static constexpr int CLOEXEC   =  02000000 ;
+        static constexpr int SYNC      =  04010000 ;
+        static constexpr int PATH      = 010000000 ;
+        static constexpr int TMPFILE   = 020200000 ;
+        static constexpr int LARGEFILE =        0 ;
+        static constexpr int RSYNC     =       RSYNC ;
+        static constexpr int NDELAY    =    NONBLOCK ;
+        static constexpr int SEARCH    =        PATH ;
+        static constexpr int EXEC      =        PATH ;
+        static constexpr int ACCMODE   = 03 | SEARCH ;
       };
     public:
       static inline long    open(const char *pathname, int flags, int mode = 0);

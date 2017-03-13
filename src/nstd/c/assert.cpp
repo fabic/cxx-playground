@@ -25,3 +25,21 @@ void __assert_fail(const char *expr, const char *file, int line, const char *fun
 
   Process::abort();
 }
+
+
+void __debug_if(
+    const char *expr,
+    const char *text,
+    const char *file, int line,
+    const char *func)
+{
+  auto StdErr = Process::StdErr();
+
+  StdErr << "debug_if("
+         << "expression: " << (expr != nullptr ? expr : "<unavailable>")
+         << ", text: "     << (text != nullptr ? text : "<unavailable>")
+         << ", file: "     << (file != nullptr ? file : "<unavailable>")
+         << ", routine: "  << (func != nullptr ? func : "<unavailable>")
+         << "\n"
+         ;
+}

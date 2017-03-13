@@ -8,20 +8,29 @@ namespace nstd {
   using kernel::Stream;
 
   /**
+   * Wrapper class around a file descriptor.
    */
-  class File {
-    protected:
-      int _fd;
+  class File
+  {
     public:
+      /// File descriptor integral type.
+      using descriptor_t = int ;
+    protected:
+      /// The file descriptor identifier.
+      descriptor_t  _fd;
+    public:
+      /// Ctor
       explicit File(int fd = -1);
 
       File(const char *pathName,
-           int flags = Stream::OpenFlags::READ_ONLY);
+           int flags = Stream::OpenFlags::RDONLY);
 
-      static File open(
-          const char *pathName,
-          int flags = Stream::OpenFlags::READ_ONLY,
-          int mode = 0);
+      descriptor_t
+        open(
+            const char *pathName,
+            int flags = Stream::OpenFlags::RDONLY,
+            int mode = 0
+          );
 
       ssize_t write(const char *str);
       ssize_t writeln(const char *str);

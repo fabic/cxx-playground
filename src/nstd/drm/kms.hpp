@@ -5,7 +5,10 @@ namespace linux {
 namespace drm {
 
   class kms {
+    protected:
+      File _control_dev;
     public:
+      kms();
       int open(const char *node);
   };
 

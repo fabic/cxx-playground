@@ -17,7 +17,7 @@ int main(int argc, const char *argv[], const char *env[])
   {
     auto pathName = argv[i];
     StdOut << "Arg.: " << pathName << "\n";
-    //long fd = Process::open(pathName, Process::OpenFlags::READ_ONLY);
+    File file(pathName);
   }
 
   StdOut << "Bye.\n";
