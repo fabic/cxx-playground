@@ -9,6 +9,8 @@ namespace kernel {
   using nstd::size_t;
 
   /** File/descriptor related syscalls.
+   *
+   * TODO: rename as File.
    */
   class Stream {
     public:

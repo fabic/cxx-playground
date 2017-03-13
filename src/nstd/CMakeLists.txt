@@ -126,6 +126,7 @@ add_library( nstd SHARED
     malloc/malloc.cpp
     String/length.cpp
     Process.cpp
+    File.cpp
     #FIXME: $<TARGET_OBJECTS:nstd_crtn>
   )
 target_compile_options( nstd PUBLIC -nostdinc -nostdinc++ )

@@ -8,18 +8,19 @@ using namespace nstd;
  */
 int main(int argc, const char *argv[], const char *env[])
 {
-  Process::write("Hello! I'm ");
-  Process::writeln(argv[0]);
+  File StdOut = Process::StdOut();
+
+  StdOut.write("Hello! I'm ");
+  StdOut.writeln(argv[0]);
 
   for(int i = 1; i < argc; i++)
   {
     auto pathName = argv[i];
-    Process::write("Arg.: ");
-    Process::writeln(pathName);
-    long fd = Process::open(pathName, Process::OpenFlags::READ_ONLY);
+    StdOut << "Arg.: " << pathName << "\n";
+    //long fd = Process::open(pathName, Process::OpenFlags::READ_ONLY);
   }
 
-  Process::writeln("Bye.");
+  StdOut << "Bye.\n";
 
   return 111;
 }

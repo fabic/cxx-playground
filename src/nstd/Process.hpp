@@ -5,6 +5,7 @@
 #include <nstd/kernel/linux/Signal.hpp>
 #include <nstd/kernel/linux/Stream.hpp>
 #include <nstd/String.hpp>
+#include <nstd/File.hpp>
 
 namespace nstd {
 
@@ -12,11 +13,8 @@ namespace nstd {
                   public kernel::Signal,
                   public kernel::Stream
   {
+  protected:
   public:
-    using kernel::Stream::STDIN;
-    using kernel::Stream::STDOUT;
-    using kernel::Stream::STDERR;
-
   public:
     /** Causes abnormal process termination.
      *
@@ -34,9 +32,15 @@ namespace nstd {
      * * This function never returns -- _warning:_ an infinite loop lies there.
      */
     static void abort() __attribute__((noreturn));
-    static ssize_t write(const char *str, int fd = STDOUT);
-    static ssize_t writeln(const char *str, int fd = STDOUT);
 
+  protected:
+    static File _s_std_in  ;
+    static File _s_std_out ;
+    static File _s_std_err ;
+  public:
+    inline static File& StdIn()  { return _s_std_in  ; }
+    inline static File& StdOut() { return _s_std_out ; }
+    inline static File& StdErr() { return _s_std_err ; }
   };
 
 } // nstd ns.

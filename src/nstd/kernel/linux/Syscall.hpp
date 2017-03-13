@@ -21,6 +21,7 @@ namespace kernel {
    */
   class Syscall {
   public:
+    // TODO: turn this into an `enum Sys: long`
     static constexpr long SYS_read           =   0;
     static constexpr long SYS_write          =   1;
     static constexpr long SYS_open           =   2;

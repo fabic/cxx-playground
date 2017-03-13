@@ -58,7 +58,7 @@ void _start_c(
     Process::exit( ec );
   }
   else {
-    Process::write("_start_c(): C-style `main()` program entry point is undefined ?!");
+    Process::StdErr() << "_start_c(): C-style `main()` program entry point is undefined ?!";
     Process::abort();
   }
 
