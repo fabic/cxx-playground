@@ -1,4 +1,5 @@
 #include <nstd/unwind/unwind.hpp>
+#include <nstd/Process.hpp>
 
 namespace nstd {
 namespace unwind {
@@ -7,7 +8,7 @@ namespace unwind {
 
     // ~/dev/llvm-clang/misc/libunwind/src/unwind/Resume.c
     void
-      _Unwind_Resume (struct _Unwind_Exception *exception_object)
+      _Unwind_Resume (Exception* exceptionObject)
       {
       }
 
@@ -15,3 +16,15 @@ namespace unwind {
 
 } // unwind ns.
 } // nstd ns.
+
+
+namespace std {
+
+  void terminate() // noexcept noreturn
+  {
+    nstd::Process::abort();
+  }
+
+  // todo: unexpected() def.
+
+} // std ns.
