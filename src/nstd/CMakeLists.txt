@@ -123,6 +123,8 @@ add_library( nstd SHARED
     $<TARGET_OBJECTS:nstd_start>
     c/memset.cpp
     c/assert.cpp
+    c/atexit.cpp
+    c/eh/unwind.cpp
     malloc/malloc.cpp
     String/length.cpp
     Process.cpp
