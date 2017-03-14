@@ -124,7 +124,8 @@ add_library( nstd SHARED
     c/memset.cpp
     c/assert.cpp
     c/atexit.cpp
-    c/eh/unwind.cpp
+    unwind/unwind.cpp
+    eh/cxa.cpp
     malloc/malloc.cpp
     String/length.cpp
     Process.cpp

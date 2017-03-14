@@ -3,7 +3,13 @@
 
 #include <nstd/types.hpp>
 
+/*
+ * * `clang/lib/Headers/unwind.h`
+ * * `libunwind/include/unwind.h`
+ */
+
 namespace nstd {
+namespace unwind {
 
   enum _Unwind_Reason_Code
   {
@@ -25,9 +31,9 @@ namespace nstd {
                                                 struct _Unwind_Exception * );
 
 
-  /* The C++ ABI requires exception_class, private_1, and private_2 to
-     be of type uint64 and the entire structure to be
-     double-word-aligned. */
+  /** The C++ ABI requires exception_class, private_1, and private_2 to
+      be of type uint64 and the entire structure to be
+      double-word-aligned. */
   struct _Unwind_Exception
   {
     uint64_t exception_class;
@@ -36,18 +42,16 @@ namespace nstd {
     uint64_t private_2;
   } __attribute__((__aligned__));
 
+
+  extern "C" {
+
+    /**
+     */
+    void _Unwind_Resume (struct _Unwind_Exception *);
+
+  } // extern "C" //
+
+} // unwind ns.
 } // nstd ns.
-
-/*
- * * `clang/lib/Headers/unwind.h`
- * * `libunwind/include/unwind.h`
- */
-
-extern "C" {
-
-
-  void _Unwind_Resume (struct _Unwind_Exception *);
-
-} // extern "C" //
 
 #endif // NSTD_C_EH_UNWIND_H
