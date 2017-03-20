@@ -1,9 +1,10 @@
-#ifndef __NSTD_ASSERT_H
-#define __NSTD_ASSERT_H
+#ifndef __NSTD_C_ASSERT_H
+#define __NSTD_C_ASSERT_H
 
 namespace nstd {
 
   extern "C" {
+
     void _nstd_assert_fail(
         const char *expr,
         const char *file, int line,
@@ -16,6 +17,7 @@ namespace nstd {
         const char *file, int line,
         const char *func
       );
+
   } // extern "C" //
 
 
@@ -34,4 +36,4 @@ namespace nstd {
 
 } // nstd ns.
 
-#endif // __NSTD_ASSERT_H
+#endif // __NSTD_C_ASSERT_H

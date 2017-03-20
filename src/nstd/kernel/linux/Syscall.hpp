@@ -73,7 +73,7 @@ namespace kernel {
     {
       unsigned long ret;
       asm volatile ("syscall" : "=a"(ret) : "a"(n), "D"(a1), "S"(a2)
-                            : "rcx", "r11", "memory");
+                              : "rcx", "r11", "memory");
       return ret;
     }
 

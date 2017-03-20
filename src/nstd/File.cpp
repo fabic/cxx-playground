@@ -25,6 +25,7 @@ namespace nstd {
       close();
   }
 
+
   File::descriptor_t
     File::open(const char *pathName, int flags, int mode)
     {
