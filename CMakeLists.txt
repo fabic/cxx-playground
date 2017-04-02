@@ -307,7 +307,7 @@ endif()
   #   problem for the `log` module only.
   add_definitions(-DBOOST_LOG_DYN_LINK)
 
-  find_package(Boost 1.61.0 OPTIONAL)
+  find_package(Boost 1.61.0)
 
   if (Boost_FOUND)
   	include_directories(${Boost_INCLUDE_DIR})

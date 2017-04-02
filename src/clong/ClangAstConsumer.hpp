@@ -6,7 +6,7 @@
 #include <clang/AST/ASTContext.h>
 
 # include "config.hpp"
-# include "logging.hpp"
+# include "util/logging.hpp"
 
 namespace clong {
 

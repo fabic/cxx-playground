@@ -2,7 +2,7 @@
  *
  * Would declare "src/" <=> "dude/"
  *
- * ! parent context aliased as "dude".
+ * ! alias parent context as "dude".
  *
  * Implicit (optional) scope switch.
  *

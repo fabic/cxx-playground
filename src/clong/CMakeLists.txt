@@ -39,3 +39,4 @@ target_link_libraries(
 )
 
 add_subdirectory(PrintFunctionNames)
+add_subdirectory(find-all-symbols)
