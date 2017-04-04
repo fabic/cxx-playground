@@ -1,22 +1,22 @@
 
-# set(LLVM_LINK_COMPONENTS Support)
-# add_clang_library(findAllSymbols
-#     FindAllSymbols.cpp FindAllSymbolsAction.cpp FindAllMacros.cpp
-#     HeaderMapCollector.cpp PathConfig.cpp PragmaCommentHandler.cpp
-#     STLPostfixHeaderMap.cpp SymbolInfo.cpp
-#   LINK_LIBS
-#     clangAST clangASTMatchers clangBasic clangFrontend clangLex clangTooling
-#   )
+llvm_map_components_to_libnames(
+    LLVM_CLANG_LIBS
+        Support Option
+        # X86CodeGen
+        # X86AsmParser
+        # X86Desc
+        # X86Info
+    )
 
-add_library(FindAllSymbols SHARED
+add_executable(find-all-symbols
+    FindAllSymbolsMain.cpp
     FindAllSymbols.cpp FindAllSymbolsAction.cpp FindAllMacros.cpp
     HeaderMapCollector.cpp PathConfig.cpp PragmaCommentHandler.cpp
     STLPostfixHeaderMap.cpp SymbolInfo.cpp
-  )
+    )
 
-target_link_libraries(FindAllSymbols
+target_link_libraries(find-all-symbols
     clangAST clangASTMatchers clangBasic clangFrontend clangLex clangTooling
-    LLVMSupport
+    ${LLVM_CLANG_LIBS}
   )
 
-add_subdirectory(tool)
