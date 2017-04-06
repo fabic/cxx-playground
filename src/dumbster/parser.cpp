@@ -105,9 +105,9 @@ namespace dumbster {
 
       assert(fragments_ == nullptr);
 
-      pushExpectedToken(Token::Kind::EOF);
-
       fragments_ = new Fragment();
+
+      pushExpectedToken(Token::Kind::EOF);
 
       nt_whatever(fragments_, 1);
 
@@ -137,18 +137,16 @@ namespace dumbster {
     }
 
 
-  void
+  Fragment *
     Parser::nt_whatever(Fragment *previous, int depth)
     {
       logtrace << depth << ") nt_whatever: start.";
 
+      Fragment *first_fragment = new Fragment();
+      Fragment *current = first_fragment;
+
       while(true)
       {
-        Fragment *current = new Fragment();
-
-        current->set_previous_fragment(previous);
-        previous->set_next_fragment(current);
-
         while (true)
         {
           Token& tok = next_token();
@@ -163,35 +161,39 @@ namespace dumbster {
 
           current->push_token(&tok);
 
-          // if (tok.is_eof()) {
-          //   loginfo << "nt_whatever(): reached EOF, bye...";
-          //   goto my_first_goto_in_a_while;
-          // }
-          // else if (tok.is_blank()) {
+          // if (tok.is_blank()) {
           //   loginfo << "nt_whatever(): skipping blank(s) token."
           //           << tok.text();
           // }
-          // else
 
-          // ;-terminated STATEMENT
+          // ';' terminated => STATEMENT
           if (tok.is_symbol(';')) {
             current->set_kind(Fragment::Kind::statement);
-            previous = current;
             logtrace << depth << ") nt_whatever: got one fragment !";
             break;
           }
-          // {...} BLOCK
+          // {...} BLOCK "ANTECEDENT"
           else if (tok.is_symbol('{')) {
             current->set_kind(Fragment::Kind::block_antecedent);
             current->pop_token();
             rewind_token();
-            Fragment * block = nt_curly_block(current, depth+1);
+            current = nt_curly_block(current, depth+1);
+            break;
           }
+
+          previous = current;
         }
+
+        // Create a new fragment for accumulating tokens.
+        current = new Fragment();
+
+        current->set_previous_fragment(previous);
+        previous->set_next_fragment(current);
       }
 
 my_first_goto_in_a_while:
       logtrace << depth << ") nt_whatever: finished.";
+      return first_fragment;
     }
 
 
@@ -203,6 +205,7 @@ my_first_goto_in_a_while:
       Token& tok = next_token();
 
       assert( matchSymbol('{') );
+
       pushExpectedSymbol("}");
 
       Fragment *block = new Fragment(Fragment::Kind::block);

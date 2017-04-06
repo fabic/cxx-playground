@@ -65,7 +65,7 @@ namespace dumbster {
       void parse();
       void dev_parse();
 
-      void nt_whatever(Fragment *previous, int depth);
+      Fragment * nt_whatever(Fragment *previous, int depth);
       Fragment * nt_curly_block(Fragment *preceding, int depth);
       void debug_print_ast(std::ostream& os);
   };
