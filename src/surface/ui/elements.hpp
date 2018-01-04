@@ -9,7 +9,7 @@
 
 # include "surface/cairo/surface.hpp"
 # include "util/pointers.hpp"
-# include "logging.hpp"
+# include "util/logging.hpp"
 # include "surface/maths/rectangle.hpp"
 
 namespace sf {

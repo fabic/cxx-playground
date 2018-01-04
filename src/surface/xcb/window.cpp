@@ -2,7 +2,7 @@
 #include "surface/xcb/window.hpp"
 #include "surface/xcb/inline-decls.hpp"
 //#include "surface/ui/elements-inlines.hpp"
-#include "logging.hpp"
+#include "util/logging.hpp"
 
 namespace sf {
   namespace xcb {

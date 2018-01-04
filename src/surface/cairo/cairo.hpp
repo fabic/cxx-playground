@@ -7,7 +7,7 @@
 #include "surface/common.hpp"
 #include "surface/maths/rectangle.hpp"
 #include "surface/color.hpp"
-#include "logging.hpp"
+#include "util/logging.hpp"
 
 namespace sf {
   namespace cairo {

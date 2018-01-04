@@ -5,7 +5,7 @@
 #include <boost/dll/alias.hpp>
 #include <boost/network/protocol/http/server.hpp>
 
-# include "logging.hpp"
+# include "util/logging.hpp"
 # include "di/container.hpp"
 # include "http/handler_functor.hpp"
 
