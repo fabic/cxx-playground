@@ -1,3 +1,0 @@
-[submodule "soci-db-lib"]
-	path = vendor/soci
-	url = git@github.com:SOCI/soci.git

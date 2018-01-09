@@ -1,13 +1,9 @@
 
- # This one file was borrowed from Clang 5.0.1 (2017-12-21).
-add_library( TypePrinter OBJECT clong/clang/TypePrinter.cpp )
-
+# TODO: Rename.
 add_library( PimplioTerminal OBJECT clong/Terminal.cpp )
 
 # TODO: make it a static library so that we can define dependent libraries with INTERFACE...
 add_library( DudeHackCxaThrowException OBJECT dude/hacks/hack_cxa_throw_exception.cpp )
-
-
 
 # add_library(LocalLibunwindStatic STATIC IMPORTED)
 # set_target_properties(LocalLibunwindStatic PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/local/lib/libunwind-x86_64.a)

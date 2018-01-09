@@ -3,6 +3,13 @@
 *.sw?
 *~
 
+# pre-compiled headers.
+*.gch
+*.gch-*
+
+/build/
+/local/
+
 .idea/
 tags
 .tags
@@ -13,13 +20,9 @@ cscope.in.out
 cscope.out
 cscope.po.out
 
-build/
-CMakeFiles/
 /docs/doxygen/html/
 
-*.o
-*.so
-
-# Compiled Static libraries
-*.la
-*.a
+#*.o
+#*.so
+#*.la
+#*.a

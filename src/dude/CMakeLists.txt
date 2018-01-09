@@ -2,7 +2,8 @@
 
 # add_subdirectory(symf)
 # add_subdirectory(dic-modules)
-# #add_subdirectory(clong)
+add_subdirectory( clong )
+add_subdirectory( util )
 # add_subdirectory(surface)
 # add_subdirectory(xcbx)
 # add_subdirectory(nstd)

@@ -2,17 +2,11 @@
 
 cmake_minimum_required(VERSION 3.3)
 
-message(STATUS "~~ Dude, hi! ~~")
-
-project(FabicClong)
-
-set (FabicClong_VERSION_MAJOR 0)
-set (FabicClong_VERSION_MINOR 3)
+message(STATUS "~~ Dude, hi! this is Clong! ~~")
 
 # TODO: Move stuff _out of here (!)_, and specifically: anything that may have
 # TODO: side-effects on sub-projects we want to include with add_subdirectory()
 # TODO: e.g. vendor/lmdb/
-
 
 
 find_package(LLVM REQUIRED CONFIG)
@@ -27,23 +21,25 @@ include(AddLLVM)
 # Python is needed in order to produce a PrintFunctionNames.def file
 # from the PrintFunctionNames.exports file. Found this somewhere in one of Clang's
 # CMake files.
-set(Python_ADDITIONAL_VERSIONS 2.7)
-include(FindPythonInterp)
-if(NOT PYTHONINTERP_FOUND)
-  message(WARNING
-    "Unable to find Python interpreter, required for builds and testing.
-    Please install Python or specify the PYTHON_EXECUTABLE CMake variable.")
-else()
-  # “If we don't need RTTI or EH, there's no reason to export anything
-  #  from the plugin.”
-  # FIXME: This breaks the build, linker says the .def file is unrecognizable file format.
-  # FIXME: We don't need to export symbols anyway (do we ?)
-  if (false)
-    if( NOT LLVM_REQUIRES_RTTI )
-      if( NOT LLVM_REQUIRES_EH )
-        set(LLVM_EXPORTED_SYMBOL_FILE
-          ${CMAKE_CURRENT_SOURCE_DIR}/PrintFunctionNames.exports)
-        message(STATUS "Dude: Set LLVM_EXPORTED_SYMBOL_FILE = PrintFunctionNames.exports")
+if (false)
+  set(Python_ADDITIONAL_VERSIONS 2.7)
+  include(FindPythonInterp)
+  if(NOT PYTHONINTERP_FOUND)
+    message(WARNING
+      "Unable to find Python interpreter, required for builds and testing.
+      Please install Python or specify the PYTHON_EXECUTABLE CMake variable.")
+  else()
+    # “If we don't need RTTI or EH, there's no reason to export anything
+    #  from the plugin.”
+    # FIXME: This breaks the build, linker says the .def file is unrecognizable file format.
+    # FIXME: We don't need to export symbols anyway (do we ?)
+    if (false)
+      if( NOT LLVM_REQUIRES_RTTI )
+        if( NOT LLVM_REQUIRES_EH )
+          set(LLVM_EXPORTED_SYMBOL_FILE
+            ${CMAKE_CURRENT_SOURCE_DIR}/PrintFunctionNames.exports)
+          message(STATUS "Dude: Set LLVM_EXPORTED_SYMBOL_FILE = PrintFunctionNames.exports")
+        endif()
       endif()
     endif()
   endif()
@@ -57,13 +53,10 @@ include_directories( ${LLVM_INCLUDE_DIRS} )
 
 ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
 
-
 add_compile_options( -fPIC )
-
 
 # set_property(DIRECTORY PROPERTY EXCLUDE_FROM_ALL ON)
 # set(EXCLUDE_FROM_ALL ON)
-
 
 # ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
 
