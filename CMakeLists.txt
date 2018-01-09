@@ -145,7 +145,7 @@ add_definitions()
 
 add_compile_options(
   -std=c++1z
-  # -stdlib=libc++
+  #-stdlib=libc++
   -fPIC
   -Wall
   -pedantic
@@ -155,7 +155,7 @@ add_compile_options(
 
 # /me want.
 if (true)
-  add_compile_options( -march=native )
+  add_compile_options( -march=amdfam10 )
 endif()
 
 add_compile_options(

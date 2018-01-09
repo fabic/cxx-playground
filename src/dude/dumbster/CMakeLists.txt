@@ -10,8 +10,8 @@ set (Dumbster_VERSION_MINOR 1)
 # ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 # DEPENDENCIES
 # ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
-find_package( LLVM  REQUIRED CONFIG )
-find_package( Clang REQUIRED )
+# find_package( LLVM  REQUIRED CONFIG )
+# find_package( Clang REQUIRED )
 find_package( Boost COMPONENTS REQUIRED
     log
     # program_options
@@ -19,8 +19,8 @@ find_package( Boost COMPONENTS REQUIRED
     system
   )
 
-message(STATUS "Clong: Found LLVM ${LLVM_PACKAGE_VERSION}")
-message(STATUS "Clong: Using LLVMConfig.cmake in: ${LLVM_DIR}")
+# message(STATUS "Clong: Found LLVM ${LLVM_PACKAGE_VERSION}")
+# message(STATUS "Clong: Using LLVMConfig.cmake in: ${LLVM_DIR}")
 
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 # ~ ~ ~ TARGETS ~ ~ ~
@@ -36,13 +36,13 @@ add_executable( dumbster
     ../hacks/hack_cxa_throw_exception.cpp
   )
 
-llvm_map_components_to_libnames(
-    LLVM_CLANG_LIBS
-    Support Option
-)
+# llvm_map_components_to_libnames(
+#     LLVM_CLANG_LIBS
+#     Support Option
+# )
 
 target_link_libraries( dumbster
-    ${LLVM_CLANG_LIBS}
+    # ${LLVM_CLANG_LIBS}
     ${Boost_LIBRARIES}
     unwind dl # for hack_cxa_throw_exception.cpp
     pthread
