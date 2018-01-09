@@ -8,31 +8,49 @@
 cmake_minimum_required(VERSION 3.3)
 
 
+###
 ## CCACHE
 # https://crascit.com/2016/04/09/using-ccache-with-cmake/
-find_program(CCACHE_PROGRAM ccache)
-if (false AND CCACHE_PROGRAM)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-  message(STATUS "Dude! Found ccache, so we're setting CMake var. RULE_LAUNCH_COMPILE to '${CCACHE_PROGRAM}'.")
+if (false)
+  find_program(CCACHE_PROGRAM ccache)
+  if (CCACHE_PROGRAM)
+    set_property( GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}" )
+    message(STATUS "Dude! Found ccache, so we're setting CMake global property RULE_LAUNCH_COMPILE to '${CCACHE_PROGRAM}'.")
+  else()
+    message(STATUS "Dude -_- Didn't find `ccache` (which is fine)")
+  endif()
+else()
+  message(STATUS "Dude: ccache compilation cache is _not_ enabled (see this CMakeFiles.txt)")
 endif()
 
 
-## Add path for custom modules
-set(CMAKE_MODULE_PATH
-    ${CMAKE_MODULE_PATH}
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake"
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules"
-  )
+# Fancy hello banner.
+message(STATUS "~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~")
+message(STATUS "~~  Dude, hello! This is CMakeLists.txt of '${CMAKE_CURRENT_SOURCE_DIR}'.")
+message(STATUS "~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~")
 
-include(dude_please_dump_cmake_variables)
 
-## Add new `` MinSizeDeb `` build type configuration
+# Add ./cmake/ and ./cmake/modules/ to CMake module search path.
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+  message(STATUS "Dude: Added ${CMAKE_CURRENT_SOURCE_DIR}/cmake/ to CMAKE_MODULE_PATH.")
+  if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+    list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
+    message(STATUS "Dude: Also added ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules to CMAKE_MODULE_PATH.")
+    include(dude_please_dump_cmake_variables)
+    include(list_all_targets)
+  endif()
+endif()
+
+
+###
+## Add a new `` MinSizeDeb `` build type configuration.
 #
 # https://cmake.org/Wiki/CMake_FAQ#How_can_I_specify_my_own_configurations_.28for_generators_that_allow_it.29_.3F
 # https://cmake.org/Wiki/CMake_FAQ#How_can_I_extend_the_build_modes_with_a_custom_made_one_.3F
 
-# 1st add it to the list of configuration types [optional it appears (?)]
-# (note that it may not be supported by CMake, seamingly, see FAQ).
+# ~> A) 1st add it to the list of configuration types [optional it appears (?)]
+#       (note that it may not be supported by CMake, seamingly, see FAQ).
 if(CMAKE_CONFIGURATION_TYPES)
   list(APPEND CMAKE_CONFIGURATION_TYPES MinSizeDeb )
   list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
@@ -40,7 +58,7 @@ if(CMAKE_CONFIGURATION_TYPES)
     "Add the configurations that we need, dah!" FORCE)
 endif()
 
-# There it is.
+# ~> B) MinSizeDeb : There it actually is defined.
 set( CMAKE_C_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
   "Optimize for size, with debug informations (C compiler flags)." FORCE )
 set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
@@ -48,26 +66,133 @@ set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
 
 set( CMAKE_EXE_LINKER_FLAGS_MINSIZEDEB
     "-Wl,--warn-unresolved-symbols" CACHE STRING
-    "Flags used for linking executables (MinSizeDev)." FORCE )
+    "Flags used for linking executables (MinSizeDeb)." FORCE )
 set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEDEB
     "-Wl,--warn-unresolved-symbols" CACHE STRING
     "Flags used by the shared libraries linker (MinSizeDeb)." FORCE )
 
 
-## Set default build type.
+###
+## SET DEFAULT BUILD TYPE ( if not provided by user ).
+#
 # https://cmake.org/Wiki/CMake_FAQ#How_can_I_change_the_default_build_mode_and_see_it_reflected_in_the_GUI.3F
 IF(NOT CMAKE_BUILD_TYPE)
   #SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
+  #SET(CMAKE_BUILD_TYPE Debug CACHE STRING
   SET(CMAKE_BUILD_TYPE MinSizeDeb CACHE STRING
     "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel MinSizeDeb."
       FORCE)
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 
-## Clang link-time-optimization thing (LTO).
-option(DUDE_LETS_TRY_LTO
-  "Will pass -flto to Clang (requires among other things: Binutils' ld.gold and LLVM/Clang built with LTO support)." OFF)
+## Two custom targets 'debug' and 'release'.
+#
+# `cmake --build build --target debug`
+ADD_CUSTOM_TARGET(debug
+  COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR}
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+  COMMENT "Run CMake for a Debug build."
+  )
+# `cmake --build build --target release`
+ADD_CUSTOM_TARGET(release
+  COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release ${CMAKE_SOURCE_DIR}
+  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+  COMMENT "Run CMake for a Release build."
+  )
 
+
+### ~~ local/ FHS-like sub-dir. ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
+#
+# Global variable DUDE_LOCAL_DIR is set to the abs. path to the `local/` dir.
+#
+# ./local/{cmake,include,lib}/ : search paths for find_file() and find_library().
+if (IS_DIRECTORY "${CMAKE_SOURCE_DIR}/local")
+  set(DUDE_LOCAL_DIR "${CMAKE_SOURCE_DIR}/local")
+  message(STATUS "Dude: Found FHS local/ sub-dir.: ${DUDE_LOCAL_DIR}")
+
+  # Eventual `cmake/` sub-directory.
+  list(APPEND CMAKE_MODULE_PATH "${DUDE_LOCAL_DIR}/cmake")
+  message( STATUS "Updated CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}" )
+
+  # include/
+  list(APPEND CMAKE_INCLUDE_PATH "${DUDE_LOCAL_DIR}/include")
+  message( STATUS "Updated CMAKE_INCLUDE_PATH = ${CMAKE_INCLUDE_PATH}" )
+  include_directories( ${DUDE_LOCAL_DIR}/include )
+
+  # lib/
+  list(APPEND CMAKE_LIBRARY_PATH "${DUDE_LOCAL_DIR}/lib")
+  message( STATUS "Updated CMAKE_LIBRARY_PATH = ${CMAKE_LIBRARY_PATH}" )
+  link_directories( "${DUDE_LOCAL_DIR}/lib" )
+
+  # FIXME ? CMake should have inferred this given I didn't define LD_LIBRARY_PATH.
+  if (true)
+    link_libraries( -Wl,-rpath="${DUDE_LOCAL_DIR}/lib" )
+    message(STATUS "Dude: (!) We're setting up linker with `-Wl,-rpath='${DUDE_LOCAL_DIR}/lib'` (!)")
+    message(STATUS "Dude:     ` TODO: investigate why you're doing this (!?)")
+  endif()
+
+  # FIXME: TEMP (!)
+  # FIXME: TEMP (!) CHANGE DEFAULT INSTALL PREFIX.
+  # FIXME: TEMP (!)
+  if (true)
+    if ("${CMAKE_INSTALL_PREFIX}" STREQUAL "/usr/local" )
+      set(CMAKE_INSTALL_PREFIX "${DUDE_LOCAL_DIR}/local")
+      message(STATUS "Dude: overriding CMAKE_INSTALL_PREFIX, now set to '${CMAKE_INSTALL_PREFIX}'.")
+    endif()
+  endif()
+endif()
+
+
+## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+## ~ ~ ~ ~ LTO ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
+
+option(DUDE_LETS_TRY_LTO
+  "Will pass -flto to Clang (requires among other things: Binutils' ld.gold and LLVM/Clang built with LTO support)."
+    OFF)
+
+find_program(LD_GOLD_PROGRAM ld.gold)
+
+if (LD_GOLD_PROGRAM)
+  message(STATUS "Dude! Found Binutils' « ld.gold » linker (which supports LTO and the `-plugin ...` argument, btw).")
+  # message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
+  # set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
+  # ^ DON'T: enabling it for non-LTO compilation/linkage appears to fail with :
+  #          “main.cpp.o: unrecognized file format”
+endif()
+
+if (DUDE_LETS_TRY_LTO)
+  if (LD_GOLD_PROGRAM)
+    message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
+    set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
+
+    add_compile_options( -flto )
+    link_libraries( -flto )
+    message(STATUS "Yeah man! Setting the -flto Clang compiler flag, fingers-crossed o_o")
+    message(STATUS "          Setting the -flto linker flag too.")
+
+    # Replace -Os with -O2 from the CXXFLAGS.
+    # FIXME: We're not altering the CFLAGS.
+    if (true)
+      string(TOUPPER "${CMAKE_BUILD_TYPE}" uppercase_CMAKE_BUILD_TYPE)
+      #message(STATUS "HUH! ${CMAKE_CXX_FLAGS} -- ${uppercase_CMAKE_BUILD_TYPE} --- ${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}}")
+      if ( ${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}} MATCHES "-Os" )
+        message(STATUS "Beware! Clang won't let us compile with -Os while doing LTO (at least not as of February 2017).")
+        string(REPLACE "-Os" "-O2" CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE} "${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}}")
+        message(STATUS "Replaced -Os with -O2 from CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE} : ${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}}.")
+      endif()
+      unset( uppercase_CMAKE_BUILD_TYPE )
+    endif()
+  else()
+    message(WARNING "Argh! dude :-| Couldn't find the `ld.gold` binary (well CMake didn't, I'm cool) ; we're _not_ passing -flto.")
+  endif()
+endif()
+
+# ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`
+
+message(STATUS "Dude, FYI: CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
+message(STATUS "Dude, FYI: CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
+message(STATUS "Dude, FYI: CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
 
 # ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`
 
@@ -75,36 +200,7 @@ option(DUDE_LETS_TRY_LTO
 project(FabicCppWanderings)
 
 set (FabicCppWanderings_VERSION_MAJOR 0)
-set (FabicCppWanderings_VERSION_MINOR 3)
-
-
-## FHS-style local/ directory.
-#
-  if (NOT DEFINED FABIC_LOCAL_DIR)
-    set(FABIC_LOCAL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../local)
-    message(STATUS "Trying FHS-style local/ directory (guessed) : '${FABIC_LOCAL_DIR}'.")
-  else()
-    message(STATUS "FHS-style local/ directory set to ${FABIC_LOCAL_DIR}")
-  endif()
-
-  if (NOT IS_DIRECTORY ${FABIC_LOCAL_DIR})
-    message(WARNING "FHS-like “local/” directory doesn't exist.")
-  else()
-    message(STATUS "FHS-style local/ directory exists, ok.")
-  endif()
-# ^ local/ FHS-style setup.
-##
-
-
-### CMake extra local/lib/cmake/ modules path ?
-# For LLVM/Clang CMake modules
-
-if (IS_DIRECTORY "${FABIC_LOCAL_DIR}/lib/cmake")
-    list(APPEND CMAKE_MODULE_PATH "${FABIC_LOCAL_DIR}/lib/cmake")
-    message(STATUS "LLVM/Clang: Prepended CMAKE_MODULE_PATH with '${FABIC_LOCAL_DIR}/lib/cmake'.")
-endif()
-
-message(STATUS "FYI: CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
+set (FabicCppWanderings_VERSION_MINOR 4)
 
 
 ## PKG-CONFIG auto-configuration “CMake bridge” # # # # # # # # # # # #
@@ -142,11 +238,14 @@ add_definitions()
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -flto")
 #set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ggdb")
 
+# Use Clang's libcxx ?
+# add_compile_options( -stdlib=libc++ )
+# add_compile_options( -stdlib=libstdc++ )
+
 
 add_compile_options(
   -std=c++1z
-  #-stdlib=libc++
-  -fPIC
+  #-fPIC
   -Wall
   -pedantic
   # -Weverything
@@ -186,7 +285,7 @@ add_compile_options(
   # So as to get better/meaninful stack traces in error messages :
   -fno-omit-frame-pointer
   # and disable tail call elimination
-  -fno-optimize-sibling-calls
+  #-fno-optimize-sibling-calls
   )
 
 
@@ -223,44 +322,13 @@ add_compile_options(
 )
 
 
-## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-## ~ ~ ~ ~ LTO ~ ~ ~ ~
-## ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
-find_program(LD_GOLD_PROGRAM ld.gold)
-
-if (LD_GOLD_PROGRAM)
-  message(STATUS "Dude! Found Binutils' « ld.gold » linker (which supports LTO and the `-plugin ...` argument, btw).")
-  # message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
-  # set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
-  # ^ DON'T: enabling it for non-LTO compilation/linkage appears to fail with :
-  #          “main.cpp.o: unrecognized file format”
-endif()
-
-if (DUDE_LETS_TRY_LTO)
-  if (LD_GOLD_PROGRAM)
-    message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
-    set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
-
-    add_compile_options( -flto )
-    link_libraries( -flto )
-    message(STATUS "Yeah man! Setting the -flto Clang compiler flag, fingers-crossed o_o")
-    message(STATUS "          Setting the -flto linker flag too.")
-
-    # Replace -Os with -O2 from the CXXFLAGS.
-    # FIXME: We're not altering the CFLAGS.
-    if (true)
-      string(TOUPPER "${CMAKE_BUILD_TYPE}" uppercase_CMAKE_BUILD_TYPE)
-      #message(STATUS "HUH! ${CMAKE_CXX_FLAGS} -- ${uppercase_CMAKE_BUILD_TYPE} --- ${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}}")
-      if ( ${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}} MATCHES "-Os" )
-        message(STATUS "Beware! Clang won't let us compile with -Os while doing LTO (at least not as of February 2017).")
-        string(REPLACE "-Os" "-O2" CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE} "${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}}")
-        message(STATUS "Replaced -Os with -O2 from CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE} : ${CMAKE_CXX_FLAGS_${uppercase_CMAKE_BUILD_TYPE}}.")
-      endif()
-      unset( uppercase_CMAKE_BUILD_TYPE )
-    endif()
-  else()
-    message(WARNING "Argh! dude :-| Couldn't find the `ld.gold` binary (well CMake didn't, I'm cool) ; we're _not_ passing -flto.")
-  endif()
+# TODO
+# TODO
+# TODO
+if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/config.h.in")
+  message(STATUS "Dude: config.h.in found.")
+  configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.in
+                  ${CMAKE_CURRENT_BINARY_DIR}/config.h    )
 endif()
 
 
@@ -269,19 +337,19 @@ endif()
 #
 # https://cmake.org/cmake/help/latest/module/FindBoost.html
 # https://svn.boost.org/trac/boost/wiki/CMakeBuildFeatures
-
+if (true)
   # Hard-coded path if needed for `find_package(Boost...)`
   #   - or simply set this as an environment variable,
   #   - or pass `-DBOOSTROOT=...` when running CMake.
   # (works ok with my CMake v3.4.3)
   if (NOT IS_DIRECTORY "$ENV{BOOSTROOT}")
     set(BOOSTROOT ../local/boost-1.61.0-clang)
-    message(WARNING "Boost C++: using hard-coded path for BOOSTROOT = ${BOOSTROOT}.")
+    message(WARNING "Dude: Boost C++: using hard-coded path for BOOSTROOT = ${BOOSTROOT}.")
   elseif(IS_DIRECTORY $ENV{BOOSTROOT})
     set(BOOSTROOT $ENV{BOOSTROOT})
-    message(STATUS "Boost C++ location said to be at ${BOOSTROOT}")
+    message(STATUS "Dude: Boost C++ location said to be at ${BOOSTROOT}")
   else()
-    message(WARNING "Boost C++ location $ENV{BOOSTROOT} ain't no exit buddy.")
+    message(WARNING "Dude: Boost C++ location $ENV{BOOSTROOT} ain't no exit buddy.")
   endif()
 
   # This one (with the '_' blankee) is for JetBrains' CLion bundled CMake (v3.5.2) :
@@ -319,10 +387,14 @@ endif()
     #     filesystem
     #     system
     # )
-    # ^ now performed where/when needed.
+    # ^ now performed where/when/as needed.
   else()
-    message(WARNING "Boost C++: Ain't not found lad :-/")
+    message(WARNING "Dude: Boost C++: Ain't not found lad :-/")
+    message(WARNING "      (it's okay, btw. you have quite an awkward")
+    message(WARNING "       love-hate relationship with it, better to")
+    message(WARNING "       take a step back away from it from time to time).")
   endif (Boost_FOUND)
+endif()
 # ^ Boost C++
 ###
 
@@ -356,17 +428,69 @@ endif()
 # ^ cpp-netlib
 ##
 
+###  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
+## Source code layout :
+#  - Either we have an INCLUDE/ dir. with headers separated from the
+#    implementations in some SRC/ dir.
+#  - Or we just have a SRC/ dir. => in which case we add it as an include (-I)
+#    directory.
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/include")
+  include_directories( include )
+  # include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/include )
+  message(STATUS "Dude: Found your include/ dir.")
+elseif (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src")
+  include_directories( src )
+  message(STATUS "FYI: Adding src/ as compiler include (-I) path; since there's no include/ subdir. here")
+endif()
 
-include_directories(include)
-# ^ NOTE/2016-07-27: emptied the include/ dir. in favor of having headers reside
-#                    along implementations.
-# ^ and have src/ as include dir. instead :
-include_directories(src)
 
-add_subdirectory(experiments)
+# Add the src/ subdirectory only if it has a CMakeLists.txt file.
+if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src")
+  if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/src/CMakeLists.txt")
+    add_subdirectory( src )
+    message(STATUS "FYI: Added subdirectory src/")
+  else()
+    message(WARNING "Dude! Found that src/ subdir. of yours, _BUT_ got no src/CMakeLists.txt (!) Skipping...")
+  endif()
+endif()
 
-add_subdirectory(lib)
+# add_subdirectory(experiments)
+# add_subdirectory(lib)
 
-add_subdirectory(src)
+# `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~
+# `~. BOTTOM OF THAT CMAKE CONFIGURATION FILE `~. `~. `~. `~. `~. `~. `~. `~. `~
+# `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~
 
+# Custom target that list executable files.
+if (false)
+  add_custom_target( list-binaries
+    #ALL
+    DEPENDS clong-05 # FIXME: last target !
+      COMMAND find ${CMAKE_CURRENT_BINARY_DIR} -type d -name CMakeFiles -prune -o -type f -perm -a+x -ls
+      COMMAND find ${CMAKE_CURRENT_BINARY_DIR} -type d -name CMakeFiles -prune -o -type f -name '*.a' -ls
+      COMMAND echo -e "\\e[32;1;7m  HEY!  \\e[0m"
+      COMMAND echo -e "\\e[2m  Dude, have a break away from computer at times!  \\e[0m"
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    COMMENT "-- List os executable files (+x) that were built : --"
+    VERBATIM USES_TERMINAL
+    )
+endif()
 
+# TODO: have a custom target that runs built program under LLDB.
+#       $ lldb -o 'run' -- ls -lad
+
+if (false)
+  dude_list_all_targets(${CMAKE_CURRENT_SOURCE_DIR} _all_library_targets _all_executable_targets _all_other_targets)
+  message(STATUS "All library targets: ${_all_library_targets}")
+  message(STATUS "All executable targets: ${_all_executable_targets}")
+  message(STATUS "All other targets: ${_all_other_targets}")
+endif()
+
+message(STATUS "~~")
+message(STATUS "~~ Dude: We're done with ${CMAKE_CURRENT_LIST_FILE}.")
+message(STATUS "~~")
+message(STATUS "~~       Remember to RELAX and BREATHE, this is just code,")
+message(STATUS "~~       don't take these matters too seriously (!)")
+message(STATUS "~~       and have fun !  ^_^")
+message(STATUS "~~")
+message(STATUS "~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~")
