@@ -3,7 +3,7 @@
 #include <clang/AST/ASTContext.h>
 // #include <clang/AST/ASTConsumer.h>
 
-// #include "clong/clang/TypePrinter.hpp"
+#include "dude/clang/TypePrinter.hpp"
 #include "dude/util/Terminal.hpp"
 
 #include "Clong.hpp"
@@ -43,7 +43,7 @@ namespace plugin {
       // const SmallVectorImpl<Type *>&
       auto& types = context.getTypes();
 
-#if 0
+#if 1
       TypePrinter printer(context.getPrintingPolicy(), /* indentation */ 2);
 
       const char *placeholder = "";

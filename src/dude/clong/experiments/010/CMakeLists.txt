@@ -35,7 +35,7 @@ else()
         Repository.cpp
         TypeResolver.cpp
       $<TARGET_OBJECTS:PimplioTerminal>
-      # $<TARGET_OBJECTS:TypePrinter>
+      $<TARGET_OBJECTS:TypePrinter>
     PLUGIN_TOOL clang
     )
 

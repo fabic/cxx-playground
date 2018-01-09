@@ -28,7 +28,7 @@ namespace plugin {
            << context.getSideTableAllocatedMemory() << tendl;
 
       try {
-        if (false)
+        if (true)
           InvestigateASTContextTypes(context);
 
         InitLMDB();
