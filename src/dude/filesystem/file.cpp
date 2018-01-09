@@ -1,5 +1,5 @@
-#include "filesystem/file.hpp"
-#include "util/logging.hpp"
+#include "dude/filesystem/file.hpp"
+#include "dude/util/logging.hpp"
 
 namespace dude {
 namespace fs {

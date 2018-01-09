@@ -1,5 +1,5 @@
 
-# include "xcbx/events.hpp"
+# include "dude/xcbx/events.hpp"
 
 namespace sf {
   namespace xcb {

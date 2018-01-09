@@ -1,5 +1,5 @@
-#include "dumbster/parser.hpp"
-# include "util/logging.hpp"
+#include "dude/dumbster/parser.hpp"
+#include "dude/util/logging.hpp"
 
 namespace dude {
 namespace dumbster {

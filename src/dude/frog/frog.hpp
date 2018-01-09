@@ -5,8 +5,8 @@
 #include <vector>
 #include <boost/filesystem.hpp>
 
-# include "util/exceptions.hpp"
-# include "util/logging.hpp"
+# include "dude/util/exceptions.hpp"
+# include "dude/util/logging.hpp"
 
 namespace dude {
 namespace frog {

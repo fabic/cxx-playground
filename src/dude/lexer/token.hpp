@@ -2,7 +2,7 @@
 #define _DUDE_LEXER_TOKEN_H
 
 #include <string>
-#include <util/exceptions.hpp>
+#include "dude/util/exceptions.hpp"
 
 /// Damn C header -__-
 ///   “ /usr/include/libio.h:62:14: note: expanded from macro 'EOF'

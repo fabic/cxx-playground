@@ -5,8 +5,8 @@
 //#include <yaml-cpp/yaml.h>
 #include <iostream>
 
-# include "di/container.hpp"
-# include "di/service_provider.hpp"
+# include "dude/di/container.hpp"
+# include "dude/di/service_provider.hpp"
 
 namespace di {
 

@@ -8,7 +8,7 @@
 # include <string>
 # include <map>
 
-# include "di/base_definition.hpp"
+# include "dude/di/base_definition.hpp"
 
   namespace di {
 

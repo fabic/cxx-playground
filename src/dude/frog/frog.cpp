@@ -1,5 +1,5 @@
 
-# include "frog/frog.hpp"
+# include "dude/frog/frog.hpp"
 
 namespace dude {
   namespace frog {

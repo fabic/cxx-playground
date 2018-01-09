@@ -2,7 +2,7 @@
 #define SURFACE_XCB_EXCEPTIONS_H
 
 #include <memory>
-#include "util/exceptions.hpp"
+#include "dude/util/exceptions.hpp"
 
 namespace sf {
   namespace xcb {

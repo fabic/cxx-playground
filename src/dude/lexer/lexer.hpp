@@ -5,9 +5,9 @@
 #include <string>
 #include <vector>
 
-#include "lexer/token.hpp"
-#include "util/logging.hpp"
-#include "filesystem/file.hpp"
+#include "dude/lexer/token.hpp"
+#include "dude/util/logging.hpp"
+#include "dude/filesystem/file.hpp"
 
 namespace dude {
 namespace lexer {

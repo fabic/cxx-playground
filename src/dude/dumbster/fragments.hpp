@@ -3,7 +3,7 @@
 
 #include <memory>
 #include <list>
-# include "lexer/token.hpp"
+# include "dude/lexer/token.hpp"
 
 namespace dude {
 namespace dumbster {

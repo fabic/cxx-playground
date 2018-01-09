@@ -11,7 +11,7 @@
 #include <cxxabi.h>
 
 // todo: ?
-# include "object.hpp"
+# include "dude/object.hpp"
 
 namespace di {
 

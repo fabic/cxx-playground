@@ -1,6 +1,6 @@
 
-#include "lexer/lexer.hpp"
-#include "util/logging.hpp"
+#include "dude/lexer/lexer.hpp"
+#include "dude/util/logging.hpp"
 
 namespace dude {
 namespace lexer {

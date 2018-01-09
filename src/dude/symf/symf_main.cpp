@@ -6,9 +6,9 @@
 #include <iostream>
 #include <boost/program_options.hpp>
 
-# include "di/container.hpp"
-# include "di/dll_service_provider.hpp"
-# include "dic-modules/asio/IoService.hpp"
+# include "dude/di/container.hpp"
+# include "dude/di/dll_service_provider.hpp"
+# include "dude/dic-modules/asio/IoService.hpp"
 
   namespace symfony {
 

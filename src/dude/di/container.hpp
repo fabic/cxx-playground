@@ -13,7 +13,7 @@
 #include <memory>
 #include <cassert>
 
-# include "di/service_definition.hpp"
+# include "dude/di/service_definition.hpp"
 
 namespace di {
 

@@ -32,8 +32,8 @@ add_executable( symf
   ../hacks/hack_cxa_throw_exception.cpp
   # FIXME: Link modules along the main exec. due to pb with ABI :
   #dic-modules/http/module-http-server.cpp
-  ../dic-modules/asio/module-boost-asio.cpp
-  ../dic-modules/asio/IoService.cpp
+  ../di/dic-modules/asio/module-boost-asio.cpp
+  ../di/dic-modules/asio/IoService.cpp
   )
 
 # For Boost.DLL which recommends this flag

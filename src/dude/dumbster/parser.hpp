@@ -3,9 +3,9 @@
 
 #include <list>
 
-# include "dumbster/fragments.hpp"
-# include "lexer/lexer.hpp"
-# include "filesystem/file.hpp"
+# include "dude/dumbster/fragments.hpp"
+# include "dude/lexer/lexer.hpp"
+# include "dude/filesystem/file.hpp"
 
 namespace dude {
 namespace dumbster {

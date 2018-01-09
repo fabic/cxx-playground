@@ -1,7 +1,7 @@
 
-#include "xcbx/window.hpp"
-#include "xcbx/inline-decls.hpp"
-#include "util/logging.hpp"
+#include "dude/xcbx/window.hpp"
+#include "dude/xcbx/inline-decls.hpp"
+#include "dude/util/logging.hpp"
 
 namespace sf {
   namespace xcb {

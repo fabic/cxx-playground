@@ -1,4 +1,4 @@
-#include "lexer/token.hpp"
+#include "dude/lexer/token.hpp"
 
 namespace dude {
 namespace lexer {

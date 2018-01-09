@@ -2,7 +2,7 @@
 #define SF_MATHS_RECTANGLE_HPP
 
 #include <c++/v1/type_traits>
-# include "maths/dimensions.hpp"
+# include "dude/maths/dimensions.hpp"
 
 namespace sf {
 
