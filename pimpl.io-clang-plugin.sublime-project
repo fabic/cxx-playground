@@ -1,0 +1,41 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		},
+		{
+			"path": "/usr/include/clang"
+		},
+		{
+			"path": "/usr/include/llvm"
+		},
+		{
+			"path": "/home/fabi/dev/llvm-clang/llvm-clang/clang-tools-extra"
+		},
+		{
+			"path": "/home/fabi/dev/llvm-clang/llvm-clang/clang/examples"
+		},
+		{
+			"path": "/usr/lib/cmake/clang"
+		},
+		{
+			"path": "/usr/lib/cmake/llvm"
+		},
+		{
+			"path": "/home/fabi/dev/cxx-playground"
+		},
+		{
+			"path": "/home/fabi/dev/llvm-clang/llvm-clang/clang/lib"
+		},
+		{
+			"path": "/home/fabi/dev/llvm-clang/misc/valloric-ycmd/cpp/ycm"
+		},
+		{
+			"path": "/home/fabi/dev/llvm-clang/misc/rtags"
+		},
+		{
+			"path": "/home/fabi/dev/archlinux_aur/libpqxx-git/src/libpqxx"
+		}
+	]
+}
