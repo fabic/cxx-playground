@@ -7,22 +7,15 @@
 
 cmake_minimum_required(VERSION 3.3)
 
+project(FabicCppWanderings
+  VERSION 0.0.5
+  DESCRIPTION "fabic.net - personal C++ playground project."
+  LANGUAGES CXX
+  )
 
-###
-## CCACHE
-# https://crascit.com/2016/04/09/using-ccache-with-cmake/
-if (false)
-  find_program(CCACHE_PROGRAM ccache)
-  if (CCACHE_PROGRAM)
-    set_property( GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}" )
-    message(STATUS "Dude! Found ccache, so we're setting CMake global property RULE_LAUNCH_COMPILE to '${CCACHE_PROGRAM}'.")
-  else()
-    message(STATUS "Dude -_- Didn't find `ccache` (which is fine)")
-  endif()
-else()
-  message(STATUS "Dude: ccache compilation cache is _not_ enabled (see this CMakeFiles.txt)")
-endif()
-
+# set (FabicCppWanderings_VERSION_MAJOR 0)
+# set (FabicCppWanderings_VERSION_MINOR 0)
+# set (FabicCppWanderings_VERSION_PATCH 5)
 
 # Fancy hello banner.
 message(STATUS "~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~")
@@ -48,58 +41,84 @@ endif()
 #
 # https://cmake.org/Wiki/CMake_FAQ#How_can_I_specify_my_own_configurations_.28for_generators_that_allow_it.29_.3F
 # https://cmake.org/Wiki/CMake_FAQ#How_can_I_extend_the_build_modes_with_a_custom_made_one_.3F
+if (true)
 
-# ~> A) 1st add it to the list of configuration types [optional it appears (?)]
-#       (note that it may not be supported by CMake, seamingly, see FAQ).
-if(CMAKE_CONFIGURATION_TYPES)
-  list(APPEND CMAKE_CONFIGURATION_TYPES MinSizeDeb )
-  list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
-  set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
-    "Add the configurations that we need, dah!" FORCE)
+  if (NOT CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_CONFIGURATION_TYPES  Debug;Release;RelWithDebInfo; CACHE STRING
+      "List of CMake build types (for CMAKE_BUILD_TYPE).")
+  endif()
+
+  # ~> A) 1st add it to the list of configuration types [optional it appears (?)]
+  #       (note that it may not be supported by CMake, seamingly, see FAQ).
+  if(CMAKE_CONFIGURATION_TYPES)
+    list(APPEND CMAKE_CONFIGURATION_TYPES MinSizeDeb )
+    list(REMOVE_DUPLICATES CMAKE_CONFIGURATION_TYPES)
+    set(CMAKE_CONFIGURATION_TYPES "${CMAKE_CONFIGURATION_TYPES}" CACHE STRING
+      "Dude, added MinSizeDeb build configuration, dah!" FORCE)
+  endif()
+
+  # ~> B) MinSizeDeb : There it actually is defined.
+  set( CMAKE_C_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
+    "Optimize for size, with debug informations (C compiler flags)." FORCE )
+  set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
+      "Optimize for size, with debug informations (C++ compiler flags)." FORCE )
+
+  set( CMAKE_EXE_LINKER_FLAGS_MINSIZEDEB
+      "-Wl,--warn-unresolved-symbols" CACHE STRING
+      "Flags used for linking executables (MinSizeDeb)." FORCE )
+  set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEDEB
+      "-Wl,--warn-unresolved-symbols" CACHE STRING
+      "Flags used by the shared libraries linker (MinSizeDeb)." FORCE )
 endif()
-
-# ~> B) MinSizeDeb : There it actually is defined.
-set( CMAKE_C_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
-  "Optimize for size, with debug informations (C compiler flags)." FORCE )
-set( CMAKE_CXX_FLAGS_MINSIZEDEB "-Os -g" CACHE STRING
-    "Optimize for size, with debug informations (C++ compiler flags)." FORCE )
-
-set( CMAKE_EXE_LINKER_FLAGS_MINSIZEDEB
-    "-Wl,--warn-unresolved-symbols" CACHE STRING
-    "Flags used for linking executables (MinSizeDeb)." FORCE )
-set( CMAKE_SHARED_LINKER_FLAGS_MINSIZEDEB
-    "-Wl,--warn-unresolved-symbols" CACHE STRING
-    "Flags used by the shared libraries linker (MinSizeDeb)." FORCE )
-
 
 ###
 ## SET DEFAULT BUILD TYPE ( if not provided by user ).
 #
 # https://cmake.org/Wiki/CMake_FAQ#How_can_I_change_the_default_build_mode_and_see_it_reflected_in_the_GUI.3F
 IF(NOT CMAKE_BUILD_TYPE)
+  #SET(CMAKE_BUILD_TYPE MinSizeDeb CACHE STRING
   #SET(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING
-  #SET(CMAKE_BUILD_TYPE Debug CACHE STRING
-  SET(CMAKE_BUILD_TYPE MinSizeDeb CACHE STRING
+  set(CMAKE_BUILD_TYPE Debug CACHE STRING
     "Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel MinSizeDeb."
       FORCE)
+  message(STATUS "Dude: CMAKE_BUILD_TYPE wasn't specified, setting it to ${CMAKE_BUILD_TYPE}")
+  message(STATUS "      ` may be one of: ${CMAKE_CONFIGURATION_TYPES}")
 ENDIF(NOT CMAKE_BUILD_TYPE)
 
 
-## Two custom targets 'debug' and 'release'.
-#
-# `cmake --build build --target debug`
-ADD_CUSTOM_TARGET(debug
-  COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR}
-  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
-  COMMENT "Run CMake for a Debug build."
-  )
-# `cmake --build build --target release`
-ADD_CUSTOM_TARGET(release
-  COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release ${CMAKE_SOURCE_DIR}
-  COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
-  COMMENT "Run CMake for a Release build."
-  )
+###
+## CCACHE
+# https://crascit.com/2016/04/09/using-ccache-with-cmake/
+if (false)
+  find_program(CCACHE_PROGRAM ccache)
+  if (CCACHE_PROGRAM)
+    set_property( GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}" )
+    message(STATUS "Dude! Found ccache, so we're setting CMake global property RULE_LAUNCH_COMPILE to '${CCACHE_PROGRAM}'.")
+  else()
+    message(STATUS "Dude -_- Didn't find `ccache` (which is fine)")
+  endif()
+else()
+  message(STATUS "Dude: ccache compilation cache is _not_ enabled (see this CMakeFiles.txt)")
+endif()
 
+
+## Two custom targets 'debug' and 'release'.
+if (true)
+  # `cmake --build build --target debug`
+  add_custom_target(debug
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Debug ${CMAKE_SOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+    COMMENT "Run CMake for a Debug build."
+    )
+  # `cmake --build build --target release`
+  add_custom_target(release
+    COMMAND ${CMAKE_COMMAND} -DCMAKE_BUILD_TYPE=Release ${CMAKE_SOURCE_DIR}
+    COMMAND ${CMAKE_COMMAND} --build ${CMAKE_BINARY_DIR} --target all
+    COMMENT "Run CMake for a Release build."
+    )
+  message(STATUS "Dude: Added two convenience targets 'debug' and 'release'.")
+  message(STATUS "      ` ex.: $ cmake --build build/ --target release")
+endif()
 
 ### ~~ local/ FHS-like sub-dir. ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
 #
@@ -190,17 +209,14 @@ endif()
 
 # ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`
 
-message(STATUS "Dude, FYI: CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
-message(STATUS "Dude, FYI: CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
-message(STATUS "Dude, FYI: CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "Dude, FYI: CMAKE_BUILD_TYPE     = ${CMAKE_BUILD_TYPE}")
+message(STATUS "           CMAKE_MODULE_PATH    = ${CMAKE_MODULE_PATH}")
+message(STATUS "           CMAKE_INSTALL_PREFIX = ${CMAKE_INSTALL_PREFIX}")
+message(STATUS "           PROJECT_SOURCE_DIR   = ${PROJECT_SOURCE_DIR}")
+message(STATUS "           PROJECT_BINARY_DIR   = ${PROJECT_BINARY_DIR}")
 
 # ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`  ~`
 
-
-project(FabicCppWanderings)
-
-set (FabicCppWanderings_VERSION_MAJOR 0)
-set (FabicCppWanderings_VERSION_MINOR 4)
 
 
 ## PKG-CONFIG auto-configuration “CMake bridge” # # # # # # # # # # # #
@@ -375,6 +391,11 @@ if (true)
   #   problem for the `log` module only.
   add_definitions(-DBOOST_LOG_DYN_LINK)
 
+  # 2018-01-09 : FindBoost has not yet been updated for handling the latest
+  #              release; note that this _breaks_ the dependencies resolution
+  #              thing (see FindBoost.cmake).
+  set(Boost_ADDITIONAL_VERSIONS 106600 )
+
   find_package(Boost 1.61.0)
 
   if (Boost_FOUND)
@@ -393,7 +414,7 @@ if (true)
     message(WARNING "      (it's okay, btw. you have quite an awkward")
     message(WARNING "       love-hate relationship with it, better to")
     message(WARNING "       take a step back away from it from time to time).")
-  endif (Boost_FOUND)
+  endif()
 endif()
 # ^ Boost C++
 ###
@@ -428,6 +449,28 @@ endif()
 # ^ cpp-netlib
 ##
 
+###
+## LLVM/Clang
+#
+#find_package(LLVM REQUIRED CONFIG)
+if (true)
+  find_package(LLVM CONFIG)
+  # find_package(Clang REQUIRED)
+
+  # This would typically append for ex. '/usr/lib/cmake/llvm/' to CMake search path.
+  list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
+
+  # For `add_llvm_loadable_module()` notably.
+  include(AddLLVM)
+
+  message(STATUS "Dude: Found LLVM version ${LLVM_PACKAGE_VERSION}")
+  message(STATUS "Dude: Using LLVMConfig.cmake found at: ${LLVM_DIR}")
+
+  # Don't (!): do this as needed.
+  #add_definitions( ${LLVM_DEFINITIONS} )
+  #include_directories( ${LLVM_INCLUDE_DIRS} )
+endif()
+
 ###  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #
 ## Source code layout :
 #  - Either we have an INCLUDE/ dir. with headers separated from the
@@ -454,7 +497,7 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/src")
   endif()
 endif()
 
-# add_subdirectory(experiments)
+add_subdirectory(experiments)
 # add_subdirectory(lib)
 
 # `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~. `~

@@ -18,9 +18,8 @@ include_directories( ${LLVM_INCLUDE_DIRS} )
 
 add_compile_options( -fPIC )
 
-add_subdirectory(symf)
-# add_subdirectory(dic-modules)
-#add_subdirectory( clong )
+add_subdirectory( clang )
+add_subdirectory( clong )
 add_subdirectory( util )
 # add_subdirectory(surface)
 add_subdirectory(xcbx)

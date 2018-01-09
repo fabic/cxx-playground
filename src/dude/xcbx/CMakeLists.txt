@@ -66,6 +66,7 @@ add_compile_options(
 # ~ ~ ~ DEPENDENCIES ~ ~ ~
 # ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~
 
+set(Boost_ADDITIONAL_VERSIONS 106600 )
 find_package (
     Boost
     COMPONENTS REQUIRED

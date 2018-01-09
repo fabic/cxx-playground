@@ -16,7 +16,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
     add_executable(
       gtk
       gtkmm.cpp
-      ../../src/hacks/hack_cxa_throw_exception.cpp
+      ../../src/dude/hacks/hack_cxa_throw_exception.cpp
     )
 
     target_compile_options(
@@ -53,7 +53,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
     add_executable(
       xlib
       xlib1.cpp
-      ../../src/hacks/hack_cxa_throw_exception.cpp
+      ../../src/dude/hacks/hack_cxa_throw_exception.cpp
     )
 
     target_compile_options(
@@ -96,7 +96,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
     add_executable(
       xcb1
       xcb1.cpp
-      ../../src/hacks/hack_cxa_throw_exception.cpp
+      ../../src/dude/hacks/hack_cxa_throw_exception.cpp
     )
 
     target_compile_options(
