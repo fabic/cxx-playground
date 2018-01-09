@@ -1,6 +1,6 @@
 #include "FunctionVisitor.hpp"
 #include "../PimplIOVisitor.hpp"
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 
 namespace clong {
 namespace plugin {

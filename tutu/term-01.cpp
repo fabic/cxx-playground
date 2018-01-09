@@ -1,7 +1,7 @@
 /**
- * clang++ -std=c++1z -Isrc tutu/term-01.cpp src/clong/Terminal.cpp src/clong/llvm/FormattedStream.cpp -o term-01 -lLLVMSupport -lpthread -lncursesw
+ * clang++ -std=c++1z -Isrc tutu/term-01.cpp src/dude/util/Terminal.cpp src/clong/llvm/FormattedStream.cpp -o term-01 -lLLVMSupport -lpthread -lncursesw
  */
-#include <clong/Terminal.hpp>
+#include <dude/util/Terminal.hpp>
 
 using namespace clong;
 

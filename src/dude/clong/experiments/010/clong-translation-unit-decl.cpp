@@ -2,7 +2,7 @@
 #include <clang/AST/ASTContext.h>
 
 #include "Clong.hpp"
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 
 namespace clong {
 namespace plugin {

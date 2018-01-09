@@ -20,6 +20,7 @@ add_compile_options( -fPIC )
 
 add_subdirectory( clang )
 add_subdirectory( clong )
+add_subdirectory( hacks )
 add_subdirectory( util )
 # add_subdirectory(surface)
 add_subdirectory(xcbx)

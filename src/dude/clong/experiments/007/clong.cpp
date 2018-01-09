@@ -27,7 +27,7 @@
 
 // ?? #include "llvm/Support/raw_ostream.h"
 // ?? #include "clang/Sema/Sema.h"
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 
 //using namespace clang;
 

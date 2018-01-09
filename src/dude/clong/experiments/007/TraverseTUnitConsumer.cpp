@@ -1,7 +1,7 @@
 
 #include "TraverseTUnitConsumer.hpp"
 #include "PimplIOVisitor.hpp"
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 
 #include <clang/AST/ASTContext.h>
 #include <clang/AST/ASTConsumer.h>

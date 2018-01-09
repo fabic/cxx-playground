@@ -96,8 +96,6 @@ if (true)
     set(_test_files "")
     set(_last_test_file "")
 
-    message(STATUS "DUDE (!) : CMAKE_SOURCE_DIR = ${CMAKE_SOURCE_DIR}")
-
     file(GLOB _test_files
       RELATIVE ${CMAKE_SOURCE_DIR}
       ${CMAKE_SOURCE_DIR}/tutu/test-*.cpp)

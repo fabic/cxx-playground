@@ -4,7 +4,7 @@
 // #include <clang/AST/ASTConsumer.h>
 
 // #include "clong/clang/TypePrinter.hpp"
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 
 #include "Clong.hpp"
 

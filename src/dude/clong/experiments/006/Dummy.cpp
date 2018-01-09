@@ -3,7 +3,7 @@
 #include <type_traits>
 #include <pqxx/pqxx>
 
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 
 namespace clong {
 namespace util {

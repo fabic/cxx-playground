@@ -39,7 +39,7 @@
 // #include "llvm/Support/raw_ostream.h"
 #endif //0
 
-#include "clong/clang/TypePrinter.hpp"
+#include "dude/clang/TypePrinter.hpp"
 
 using namespace clang;
 

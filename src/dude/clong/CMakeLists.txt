@@ -46,8 +46,6 @@ add_compile_options( -fPIC )
 # ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
 
 add_subdirectory(experiments)
-#add_subdirectory(misc)
-#add_subdirectory(print-fns)
 
 # LMDB : FIXME: don't add_subdirectory(): it inherits stuff that we do here, like compiler flags etc..
 if (false)

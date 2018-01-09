@@ -3,7 +3,7 @@
 
 #include "Clong.hpp"
 #include "TypeResolver.hpp"
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 
 namespace clong {
 namespace plugin {

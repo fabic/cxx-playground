@@ -1,7 +1,7 @@
 #include <cassert>
 #include <llvm/Support/ErrorHandling.h>
 #include <clang/AST/TypeLoc.h>
-#include <clong/Terminal.hpp>
+#include <dude/util/Terminal.hpp>
 #include "TypeResolver.hpp"
 #include "Clong.hpp"
 

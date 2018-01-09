@@ -4,7 +4,7 @@
 #include <experimental/filesystem>
 
 #include "Clong.hpp"
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 
 /*
  * https://github.com/bendiken/lmdbxx

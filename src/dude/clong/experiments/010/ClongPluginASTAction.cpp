@@ -2,7 +2,7 @@
 #include <clang/Frontend/FrontendPluginRegistry.h>
 #include "ClongPluginASTAction.hpp"
 #include "Clong.hpp"
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 
 namespace clong {
 namespace plugin {

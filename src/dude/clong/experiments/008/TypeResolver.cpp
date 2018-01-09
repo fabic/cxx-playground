@@ -1,6 +1,6 @@
 #include <cassert>
 #include <llvm/Support/ErrorHandling.h>
-#include <clong/Terminal.hpp>
+#include <dude/util/Terminal.hpp>
 #include "TypeResolver.hpp"
 
 namespace clong {

@@ -19,7 +19,7 @@
 #include "clang/Lex/MacroArgs.h"
 #include "llvm/Support/raw_ostream.h"
 
-#include "clong/Terminal.hpp"
+#include "dude/util/Terminal.hpp"
 #include "PPCallbacksTracker.hpp"
 
 namespace clong {
