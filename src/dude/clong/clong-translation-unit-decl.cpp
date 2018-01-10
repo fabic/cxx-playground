@@ -31,12 +31,14 @@ namespace plugin {
         if (true)
           InvestigateASTContextTypes(context);
 
-        InitLMDB();
+        if (false)
+          InitLMDB();
 
         const TranslationUnitDecl *TU = context.getTranslationUnitDecl();
 
         if (!TraverseTranslationUnitDecl( TU ))
-          throw std::runtime_error("do_work( TU ) failed ?!");
+          throw std::runtime_error("TraverseTranslationUnitDecl( TU ) "
+                                   "returned false ?!");
 
         if(false)
           OutputPreprocessorTrace( *log );

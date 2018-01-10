@@ -85,6 +85,9 @@ else()
 
   target_compile_options(     ${ThisModuleName} PUBLIC ${LIBPQXX_CFLAGS} )
   target_include_directories( ${ThisModuleName} PUBLIC ${LIBPQXX_INCLUDE_DIRS} )
+
+  set_property(TARGET ${ThisModuleName}
+    PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 endif()
 
 # ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
