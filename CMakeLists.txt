@@ -10,7 +10,8 @@ cmake_minimum_required(VERSION 3.3)
 project(FabicCppWanderings
   VERSION 0.0.5
   DESCRIPTION "fabic.net - personal C++ playground project."
-  LANGUAGES CXX
+  LANGUAGES CXX C
+              # ^ for liblmdb.
   )
 
 # set (FabicCppWanderings_VERSION_MAJOR 0)
@@ -260,7 +261,9 @@ add_definitions()
 
 
 add_compile_options(
-  -std=c++1z
+  #-std=c++1z
+  # ^ don't do this from this top-level dir.
+  #   it gets in the way when compiling C sources, notably.
   #-fPIC
   -Wall
   -pedantic
@@ -469,6 +472,33 @@ if (true)
   # Don't (!): do this as needed.
   #add_definitions( ${LLVM_DEFINITIONS} )
   #include_directories( ${LLVM_INCLUDE_DIRS} )
+endif()
+
+
+# TODO: Set this up!? see experiments/010/CMakeLists.txt
+# LMDB : FIXME: don't add_subdirectory(): it inherits stuff that we do here, like compiler flags etc..
+if (false)
+  find_library(StaticLibLMDB lmdb)
+  if ( StaticLibLMDB MATCHES "-NOTFOUND$" )
+    message(STATUS "Dude: Couldn't find LMDB's static liblmdb.a")
+    add_subdirectory( vendor/lmdb )
+  else()
+    message(STATUS "Dude: Found LMDB static lib.: ${StaticLibLMDB}")
+  endif()
+endif()
+
+## Third-party libraries under lib/ or vendor/
+if (true)
+  # lib/
+  if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/lib/CMakeLists.txt")
+    message(STATUS "Dude: Adding subdirectory lib/ (third-party stuff).")
+    add_subdirectory( lib )
+  endif()
+  # vendor/
+  if (EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/vendor/CMakeLists.txt")
+    message(STATUS "Dude: Adding subdirectory vendor/ (third-party stuff).")
+    add_subdirectory( vendor )
+  endif()
 endif()
 
 ###  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #  #

@@ -31,3 +31,10 @@
 [submodule "lib/clang-tools-extra"]
 	path = lib/clang-tools-extra
 	url = git@github.com:llvm-mirror/clang-tools-extra.git
+[submodule "lmdb"]
+	path = lib/lmdb
+	url = git@github.com:LMDB/lmdb.git
+	branch = mdb.master
+[submodule "libpqxx"]
+	path = lib/libpqxx
+	url = git@github.com:jtv/libpqxx.git

@@ -2,6 +2,9 @@
 #
 # Experiments for /me to discover how to tinkle with the Clang plugin system.
 
+# TODO: Cleanup & fix those older experiments that no longer compile.
+set(EXCLUDE_FROM_ALL ON)
+
 ##
 ## Automatically add sub-directories to CMake project.
 ##

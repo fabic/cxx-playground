@@ -2,13 +2,18 @@
 
 message(STATUS "~~ Dude: Ich bin Clong! ( ${CMAKE_CURRENT_SOURCE_DIR} ) ~~")
 
-# TODO: Move stuff _out of here (!)_, and specifically: anything that may have
-# TODO: side-effects on sub-projects we want to include with add_subdirectory()
-# TODO: e.g. vendor/lmdb/
+# Set target name based on the current dir. name.
+# (i.e. 'clong')
+get_filename_component(ThisModuleName "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
+set(ThisModuleName "${ThisModuleName}")
+message(STATUS "Dude! I'm ${ThisModuleName}.")
+
+pkg_check_modules(LIBPQXX libpqxx)
 
 # Python is needed in order to produce a PrintFunctionNames.def file
 # from the PrintFunctionNames.exports file. Found this somewhere in one of Clang's
 # CMake files.
+# TODO: Find out about this "exports" thing wrt. RTTI & EH ??
 if (false)
   set(Python_ADDITIONAL_VERSIONS 2.7)
   include(FindPythonInterp)
@@ -33,35 +38,57 @@ if (false)
   endif()
 endif()
 
-add_definitions( ${LLVM_DEFINITIONS} )
-include_directories( ${LLVM_INCLUDE_DIRS} )
+# ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
 
-## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ## ##
+# NOTE: See top-level ../../../CMakeLists.txt for the basic LLVM package setup.
+if (NOT LLVM_PACKAGE_VERSION)
+  message(STATUS "Dude: It appears LLVM wasn't found / setup (?)")
+  message(STATUS "      ` SKIPPING target '${ThisModuleName}' (!)")
+elseif (NOT LIBPQXX_FOUND)
+  message( WARNING "Dude: Couldn't find Postgresql's libpqxx." )
+  message( WARNING "Dude:  ` SKIPPING target '${ThisModuleName}' (!)" )
+else()
+  message( STATUS "Dude: Got LLVM/Clang & Postgresql's libpqxx, ok." )
+  message( STATUS "Dude:  ` adding build target '${ThisModuleName}'." )
 
-add_compile_options( -fPIC )
+  # See `lib/cmake/llvm/AddLLVM.cmake` where this gets used.
+  set(LLVM_ENABLE_EH ON)
 
-# set_property(DIRECTORY PROPERTY EXCLUDE_FROM_ALL ON)
-# set(EXCLUDE_FROM_ALL ON)
+  add_definitions( ${LLVM_DEFINITIONS} )
+  include_directories( ${LLVM_INCLUDE_DIRS} )
+
+  # Nope!
+  #set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+  add_llvm_loadable_module(
+    ${ThisModuleName}
+      main.cpp
+      ClongPluginASTAction.cpp
+      Clong.cpp
+        clong-translation-unit-decl.cpp
+        clong-decl.cpp
+        clong-namespace-decl.cpp
+        clong-typedefs.cpp
+        clong-lmdb.cpp
+        lmdb.cpp
+        PPCallbacksTracker.cpp
+        Repository.cpp
+        TypeResolver.cpp
+      $<TARGET_OBJECTS:PimplioTerminal>
+      $<TARGET_OBJECTS:TypePrinter>
+    PLUGIN_TOOL clang
+    )
+
+  target_link_libraries( ${ThisModuleName} DudeHackRoutines
+                                           ${LIBPQXX_LIBRARIES}
+                                           lmdb )
+
+  target_compile_options(     ${ThisModuleName} PUBLIC ${LIBPQXX_CFLAGS} )
+  target_include_directories( ${ThisModuleName} PUBLIC ${LIBPQXX_INCLUDE_DIRS} )
+endif()
 
 # ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
 
 add_subdirectory(experiments)
-
-# LMDB : FIXME: don't add_subdirectory(): it inherits stuff that we do here, like compiler flags etc..
-if (false)
-  find_library(StaticLibLMDB lmdb)
-  if ( StaticLibLMDB MATCHES "-NOTFOUND$" )
-    message(STATUS "Dude: Couldn't find LMDB's static liblmdb.a")
-    add_subdirectory( vendor/lmdb )
-  else()
-    message(STATUS "Dude: Found LMDB static lib.: ${StaticLibLMDB}")
-  endif()
-endif()
-
-# TODO: Further setup is needed here, specifically we need to correctly
-#       state dependencies so that it is built first.
-if (FALSE AND EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/vendor/soci/include/soci/soci.h)
-  add_subdirectory( vendor/soci )
-endif()
 
 message(STATUS "~~ Dude: ^ Clong (end) ( ${CMAKE_CURRENT_SOURCE_DIR} ). ~~")

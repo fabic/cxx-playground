@@ -1,4 +1,4 @@
-# playground/lib/CMakeLists.txt
+# cxx-playground/lib/CMakeLists.txt -- fabic.net
 
 ##
 ## See lib/fltk/CMake/options.cmake
@@ -31,5 +31,26 @@ if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/fltk/CMakeLists.txt)
 
   add_subdirectory(fltk)
 else()
-  message(STATUS "FTLK: not found.")
+  message(STATUS "Dude: FTLK not found, ok.")
 endif ()
+
+##
+## LMDB key-value store database from the OpenLDAP project.
+##
+## Note: it happens by pure coincidence, that the output dir.
+##       will be build/lib/  (because _this_ dir. is 'lib/').
+##       -> so we're not overriding this target's output dir.
+##
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/lmdb/libraries/liblmdb/mdb.c)
+  message(STATUS "Dude! Found LMDB sources, adding custom library target for building it, ok.")
+  add_library(lmdb STATIC lmdb/libraries/liblmdb/mdb.c
+                          lmdb/libraries/liblmdb/midl.c )
+  target_compile_options(lmdb PRIVATE -fPIC)
+  target_include_directories(lmdb PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/lmdb/libraries/liblmdb> )
+  # ^ this will have dependent targets automagically have
+  #   the correct -I include path be set for them.
+else()
+  message(STATUS "Dude, didn't find LMDB sources, skipping.")
+  message(STATUS "      ` see ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt about this.")
+endif()

@@ -3,9 +3,9 @@
 
 // #include <clang/AST/RecursiveASTVisitor.h>
 // #include <llvm/ADT/MapVector.h>
-#include "clong/clang/RecursiveASTVisitor.h"
+#include "dude/clang/RecursiveASTVisitor.h"
 #include "dude/llvm/MapVector.hpp"
-#include "clong/clang/TypePrinter.hpp"
+#include "dude/clang/TypePrinter.hpp"
 
 namespace clong {
 namespace plugin {
