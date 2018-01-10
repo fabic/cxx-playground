@@ -16,6 +16,13 @@ namespace plugin {
     {
       TPush log( D->getName() );
 
+      auto ID = PQXX_.Insert( R"(
+        INSERT INTO decl (kind, context_id, name, fq_name)
+        VALUES ($1, NULL, $2, NULL)
+        RETURNING id ;)", 2, D->getName().str() );
+
+      *log << "- ID: " << ID << tendl;
+
       if (!TraverseDeclContext( D ))
         return false;
 

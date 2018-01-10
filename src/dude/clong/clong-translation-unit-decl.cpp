@@ -49,6 +49,11 @@ namespace plugin {
       catch(const std::exception &ex) {
         *log << ex;
       }
+      catch(...) {
+        *log << tendl << tred << treverse << "(!) CAN'T BE (!)"
+             << tred << " Caught an exception of an unknown kind (!)"
+             << twhite << " (try-catch(...) {})" << tendl << tendl;
+      }
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -61,12 +66,10 @@ namespace plugin {
       Repo_.Add( TU );
       DCStack_.Push( TU );
 
-      //pqxx::transaction<> TXN( PQXX_ );
-      //pqxx::transaction<>& PQXX_.TXN();
       auto id = PQXX_.Insert( R"(
         INSERT INTO decl (kind, context_id, name, fq_name)
         VALUES ($1, NULL, $2, NULL)
-        RETURNING id ;)", 2, "Hola!" );
+        RETURNING id ;)", 1, "Hola! (TU)" );
 
       *log << "- TU id: " << id << tendl;
 
@@ -94,6 +97,8 @@ namespace plugin {
 
         TraverseDecl( Child );
       }
+
+      PQXX_.Commit();
 
       return true;
     }

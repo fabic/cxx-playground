@@ -3,6 +3,7 @@
 
 #include <cassert>
 #include <pqxx/pqxx>
+#include "exceptions.hpp"
 
 namespace clong {
 
@@ -67,6 +68,7 @@ namespace clong {
     using Base = pqxx::lazyconnection ;
   private:
     DelayedInstance< pqxx::transaction<> > TXN_ ;
+    // TODO: impl. savepoints ? have a SmallVector<...> stack ?
   public:
     using Identifier_t = unsigned int ;
   public:
@@ -101,6 +103,17 @@ namespace clong {
           return ID;
         }
 
+    /// Helper for committing the transaction.
+    /// TODO: Eventually we may implement "sub-transactions" (savepoints)
+    /// TODO: and this method may basically acknowledge the most recent
+    /// TODO: savepoint (release...).
+    PQXXHelper& Commit() {
+      if (! TXN_.Exists())
+        throw clong_error("There's no transaction at the moment!"
+                          " Can't possibly commit a thing -_-");
+      TXN().commit();
+      return *this;
+    }
   };
 
 } // clong ns
