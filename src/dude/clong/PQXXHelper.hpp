@@ -17,45 +17,76 @@ namespace clong {
    * want to embed that instance in your class declaration.
    *
    * TODO: review this doc., explain clearly.
+   * TODO: find a better name for this, HackedInstance?
+   * TODO: refactor this elsewhere, ex. dude/hacks/
    */
   template<typename Class>
     class DelayedInstance {
+    public:
+      using Self = DelayedInstance< Class > ;
+
     private:
       char MemoryArea_[ sizeof(Class) ];
       bool IsInitialized_ = false;
+
     public:
+      /// ctor.
       explicit DelayedInstance() { /* noop */ }
+
+      /// dtor.
       ~DelayedInstance() {
         // TODO: Deconstruct().
         if (IsInitialized_)
-          operator->()->~Class();
+          Destruct();
       }
 
+      /// Return true if `Class` was instanciated.
       bool Exists() const { return IsInitialized_ == true ; }
 
+      /// Construct an instance of `Class` into the memory area `MemoryArea_`
+      /// by doing a placement new.
       template<typename ...CtorArgs>
         Class* Construct(CtorArgs&&... Args)
         {
           if (IsInitialized_)
-            throw std::runtime_error("Dough!");
+            throw std::runtime_error("Dough! Ist initialized already!");
           Class* Ptr = new (MemoryArea_) Class (Args...);
+          // paranoid: couldn't be otherwise.
           assert( reinterpret_cast<char*>(Ptr) == MemoryArea_ );
+          // paranoid (and useless): we want this to coincide with the memory
+          //                         buffer base address.
+          assert( reinterpret_cast<void*>(Ptr) == reinterpret_cast<void*>(this));
           IsInitialized_ = true;
-          return Ptr;
+          return Ptr ;
         }
 
+      /// Invoke the destructor of `Class`, and set state as un-initialized.
+      Self& Destruct()
+      {
+        operator->()->~Class();
+        IsInitialized_ = false;
+        return *this ;
+      }
+
+      /// Smart-pointer like behaviour: return a reference.
       Class& operator*() {
           if ( ! IsInitialized_ )
             throw std::runtime_error("Dough!");
           return *operator->() ;
       }
 
+      /// Smart-pointer like behaviour: return a pointer.
       Class* operator->() {
           if ( ! IsInitialized_ )
             throw std::runtime_error("Dough!");
-          return reinterpret_cast< Class* >( MemoryArea_ );
+          return reinterpret_cast< Class* >( MemoryArea_ ) ;
       }
     };
+
+
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
 
   /**
    * PostreSQL database connectivity helper.
@@ -63,14 +94,19 @@ namespace clong {
    * Using a lazy connection since we're typically being setup from
    * constructors (e.g. Clong class) and pqxx happens to throw exceptions in
    * case of database connectivity errors, which ends up crashing Clang badly.
+   *
+   * TODO: We deal a lot with StringRef in Clang, and we currently resort to
+   * TODO: StringRef::str() so as to obtain a std::string, which sucks a bit
+   * TODO: (extraneous memory allocations) ~~> maybe we can impl. a custom
+   * TODO: method that tap into `libpq` directly ?
+   *
+   * TODO: impl. savepoints ? have a SmallVector<...> stack ?
    */
   class PQXXHelper : public pqxx::lazyconnection {
     using Base = pqxx::lazyconnection ;
   private:
+    /// Will hold a transaction instance when it is needed, see `TXN()`.
     DelayedInstance< pqxx::transaction<> > TXN_ ;
-    // TODO: impl. savepoints ? have a SmallVector<...> stack ?
-  public:
-    using Identifier_t = unsigned int ;
   public:
     explicit PQXXHelper(const char *OptionsStr);
 
@@ -92,6 +128,7 @@ namespace clong {
      *
      * FIXME: This is misleadingly called Insert() but it really doesn't care
      * FIXME: about the provided SQL ~~> rename ?
+     * TODO: log SQLs.
      */
     template<typename IdentifierType = unsigned int,
              typename ...Arguments>

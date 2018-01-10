@@ -10,7 +10,7 @@ namespace plugin {
   using namespace clang;
 
 
-  // [overriden, entry point]
+  // [overriden, entry point, invoked by Clang when it's our time]
   void
     Clong::HandleTranslationUnit(ASTContext& context)
     {
@@ -21,11 +21,6 @@ namespace plugin {
       assert(Context_ == nullptr);
 
       Context_ = &context;
-
-      *log << "`-> getASTAllocatedMemory() -> "
-           << context.getASTAllocatedMemory() << tendl;
-      *log << "`-> getSideTableAllocatedMemory() -> "
-           << context.getSideTableAllocatedMemory() << tendl;
 
       try {
         if (true)
@@ -45,10 +40,19 @@ namespace plugin {
 
         if(false)
           OutputPreprocessorTrace( *log );
+
+        if (true) {
+          *log << "`-> getASTAllocatedMemory() -> "
+               << context.getASTAllocatedMemory() << tendl;
+          *log << "`-> getSideTableAllocatedMemory() -> "
+               << context.getSideTableAllocatedMemory() << tendl;
+        }
       }
       catch(const std::exception &ex) {
         *log << ex;
       }
+      // We really have to stop all exceptions here, Clang won't handle these
+      // and abort with a stacktrace.
       catch(...) {
         *log << tendl << tred << treverse << "(!) CAN'T BE (!)"
              << tred << " Caught an exception of an unknown kind (!)"
@@ -63,15 +67,21 @@ namespace plugin {
     {
       TPush log;
 
-      Repo_.Add( TU );
-      DCStack_.Push( TU );
-
+      // TODO: infer main file name, and save it.
       auto id = PQXX_.Insert( R"(
         INSERT INTO decl (kind, context_id, name, fq_name)
         VALUES ($1, NULL, $2, NULL)
         RETURNING id ;)", 1, "Hola! (TU)" );
 
       *log << "- TU id: " << id << tendl;
+
+      // TODO: Artifact& Art =
+      Repo_.Add(TU, ID);
+      // TODO: have that stack push Artifacts, somehow?
+      //       ^ see https://stackoverflow.com/a/7707953/643087
+      //         about std::reference_wrapper
+      // http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper
+      DCStack_.Push( TU );
 
       for (auto *Child : TU->decls())
       {

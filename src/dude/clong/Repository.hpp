@@ -30,11 +30,17 @@ namespace plugin {
    *
    */
   class Artifact {
+  public:
+    using DBIdentifier_t = unsigned int ;
   private:
-    const Decl* Decl_;
+    const Decl*    Decl_ ;
+    DBIdentifier_t ID_ ;
 
   public:
-    explicit Artifact(const Decl* D) : Decl_(D) {}
+    explicit Artifact(const Decl* D, DBIdentifier_t ID = 0)
+      : Decl_(D)
+      , ID_(0)
+    { /* noop */ }
   };
 
 
@@ -60,7 +66,9 @@ namespace plugin {
     /// Return the `MapVector(&)` that stores the collected code artifacts.
     Map_t& getArtifactsMap() { return Artifacts ; }
 
+    // TODO: return newly inserted reference.
     void Add(const Decl* D);
+
     void Add(const Type* T);
     void Add(const TypeLoc* T);
     // void AddDeclContext(const DeclContext *DC);
