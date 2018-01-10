@@ -117,6 +117,7 @@ namespace plugin {
                      start_line INT NULL,
                      end_line   INT NULL
                    ); )");
+
       TXN.commit();
     }
 

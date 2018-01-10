@@ -4,10 +4,10 @@
 #include <set>
 #include <clang/AST/ASTConsumer.h>
 #include <clang/Frontend/CompilerInstance.h>
-#include <pqxx/pqxx>
 
 #include "Repository.hpp"
 #include "lmdb.hpp"
+#include "PQXXHelper.hpp"
 #include "PPCallbacksTracker.hpp"
 
 // Forward decls
@@ -53,12 +53,7 @@ namespace plugin {
     StringRef LMDBDatabasePathName = "./database.lmdb";
     ::lmdb::env LMDB_;
 
-    /**
-     * Using a lazy connection since we're setting this up from the constructor
-     * and it happens to throw exceptions in case of database connectivity
-     * errors, which ends up crashing Clang badly.
-     */
-    pqxx::lazyconnection PQXX_ ;
+    PQXXHelper PQXX_ ;
 
   public:
     /// Ctor

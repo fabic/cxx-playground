@@ -61,15 +61,12 @@ namespace plugin {
       Repo_.Add( TU );
       DCStack_.Push( TU );
 
-      pqxx::transaction<> TXN( PQXX_ );
-
-      pqxx::row row = TXN.exec_params1(R"(
+      //pqxx::transaction<> TXN( PQXX_ );
+      //pqxx::transaction<>& PQXX_.TXN();
+      auto id = PQXX_.Insert( R"(
         INSERT INTO decl (kind, context_id, name, fq_name)
         VALUES ($1, NULL, $2, NULL)
-        RETURNING id ;)",
-          2, "HEY!"
-          );
-      auto id = row[0].as<unsigned int>();
+        RETURNING id ;)", 2, "Hola!" );
 
       *log << "- TU id: " << id << tendl;
 

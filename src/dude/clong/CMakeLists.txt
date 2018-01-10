@@ -71,6 +71,7 @@ else()
         clong-typedefs.cpp
         clong-lmdb.cpp
         lmdb.cpp
+        PQXXHelper.cpp
         PPCallbacksTracker.cpp
         Repository.cpp
         TypeResolver.cpp
