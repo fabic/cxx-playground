@@ -8,8 +8,6 @@ get_filename_component(ThisModuleName "${CMAKE_CURRENT_SOURCE_DIR}" NAME)
 set(ThisModuleName "${ThisModuleName}")
 message(STATUS "Dude! I'm ${ThisModuleName}.")
 
-pkg_check_modules(LIBPQXX libpqxx)
-
 # Python is needed in order to produce a PrintFunctionNames.def file
 # from the PrintFunctionNames.exports file. Found this somewhere in one of Clang's
 # CMake files.
@@ -40,13 +38,15 @@ endif()
 
 # ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
 
+#pkg_check_modules(LIBPQXX libpqxx)
+
 # NOTE: See top-level ../../../CMakeLists.txt for the basic LLVM package setup.
 if (NOT LLVM_PACKAGE_VERSION)
   message(STATUS "Dude: It appears LLVM wasn't found / setup (?)")
   message(STATUS "      ` SKIPPING target '${ThisModuleName}' (!)")
-elseif (NOT LIBPQXX_FOUND)
-  message( WARNING "Dude: Couldn't find Postgresql's libpqxx." )
-  message( WARNING "Dude:  ` SKIPPING target '${ThisModuleName}' (!)" )
+#elseif (NOT LIBPQXX_FOUND)
+#  message( WARNING "Dude: Couldn't find Postgresql's libpqxx." )
+#  message( WARNING "Dude:  ` SKIPPING target '${ThisModuleName}' (!)" )
 else()
   message( STATUS "Dude: Got LLVM/Clang & Postgresql's libpqxx, ok." )
   message( STATUS "Dude:  ` adding build target '${ThisModuleName}'." )
@@ -79,12 +79,17 @@ else()
     PLUGIN_TOOL clang
     )
 
-  target_link_libraries( ${ThisModuleName} DudeHackRoutines
-                                           ${LIBPQXX_LIBRARIES}
-                                           lmdb )
-
-  target_compile_options(     ${ThisModuleName} PUBLIC ${LIBPQXX_CFLAGS} )
-  target_include_directories( ${ThisModuleName} PUBLIC ${LIBPQXX_INCLUDE_DIRS} )
+  if (false)
+    target_link_libraries( ${ThisModuleName} DudeHackRoutines
+                                             ${LIBPQXX_LIBRARIES}
+                                             lmdb )
+    target_compile_options(     ${ThisModuleName} PUBLIC ${LIBPQXX_CFLAGS} )
+    target_include_directories( ${ThisModuleName} PUBLIC ${LIBPQXX_INCLUDE_DIRS} )
+  else()
+    target_link_libraries( ${ThisModuleName} DudeHackRoutines
+                                             pqxx
+                                             lmdb )
+  endif()
 
   set_property(TARGET ${ThisModuleName}
     PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )

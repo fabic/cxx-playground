@@ -14,9 +14,12 @@ namespace plugin {
 
   // ctor
   Clong::Clong(CompilerInstance& Instance,
-               std::set<std::string> ParsedTemplates)
+               std::set<std::string> ParsedTemplates,
+               const char *PQXXOptionsString)
     : Instance(Instance),
-      ParsedTemplates(ParsedTemplates)
+      ParsedTemplates(ParsedTemplates),
+      PQXX_( PQXXOptionsString ),
+      PQXXW_( PQXX_ )
     {
       Preprocessor& PP = Instance.getPreprocessor();
       PP.addPPCallbacks( // PP takes ownership.

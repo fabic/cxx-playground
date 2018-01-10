@@ -26,7 +26,9 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "lmdb/lmdb.h" /* for MDB_*, mdb_*() */
+// #include "lmdb/lmdb.h" /* for MDB_*, mdb_*() */
+// FABIC: I'm using LMDB from within lib/lmdb/libraries/liblmdb/
+#include "lmdb.h"
 
 #ifndef NDEBUG
 #define LMDBXX_DEBUG

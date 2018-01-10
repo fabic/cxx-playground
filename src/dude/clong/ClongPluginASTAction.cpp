@@ -25,7 +25,9 @@ namespace plugin {
     ClongPluginASTAction::CreateASTConsumer(CompilerInstance &CI,
                                            llvm::StringRef InFile)
     {
-      return llvm::make_unique< Clong >(CI, ParsedTemplates);
+      return llvm::make_unique< Clong >(CI,
+                                        ParsedTemplates,
+                                        PQXXConnectionOptionsStr);
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

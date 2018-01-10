@@ -17,6 +17,11 @@ namespace plugin {
   private:
     using Base = PluginASTAction ;
 
+    /// temp. hard-coded PostgreSQL connection details.
+    static constexpr const char *PQXXConnectionOptionsStr =
+            "dbname = clong user = fabi password = haiku "
+            " hostaddr = 127.0.0.1 port = 5432" ;
+
   private:
     std::set<std::string> ParsedTemplates;
 

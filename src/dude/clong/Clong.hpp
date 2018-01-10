@@ -4,6 +4,7 @@
 #include <set>
 #include <clang/AST/ASTConsumer.h>
 #include <clang/Frontend/CompilerInstance.h>
+#include <pqxx/pqxx>
 
 #include "Repository.hpp"
 #include "lmdb.hpp"
@@ -52,10 +53,14 @@ namespace plugin {
     StringRef LMDBDatabasePathName = "./database.lmdb";
     ::lmdb::env LMDB_;
 
+    pqxx::connection PQXX_ ;
+    pqxx::work       PQXXW_ ;
+
   public:
     /// Ctor
     Clong(CompilerInstance &Instance,
-                          std::set<std::string> ParsedTemplates);
+                          std::set<std::string> ParsedTemplates,
+                          const char *PQXXOptionsString);
 
     ~Clong() override;
 
