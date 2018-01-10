@@ -18,8 +18,7 @@ namespace plugin {
                const char *PQXXOptionsString)
     : Instance(Instance),
       ParsedTemplates(ParsedTemplates),
-      PQXX_( PQXXOptionsString ),
-      PQXXW_( PQXX_ )
+      PQXX_( PQXXOptionsString )
     {
       Preprocessor& PP = Instance.getPreprocessor();
       PP.addPPCallbacks( // PP takes ownership.
@@ -88,6 +87,37 @@ namespace plugin {
       OS << "...\n";
 
       return 0;
+    }
+
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+  void
+    Clong::InitPostgresDatabase()
+    {
+      TPush log("Clong::InitPostgresDatabase()");
+
+      pqxx::transaction<> TXN( PQXX_ );
+
+      *log << "- Database: " << twhite << PQXX_.dbname() << tnormal << tendl;
+
+      TXN.exec(R"( -- DROP TABLE IF EXISTS decl ;
+                   CREATE TABLE IF NOT EXISTS decl (
+                     id               SERIAL PRIMARY KEY NOT NULL,
+                     kind             SMALLINT NOT NULL,
+                     context_id       INT NULL REFERENCES decl (id),
+                     -- file_id       INT NULL,
+                     -- namespace_id  INT NULL REFERENCES decl (id),
+                     -- class_id      INT NULL REFERENCES decl (id),
+                     -- codebase_id   INT NULL,
+                     name       TEXT NOT NULL,
+                     fq_name    TEXT NULL,
+                     definition_id  INT NULL REFERENCES decl (id),
+                     is_definition  BOOL DEFAULT FALSE,
+                     code       TEXT NULL,
+                     start_line INT NULL,
+                     end_line   INT NULL
+                   ); )");
+      TXN.commit();
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

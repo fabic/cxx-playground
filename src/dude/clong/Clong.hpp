@@ -53,8 +53,12 @@ namespace plugin {
     StringRef LMDBDatabasePathName = "./database.lmdb";
     ::lmdb::env LMDB_;
 
-    pqxx::connection PQXX_ ;
-    pqxx::work       PQXXW_ ;
+    /**
+     * Using a lazy connection since we're setting this up from the constructor
+     * and it happens to throw exceptions in case of database connectivity
+     * errors, which ends up crashing Clang badly.
+     */
+    pqxx::lazyconnection PQXX_ ;
 
   public:
     /// Ctor
@@ -101,6 +105,7 @@ namespace plugin {
 
   private:
     bool InitLMDB();
+    void InitPostgresDatabase();
 
   };
 

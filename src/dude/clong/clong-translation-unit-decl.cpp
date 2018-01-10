@@ -34,6 +34,9 @@ namespace plugin {
         if (false)
           InitLMDB();
 
+        if (true)
+          InitPostgresDatabase();
+
         const TranslationUnitDecl *TU = context.getTranslationUnitDecl();
 
         if (!TraverseTranslationUnitDecl( TU ))
@@ -57,6 +60,18 @@ namespace plugin {
 
       Repo_.Add( TU );
       DCStack_.Push( TU );
+
+      pqxx::transaction<> TXN( PQXX_ );
+
+      pqxx::row row = TXN.exec_params1(R"(
+        INSERT INTO decl (kind, context_id, name, fq_name)
+        VALUES ($1, NULL, $2, NULL)
+        RETURNING id ;)",
+          2, "HEY!"
+          );
+      auto id = row[0].as<unsigned int>();
+
+      *log << "- TU id: " << id << tendl;
 
       for (auto *Child : TU->decls())
       {
