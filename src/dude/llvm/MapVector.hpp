@@ -271,6 +271,16 @@ namespace clong {
         return Base::Map.getMemorySize()
           + Base::Vector.size() * sizeof(typename VectorType::value_type) ;
       }
+
+      /// Me want tha vector.
+      const VectorType& GetVector() const {
+        return Base::Vector ;
+      }
+
+      /// Me want tha vector (non-const).
+      VectorType& GetVector() {
+        return Base::Vector ;
+      }
     };
 
 } // clong ns.

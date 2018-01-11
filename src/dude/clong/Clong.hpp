@@ -41,7 +41,6 @@ namespace plugin {
     const ASTContext *Context_ = nullptr;
 
     Repository Repo_ ;
-    DeclContextStack DCStack_ ;
 
     std::set<std::string> ParsedTemplates;
     std::vector<CallbackCall> CallbackCalls;

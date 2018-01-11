@@ -27,9 +27,6 @@ namespace plugin {
     {
       const DeclContext* DC = dyn_cast< DeclContext >( Decl_ );
       if (DC == nullptr) {
-        terrs() << tred << "Hey! DC ain't no DC! :" << Decl_
-          << " is-a " << Decl_->getDeclKindName()
-          << tnormal << tendl;
         throw clong_error( "Artifact::GetAsDeclContext(): "
                            "Decl is-not-a DeclContext (!!)" );
       }
@@ -53,6 +50,9 @@ namespace plugin {
 
       Map_t::iterator elt = pair.first ;
       Artifact& A = elt->second ;
+
+      A.SetIndex( GetIndexOfLastArtifact() );
+
       return A ;
     }
 
@@ -68,8 +68,7 @@ namespace plugin {
 
       Artifact& A = Add(D, ID);
 
-      Artifact& B = DCStack_.Push( A );
-      assert(&B == &A && "This isn't good.");
+      DCStack_.push_back( A.GetIndex0() );
 
       return A ;
     }
@@ -79,7 +78,8 @@ namespace plugin {
   Artifact&
     Repository::PopDeclContext()
     {
-      Artifact& A = DCStack_.Pop();
+      Artifact& A = CurrentDeclContext();
+      DCStack_.pop_back();
       return A ;
     }
 
@@ -125,13 +125,35 @@ namespace plugin {
       return Get( D );
     }
 
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+  Artifact&
+    Repository::CurrentDeclContext()
+    {
+      if (DCStack_.empty())
+        throw clong_error("Repository: we have no current DeclContext on the stack.");
+
+      size_t Index = DCStack_.back();
+      Artifact& A = Artifacts_.GetVector()[ Index ].second ;
+
+      assert( A.GetAsDeclContext() != nullptr );
+      return A;
+    }
+
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+  const Artifact&
+    Repository::CurrentDeclContext() const
+    {
+      return const_cast<Repository *>(this)->CurrentDeclContext();
+    }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
   bool
     Repository::isCurrentDeclContext(const DeclContext* DC) const
     {
-      return DCStack_.isCurrent( DC );
+      return CurrentDeclContext().GetAsDeclContext() == DC ;
     }
 
 } // plugin ns.

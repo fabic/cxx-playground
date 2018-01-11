@@ -129,9 +129,22 @@ namespace plugin {
       // FIXME: not by us.
       Artifact& DCPoped = Repo_.PopDeclContext();
 
-      assert( &DCPoped == &DCArt &&
-          "Dude, for some obscur reason we popped a different DeclContext*"
-          " off the DeclContextStack, and this isn't a good thing."  );
+      //assert( &DCPoped == &DCArt &&
+      if (DCPoped.GetDecl() != DCArt.GetDecl()) {
+        *log << tred
+          << ( "Dude, for some obscur reason we popped a different DeclContext*"
+               " off the DeclContextStack, and this isn't a good thing."  )
+          << tendl
+          << tnormal << " `-> "
+                     << tyellow << DCPoped.GetDecl()->getDeclKindName()
+                     << " ( " << DCPoped.GetDecl() << " ) " << tendl
+          << twhite  << " `--expected--> "
+                     << tyellow << DCArt.GetDecl()->getDeclKindName()
+                     << " ( " << DCArt.GetDecl() << " ) " << tendl
+          << tnormal << " ` DeclContext stack depth: "
+                     << tcyan << Repo_.GetDeclContextStackDepth()
+          << tnormal << tendl;
+      }
 
       return true;
     }
