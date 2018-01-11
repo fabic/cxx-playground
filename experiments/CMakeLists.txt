@@ -5,6 +5,7 @@
 
 set(EXCLUDE_FROM_ALL ON)
 
+add_subdirectory(clong-experiments)
 add_subdirectory(X11)
 add_subdirectory(misc)
 

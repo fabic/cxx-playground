@@ -52,6 +52,7 @@ namespace plugin {
     /// Key type may be a `const Decl*` or `const Type*`.
     using Key_t = size_t;
     using Map_t = MapVector< Key_t, Artifact > ;
+    using DBIdentifier_t = Artifact::DBIdentifier_t ;
 
   public:
     ///
@@ -67,7 +68,7 @@ namespace plugin {
     Map_t& getArtifactsMap() { return Artifacts ; }
 
     // TODO: return newly inserted reference.
-    void Add(const Decl* D);
+    Artifact& Add(const Decl* D, DBIdentifier_t ID = 0);
 
     void Add(const Type* T);
     void Add(const TypeLoc* T);

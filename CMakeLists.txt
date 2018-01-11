@@ -175,8 +175,8 @@ find_program(LD_GOLD_PROGRAM ld.gold)
 
 if (LD_GOLD_PROGRAM)
   message(STATUS "Dude! Found Binutils' « ld.gold » linker (which supports LTO and the `-plugin ...` argument, btw).")
-  # message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
-  # set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
+  message(STATUS "Setting CMAKE_LINKER = '${LD_GOLD_PROGRAM}'")
+  set( CMAKE_LINKER "${LD_GOLD_PROGRAM}" )
   # ^ DON'T: enabling it for non-LTO compilation/linkage appears to fail with :
   #          “main.cpp.o: unrecognized file format”
 endif()

@@ -68,12 +68,12 @@ namespace plugin {
       TPush log;
 
       // TODO: infer main file name, and save it.
-      auto id = PQXX_.Insert( R"(
+      auto ID = PQXX_.Insert( R"(
         INSERT INTO decl (kind, context_id, name, fq_name)
         VALUES ($1, NULL, $2, NULL)
         RETURNING id ;)", 1, "Hola! (TU)" );
 
-      *log << "- TU id: " << id << tendl;
+      *log << "- TU id: " << ID << tendl;
 
       // TODO: Artifact& Art =
       Repo_.Add(TU, ID);

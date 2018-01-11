@@ -98,6 +98,7 @@ endif()
 
 # ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
 
-add_subdirectory(experiments)
+# Moved to /experiments/clong-experiments/
+# add_subdirectory(experiments)
 
 message(STATUS "~~ Dude: ^ Clong (end) ( ${CMAKE_CURRENT_SOURCE_DIR} ). ~~")

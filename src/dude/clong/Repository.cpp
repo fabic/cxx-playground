@@ -9,15 +9,19 @@ namespace plugin {
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  void
-    Repository::Add(const Decl *D)
+  Artifact&
+    Repository::Add(const Decl *D, DBIdentifier_t ID)
     {
       Key_t K = KeyOf( D );
       auto pair = Artifacts.insert( std::make_pair(K, Artifact(D)) );
+
       bool ok = pair.second;
       if (!ok)
         throw std::runtime_error("Decl. is already in repository (!)");
-        // (terrs().red() << "(!) Decl. is already in repository (!).\n").normal();
+
+      Map_t::iterator elt = pair.first ;
+      Artifact& A = elt->second ;
+      return A ;
     }
 
   // void
