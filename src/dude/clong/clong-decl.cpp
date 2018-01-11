@@ -22,7 +22,7 @@ namespace plugin {
 
       // Repo_.Add( D );
 
-      switch(D->getKind())
+      switch( D->getKind() )
       {
         case Decl::Namespace:
           if (!TraverseNamespaceDecl(cast<NamespaceDecl>(D)))
@@ -54,12 +54,17 @@ namespace plugin {
           break;
           // return TraverseDeclContextIfAny( D );
 
+        // DEFAULT //
+        // TODO: if instance of NamedDecl / TypeDecl / etc...
         default: {
           const DeclContext *DC = dyn_cast< DeclContext >( D );
+
           log.heading("Unknown decl. kind:")
-            << tbold << twhite << ' ' << D->getDeclKindName()
+            << tbold << tyellow << ' ' << D->getDeclKindName()
+            << tnormal << " ( " << D << " ) "
             << tcyan << (DC != nullptr ? " is-a DeclContext" : "")
             << tnormal << tendl;
+
           if (DC != nullptr) {
             if (!TraverseDeclContext( DC ))
               return false;
@@ -101,6 +106,35 @@ namespace plugin {
           Repo_.CurrentDeclContext()
         : Repo_.PushDeclContext( DC );
 
+      // TEMP(?): Baked unknown DCs now.
+      if (! DCArt.hasDatabaseIdentifier()) {
+        std::string Name ( DCArt.GetDecl()->getDeclKindName() );
+
+        const NamedDecl *ND = DCArt.GetDeclAs< NamedDecl >();
+        if (ND != nullptr) {
+          Name += " -name-> ";
+          Name += ND->getNameAsString();
+        }
+
+        Artifact& PrevDC = Repo_.PreviousDeclContext();
+
+        *log << "- About to baked DC with temporary name: "
+             << twhite << Name << tnormal << tendl ;
+
+        auto ID = PQXX_.Insert( R"(
+          INSERT INTO decl (kind, context_id, name, fq_name)
+          VALUES ($1, NULLIF($2,0), $3, NULL)
+          RETURNING id ;)",
+            999,
+            PrevDC.getDatabaseID(),
+            Name );
+
+        DCArt.setDatabaseID( ID );
+
+        *log << "- Baked DC, now has ID#"
+             << tblue << DCArt.getDatabaseID() << tendl;
+      }
+
       // See `RecursiveASTVisitor<>::TraverseDeclContextHelper()` :
       //
       //  "BlockDecls and CapturedDecls are traversed through
@@ -127,17 +161,22 @@ namespace plugin {
 
       // FIXME: yes/no? We're popping off a DC that was possibly pushed
       // FIXME: not by us.
-      Artifact& DCPoped = Repo_.PopDeclContext();
+      // FIXME: MAYBE have a DoNotPop argument ?
+      Artifact& DCPopped = Repo_.PopDeclContext();
 
-      //assert( &DCPoped == &DCArt &&
-      if (DCPoped.GetDecl() != DCArt.GetDecl()) {
+      //assert( &DCPopped == &DCArt );
+      // ^ don't compare Artifact/s addresses: these may (and does) change
+      //   any time at runtime due to container growth
+      //   (hence: memory reallocations).
+
+      if (DCPopped.GetDecl() != DCArt.GetDecl()) {
         *log << tred
           << ( "Dude, for some obscur reason we popped a different DeclContext*"
                " off the DeclContextStack, and this isn't a good thing."  )
           << tendl
           << tnormal << " `-> "
-                     << tyellow << DCPoped.GetDecl()->getDeclKindName()
-                     << " ( " << DCPoped.GetDecl() << " ) " << tendl
+                     << tyellow << DCPopped.GetDecl()->getDeclKindName()
+                     << " ( " << DCPopped.GetDecl() << " ) " << tendl
           << twhite  << " `--expected--> "
                      << tyellow << DCArt.GetDecl()->getDeclKindName()
                      << " ( " << DCArt.GetDecl() << " ) " << tendl

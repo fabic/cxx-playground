@@ -150,6 +150,18 @@ namespace plugin {
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
+  Artifact&
+    Repository::PreviousDeclContext(unsigned int Distance)
+    {
+      size_t Last = DCStack_.size() - 1;
+      assert(Distance <= Last);
+      size_t Index = DCStack_[ Last - Distance ];
+      Artifact& A = Artifacts_.GetVector()[ Index ].second ;
+      return A ;
+    }
+
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
   bool
     Repository::isCurrentDeclContext(const DeclContext* DC) const
     {

@@ -50,6 +50,8 @@ namespace plugin {
       }
       catch(const std::exception &ex) {
         *log << ex;
+        if (false) // TEMP: debug. (will have Clang crash with a stacktrace).
+          throw ex;
       }
       // We really have to stop all exceptions here, Clang won't handle these
       // and abort with a stacktrace.

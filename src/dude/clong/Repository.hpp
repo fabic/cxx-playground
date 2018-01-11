@@ -94,11 +94,28 @@ namespace plugin {
       return Decl_ ;
     }
 
+    template<typename DeclSubType>
+      const DeclSubType *
+        GetDeclAs() const {
+          return cast< DeclSubType >( Decl_ ) ;
+        }
+
     /// Helper that returns a DeclContext if Decl is one, else throws!
     const DeclContext* GetAsDeclContext() const;
 
     /// True if `Decl_` is-a `DeclContext`.
     bool isDeclContext() const;
+
+    bool hasDatabaseIdentifier() const { return ID_ > 0 ; }
+
+    /// May return 0, is it ok ?
+    DBIdentifier_t getDatabaseID() const { return ID_ ; }
+
+    Artifact& setDatabaseID(DBIdentifier_t ID) {
+      assert( ID > 0 ); // we do not allow setting it back to 0.
+      ID_ = ID;
+      return *this;
+    }
   };
 
 
@@ -124,7 +141,7 @@ namespace plugin {
     /// The artifacts map. Note that it is a `_llvm::MapVector<>` which is a
     /// `llvm::DenseMap<>` along with a `std::vector` that preserve information
     /// about the insertion order.
-    Map_t               Artifacts_ ;
+    Map_t  Artifacts_ ;
 
     /// A stack of integers that are indexes into the `Artifacts_` map, for
     /// DeclContext artifacts.
@@ -172,6 +189,8 @@ namespace plugin {
     /// Get the current "top-most" DeclContext artifact that is on the stack.
     Artifact& CurrentDeclContext();
     const Artifact& CurrentDeclContext() const;
+
+    Artifact& PreviousDeclContext(unsigned int distance = 1);
 
     /// Tells whether DC is the current DeclContext at the top of the stack.
     bool isCurrentDeclContext(const DeclContext* DC) const;
