@@ -23,6 +23,8 @@ namespace plugin {
 
       *log << "- ID: " << ID << tendl;
 
+      Repo_.PushDeclContext(D, ID);
+
       if (!TraverseDeclContext( D ))
         return false;
 

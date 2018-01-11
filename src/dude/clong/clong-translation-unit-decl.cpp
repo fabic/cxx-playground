@@ -75,13 +75,13 @@ namespace plugin {
 
       *log << "- TU id: " << ID << tendl;
 
-      // TODO: Artifact& Art =
-      Repo_.Add(TU, ID);
+      Artifact& Art = Repo_.PushDeclContext(TU, ID);
+
       // TODO: have that stack push Artifacts, somehow?
       //       ^ see https://stackoverflow.com/a/7707953/643087
       //         about std::reference_wrapper
       // http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper
-      DCStack_.Push( TU );
+      // DCStack_.Push( TU );
 
       for (auto *Child : TU->decls())
       {

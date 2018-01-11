@@ -1,6 +1,7 @@
 #ifndef _PIMPL_PLUGIN_Repository_HPP
 #define _PIMPL_PLUGIN_Repository_HPP
 
+#include <functional>
 #include <memory>
 
 // #include <llvm/ADT/MapVector.h>
@@ -45,6 +46,36 @@ namespace plugin {
 
 
   /**
+   * * http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper
+   */
+  class DeclContextStack
+          : public llvm::SmallVector<
+                           std::reference_wrapper< Artifact >,
+                           /* nElt= */ 32 >
+  {
+  public:
+    Artifact& Push( Artifact& DC ) {
+      push_back( DC );
+      return Current();
+    }
+
+    Artifact& Pop() {
+      auto& A = Current();
+      pop_back();
+      return A;
+    }
+
+    Artifact& Current() const {
+      return back().get();
+    }
+
+    // TODO: Parent() ?
+    // TODO: find closest namespace context.
+    // TODO: find closest tag struct/class/... context.
+  };
+
+
+  /**
    *
    */
   class Repository {
@@ -61,41 +92,21 @@ namespace plugin {
     }
 
   private:
-    Map_t Artifacts ;
+    Map_t Artifacts_ ;
+    DeclContextStack DCStack_ ;
 
   public:
     /// Return the `MapVector(&)` that stores the collected code artifacts.
-    Map_t& getArtifactsMap() { return Artifacts ; }
+    Map_t& getArtifactsMap() { return Artifacts_ ; }
 
     // TODO: return newly inserted reference.
     Artifact& Add(const Decl* D, DBIdentifier_t ID = 0);
 
+    Artifact& PushDeclContext(const DeclContext* DC, DBIdentifier_t ID = 0);
+    Artifact& PopDeclContext();
+
     void Add(const Type* T);
     void Add(const TypeLoc* T);
-    // void AddDeclContext(const DeclContext *DC);
-  };
-
-
-  /**
-   *
-   */
-  class DeclContextStack
-          : public llvm::SmallVector< const DeclContext *, /* nElt= */ 32 > {
-  public:
-    const DeclContext* Push( const DeclContext *DC ) {
-      push_back( DC );
-      return current();
-    }
-
-    const DeclContext* Pop() {
-      auto elt = current();
-      pop_back();
-      return elt;
-    }
-
-    const DeclContext* current() const {
-      return back();
-    }
   };
 
 

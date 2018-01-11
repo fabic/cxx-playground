@@ -20,7 +20,7 @@ namespace plugin {
       *log << "- kind: " << D->getDeclKindName() << tendl
            << "- at: " << D << tendl;
 
-      Repo_.Add( D );
+      // Repo_.Add( D );
 
       switch(D->getKind())
       {
@@ -88,11 +88,14 @@ namespace plugin {
       if (DC == nullptr)
         throw clong_error("This ain't no DeclContext yo!");
 
-      DCStack_.Push( DC );
+      // TODO: if ! Repo has DC
+      Artifact& DCArt = Repo_.PushDeclContext( DC );
 
-      // See RecursiveASTVisitor<>::TraverseDeclContextHelper():
+      // See `RecursiveASTVisitor<>::TraverseDeclContextHelper()` :
+      //
       //  "BlockDecls and CapturedDecls are traversed through
       //   BlockExprs and CapturedStmts respectively."
+      //
       // TODO: ^ Find out wtf that is about?
 
       for (auto *Child : DC->decls())
@@ -112,9 +115,9 @@ namespace plugin {
         //   return false;
       }
 
-      auto dc = DCStack_.Pop();
+      Artifact& DCPoped = Repo_.PopDeclContext();
 
-      assert( dc == DC &&
+      assert( &DCPoped == &DCArt &&
           "Dude, for some obscur reason we popped a different DeclContext*"
           " off the DeclContextStack, and this isn't a good thing."  );
 

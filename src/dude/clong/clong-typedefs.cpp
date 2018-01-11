@@ -30,6 +30,8 @@ namespace plugin {
 
       *log << "- ID: " << ID << tendl;
 
+      Repo_.Add(D, ID);
+
       const TypeSourceInfo *TSI = D->getTypeSourceInfo();
       assert(TSI != nullptr && "Woups!");
 
