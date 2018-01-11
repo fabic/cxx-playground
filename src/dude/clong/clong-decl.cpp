@@ -41,6 +41,11 @@ namespace plugin {
         case Decl::UnresolvedUsingTypename:
           throw not_implemented_error();
 
+        case Decl::AccessSpec:
+          *log << tmagenta << "Got one of those AccessSpec thing, skipping..."
+               << tnormal << tendl;
+          break;
+
         // Type < TypedefName
         case Decl::TypeAlias:
         case Decl::Typedef:
@@ -50,9 +55,11 @@ namespace plugin {
           // return TraverseDeclContextIfAny( D );
 
         default: {
+          const DeclContext *DC = dyn_cast< DeclContext >( D );
           log.heading("Unknown decl. kind:")
-            << tbold << twhite << ' ' << D->getDeclKindName() << tendl;
-          const DeclContext *DC = dyn_cast<DeclContext>( D );
+            << tbold << twhite << ' ' << D->getDeclKindName()
+            << tcyan << (DC != nullptr ? " is-a DeclContext" : "")
+            << tnormal << tendl;
           if (DC != nullptr) {
             if (!TraverseDeclContext( DC ))
               return false;
@@ -81,15 +88,18 @@ namespace plugin {
     {
       TPush log("TraverseDeclContext");
 
+      if (DC == nullptr)
+        throw clong_error("This ain't no DeclContext yo!");
+
       *log << "- kind: " << DC->getDeclKindName()
            << " ( " << DC << " ) "
            << tendl;
 
-      if (DC == nullptr)
-        throw clong_error("This ain't no DeclContext yo!");
-
-      // TODO: if ! Repo has DC
-      Artifact& DCArt = Repo_.PushDeclContext( DC );
+      // FIXME: TEMP. (?)
+      // FIXME: perf.: at least 2 lookups happen here O(log2(N)).
+      Artifact& DCArt = Repo_.isCurrentDeclContext(DC) ?
+          Repo_.CurrentDeclContext()
+        : Repo_.PushDeclContext( DC );
 
       // See `RecursiveASTVisitor<>::TraverseDeclContextHelper()` :
       //
@@ -115,6 +125,8 @@ namespace plugin {
         //   return false;
       }
 
+      // FIXME: yes/no? We're popping off a DC that was possibly pushed
+      // FIXME: not by us.
       Artifact& DCPoped = Repo_.PopDeclContext();
 
       assert( &DCPoped == &DCArt &&

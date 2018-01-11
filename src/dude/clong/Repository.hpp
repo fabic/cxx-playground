@@ -7,6 +7,7 @@
 // #include <llvm/ADT/MapVector.h>
 // ^ TEMP. imported :
 #include "dude/llvm/MapVector.hpp"
+#include "exceptions.hpp"
 
 namespace clang {
   class DeclContext;
@@ -42,6 +43,18 @@ namespace plugin {
       : Decl_(D)
       , ID_(0)
     { /* noop */ }
+
+  public:
+
+    /// Beware: may return nullptr !?
+    const Decl* GetDecl() const {
+      assert(Decl_ != nullptr);
+      return Decl_ ;
+    }
+
+    /// Helper that returns a DeclContext if Decl is one, else throws!
+    const DeclContext* GetAsDeclContext() const;
+    bool isDeclContext() const;
   };
 
 
@@ -49,12 +62,13 @@ namespace plugin {
    * * http://en.cppreference.com/w/cpp/utility/functional/reference_wrapper
    */
   class DeclContextStack
-          : public llvm::SmallVector<
+          : protected llvm::SmallVector<
                            std::reference_wrapper< Artifact >,
                            /* nElt= */ 32 >
   {
   public:
     Artifact& Push( Artifact& DC ) {
+      assert( DC.isDeclContext() );
       push_back( DC );
       return Current();
     }
@@ -62,11 +76,20 @@ namespace plugin {
     Artifact& Pop() {
       auto& A = Current();
       pop_back();
+      assert( A.isDeclContext() );
       return A;
     }
 
+    /// Throws is stack is empty!
     Artifact& Current() const {
+      if ( empty() )
+        throw clong_error("DeclContextStack::Current(): Stack is empty (!)");
       return back().get();
+    }
+
+    bool isCurrent(const DeclContext* DC) const {
+      assert(DC != nullptr);
+      return Current().GetAsDeclContext() == DC;
     }
 
     // TODO: Parent() ?
@@ -92,21 +115,35 @@ namespace plugin {
     }
 
   private:
-    Map_t Artifacts_ ;
-    DeclContextStack DCStack_ ;
+    Map_t             Artifacts_ ;
+    DeclContextStack  DCStack_ ;
 
   public:
     /// Return the `MapVector(&)` that stores the collected code artifacts.
     Map_t& getArtifactsMap() { return Artifacts_ ; }
 
-    // TODO: return newly inserted reference.
     Artifact& Add(const Decl* D, DBIdentifier_t ID = 0);
+
+    // TODO: impl.
+    void Add(const Type* T);
+    void Add(const TypeLoc* T);
+
+    bool Has(const Decl* D) const;
+
+    Artifact& Get(const Decl* D);
+
+    ///{ Convenience helpers that tap into the DeclContextStack.
+
+    bool HasDeclContext(const DeclContext* DC);
+
+    Artifact& GetDeclContext(const DeclContext* DC);
+    Artifact& CurrentDeclContext();
+    bool isCurrentDeclContext(const DeclContext* DC) const;
 
     Artifact& PushDeclContext(const DeclContext* DC, DBIdentifier_t ID = 0);
     Artifact& PopDeclContext();
 
-    void Add(const Type* T);
-    void Add(const TypeLoc* T);
+    ///}
   };
 
 
