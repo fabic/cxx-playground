@@ -35,7 +35,11 @@
 namespace clong {
 namespace _llvm {
 
-using namespace llvm;
+// using namespace llvm;
+// ^ (!) DON'T (!) introduces conflicting names btw. Clang & LLVM.
+using llvm::DenseMap;
+using llvm::SmallDenseMap;
+using llvm::SmallVector;
 
 /// This class implements a map that also provides access to all stored values
 /// in a deterministic order. The values are kept in a std::vector and the
@@ -246,7 +250,10 @@ struct SmallMapVector
  */
 namespace clong {
 
-  using namespace llvm;
+  // using namespace llvm;
+  // ^ Just don't.
+
+  using llvm::DenseMap;
 
   /**
    * LLVM's MapVector, with added salt.

@@ -28,7 +28,7 @@ namespace plugin {
   using namespace clang;
 
   // FIXME: Clang 5.0.1 -> 6.x : strange llvm::Type name conflict.
-  using Type = clang::Type;
+  //using Type = clang::Type;
 
   /**
    *
@@ -92,6 +92,12 @@ namespace plugin {
   private:
     bool TraverseTranslationUnitDecl(const TranslationUnitDecl *TU);
     bool TraverseDecl(const Decl *D);
+
+    /// Helper for `TraverseDecl()` default switch-case: Handle Decl/s for
+    /// which we haven't provided a traversal implementation yet.
+    bool TraverseUnknownDecl(const Decl *D);
+
+    /// Default DeclContext traversal method.
     bool TraverseDeclContext(const DeclContext *DC);
     bool TraverseDeclContextIfAny(const Decl* D);
     bool TraverseNamespaceDecl(const NamespaceDecl *D);

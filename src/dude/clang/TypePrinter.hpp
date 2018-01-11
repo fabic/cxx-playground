@@ -38,6 +38,9 @@ namespace clong {
 
   using namespace clang;
 
+  // FIXME: Clang 5.0.1 -> 6.x : strange llvm::Type name conflict.
+  //using Type = clang::Type;
+
   // ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~  ~
 
   /// \brief RAII object that enables printing of the ARC __strong lifetime

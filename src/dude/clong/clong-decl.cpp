@@ -1,9 +1,10 @@
 #include <stdexcept>
 #include <clang/AST/ASTContext.h>
 
+#include "exceptions.hpp"
 #include "Clong.hpp"
 #include "dude/util/Terminal.hpp"
-#include "exceptions.hpp"
+#include "dude/clang/TypePrinter.hpp"
 
 namespace clong {
 namespace plugin {
@@ -35,7 +36,8 @@ namespace plugin {
           case Decl::CXXRecord:
             case Decl::ClassTemplateSpecialization:
               case Decl::ClassTemplatePartialSpecialization:
-          return TraverseDeclContextIfAny( D );
+          //return TraverseDeclContextIfAny( D );
+          return TraverseUnknownDecl( D );
 
         case Decl::TemplateTypeParm:
         case Decl::UnresolvedUsingTypename:
@@ -57,20 +59,67 @@ namespace plugin {
         // DEFAULT //
         // TODO: if instance of NamedDecl / TypeDecl / etc...
         default: {
-          const DeclContext *DC = dyn_cast< DeclContext >( D );
-
-          log.heading("Unknown decl. kind:")
-            << tbold << tyellow << ' ' << D->getDeclKindName()
-            << tnormal << " ( " << D << " ) "
-            << tcyan << (DC != nullptr ? " is-a DeclContext" : "")
-            << tnormal << tendl;
-
-          if (DC != nullptr) {
-            if (!TraverseDeclContext( DC ))
-              return false;
-          } // if is DC.
+          if (!TraverseUnknownDecl( D ))
+            return false;
         } // default.
       } //switch.
+
+      return true;
+    }
+
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+  bool
+    Clong::TraverseUnknownDecl(const Decl *D)
+    {
+      const DeclContext *DC = dyn_cast< DeclContext >( D );
+      const NamedDecl   *ND = dyn_cast< NamedDecl >( D );
+      const TypeDecl    *TD = dyn_cast< TypeDecl >( D );
+      const ValueDecl   *VD = dyn_cast< ValueDecl >( D );
+
+      TypePrinter TPrinter (Context_->getPrintingPolicy(), /* indentation */ 0);
+
+      TPush log;
+      log.heading("Unknown decl. kind:");
+
+      *log << tbold << tyellow << ' ' << D->getDeclKindName()
+           << tnormal << " ( " << D << " )" ;
+
+      if (DC != nullptr)
+        *log << tendl << tcyan << "is-a DeclContext" ;
+
+      // NAMED
+      if (ND != nullptr) {
+        *log << tendl << tmagenta << "is-a NamedDecl: "
+             << twhite << ND->getNameAsString() ;
+
+        // TYPE
+        if (TD != nullptr) {
+          *log << tendl << tgreen << "is-a TypeDecl: "
+               << twhite << TD->getNameAsString()
+               << tendl << tnormal << "` type: " << tblue ;
+          TPrinter.print(TD->getTypeForDecl(), Qualifiers(), *log, "");
+          *log << tnormal ;
+        }
+        // VALUE
+        else if (VD != nullptr) {
+          *log << tendl << tmagenta << "is-a ValueDecl: "
+               << twhite << VD->getNameAsString()
+               << tendl << tnormal << "` type: " << tblue ;
+          const IdentifierInfo *II = VD->getIdentifier();
+          TPrinter.print( VD->getType(),
+                          *log,
+                          II != nullptr ? II->getName() : "X" );
+          *log << tnormal ;
+        }
+      }
+
+      *log << tnormal << tendl;
+
+      if (DC != nullptr) {
+        if (!TraverseDeclContext( DC ))
+          return false;
+      }
 
       return true;
     }

@@ -7,7 +7,8 @@
 *.gch
 *.gch-*
 
-/build/
+# /build/
+# /rel-build/
 /local/
 
 .idea/

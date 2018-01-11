@@ -110,6 +110,8 @@ namespace plugin {
         TraverseDecl( Child );
       }
 
+      *log << tgreen << "Committing transaction ;-" << tnormal << tendl;
+
       PQXX_.Commit();
 
       return true;
