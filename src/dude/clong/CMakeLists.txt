@@ -70,6 +70,7 @@ else()
         clong-namespace-decl.cpp
         clong-typedefs.cpp
         clong-lmdb.cpp
+        clong-db-init.cpp
         lmdb.cpp
         PQXXHelper.cpp
         PPCallbacksTracker.cpp

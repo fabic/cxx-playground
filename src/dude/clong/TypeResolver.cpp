@@ -10,28 +10,25 @@ namespace plugin {
 
   // ctor
   TypeResolver::TypeResolver(Clong& C)
-    : type_(nullptr)
-    , decl_(nullptr)
-    , Clong_( C )
+    : Clong_( C )
   {
     // TPush _log;
   }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  const Decl *
+  bool
     TypeResolver::Resolve(const QualType QT)
     {
-      type_ = QT.getTypePtr();
-      assert(type_ != nullptr
+      const Type *type = QT.getTypePtr();
+      assert(type != nullptr
           && "Can't handle situation where QualType has no Type* pointer.");
-      decl_ = ResolveImpl( type_ );
-      return decl_;
+      return ResolveImpl( type );
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  const Decl *
+  bool
     TypeResolver::ResolveImpl(const Type *T)
     {
       using TC = Type::TypeClass;
@@ -42,7 +39,7 @@ namespace plugin {
           ((terrs().yellow() << "TypeResolver: Got a builtin: ")
             .white() << B->getName(Clong_.getPrintingPolicy()) << "\n")
             .reset();
-          return nullptr;
+          return false;
         }
         //
         case TC::Elaborated: {
@@ -55,48 +52,53 @@ namespace plugin {
         case TC::Record: {
           const TagType *TT = cast<TagType>( T );
           const Decl *D = TT->getDecl();
-          return D;
+          return false;
         }
         default:
           (((terrs().red().reverse() << "TypeResolver::resolve():")
             .red() << " No impl. for handling Type/s of class `")
             .white() << T->getTypeClassName() << "`.\n")
             .reset();
-          return nullptr;
+          return false;
       }
 
       llvm_unreachable("This shalt not be (see default of switch-case).");
+      return false;
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  const Decl *
+  bool
     TypeResolver::ResolveImpl(const QualType QT)
     {
       const Type *T = QT.getTypePtr();
-      assert(type_ != nullptr
+      assert(T != nullptr
         && "Really: We can't handle situation where QualType has no Type* pointer.");
       return ResolveImpl( T );
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  const Decl *
+  bool
     TypeResolver::Resolve(const TypeSourceInfo *TSI)
     {
-      const TypeLoc TL = TSI->getTypeLoc();
-      return Resolve( TL );
+      TPush("TR:Resolve:TSI");
+      const TypeLoc  TL = TSI->getTypeLoc();
+      const QualType QT = TSI->getType();
+      return Resolve(QT, TL);
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  const Decl *
-    TypeResolver::Resolve(const TypeLoc TL)
+  bool
+    TypeResolver::Resolve(const QualType QT, const TypeLoc TL)
     {
       if (TL.isNull()) {
-        terrs() << tblue << "[TL]: Reached nil TypeLoc." << treset << tendl;
-        return nullptr;
+        terrs() << tmagenta << "[TL]: Reached nil TypeLoc." << treset << tendl;
+        return false;
       }
+
+      assert(TL.getType() == QT);
 
       using TLC = TypeLoc::TypeLocClass;
       switch( TL.getTypeLocClass() )
@@ -115,19 +117,19 @@ namespace plugin {
 
       const TypeLoc NextTL = TL.getNextTypeLoc();
 
-      Resolve( NextTL );
-
-      return nullptr;
+      return Resolve(NextTL.getType(), NextTL);
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  void
+  bool
     TypeResolver::ResolveBuiltinTypeLoc(const BuiltinTypeLoc TL)
     {
       TPush log ("[TR]: BuiltinTypeLoc");
       *log << "-  code: " << Clong_.getSourceCode( TL.getLocalSourceRange() ) << tendl;
       *log << "- code': " << Clong_.getSourceCode( TL.getSourceRange() ) << tendl;
+
+      return false;
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

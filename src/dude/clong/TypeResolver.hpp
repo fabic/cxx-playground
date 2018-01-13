@@ -23,28 +23,27 @@ namespace plugin {
    */
   class TypeResolver {
   private:
-    const Type *type_;
-    const Decl *decl_;
-    // const PrintingPolicy& PrintPolicy_;
+    // const Type *type_;
+    // const Decl *decl_;
     Clong& Clong_;
   public:
     explicit TypeResolver(Clong& C);
 
     /// Returns the eventually resolved `Decl*` (i.e. `decl_`).
-    const Decl* Resolve(const QualType QT);
-    const Decl* Resolve(const TypeSourceInfo *TSI);
-    const Decl* Resolve(const TypeLoc TL);
+    bool Resolve(const QualType QT);
+    bool Resolve(const TypeSourceInfo *TSI);
+    bool Resolve(const QualType QT, const TypeLoc TL);
 
   private:
     /// The recursive counter-part of `Resolve()`.
-    const Decl* ResolveImpl(const Type *T);
+    bool ResolveImpl(const Type *T);
 
     /// Helper that basically invokes `ResolveImpl()` with the `Type *`
     /// that is "embedded" in the QualType (remember that that thing is
     /// a weird smart-pointer-like "thing").
-    const Decl* ResolveImpl(const QualType QT);
+    bool ResolveImpl(const QualType QT);
 
-    void ResolveBuiltinTypeLoc(const BuiltinTypeLoc TL);
+    bool ResolveBuiltinTypeLoc(const BuiltinTypeLoc TL);
 
   private:
     const char * GetTypeLocKindName(TypeLoc TL);

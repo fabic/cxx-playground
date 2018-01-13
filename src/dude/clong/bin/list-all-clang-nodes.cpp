@@ -21,6 +21,9 @@ int main(int argc, char *argv[])
   {
     TPush Out("List of Decl/s ( clang/AST/DeclNodes.inc )");
 #   define ABSTRACT_DECL(DECL)
+//#   define DECL_RANGE(BASE, START, END)                                             \
+//    *Out << (int) Decl::Kind::first##BASE << " Decl::Kind::first" #BASE "" << tendl \
+//         << (int) Decl::Kind::last##BASE  << " Decl::Kind::last" #BASE "" << tendl  ;
 #   define DECL(CLASS, BASE)                                                   \
     *Out << (int) Decl::Kind::CLASS << " Decl::Kind::" #CLASS                  \
          << " (" << sizeof(CLASS##Decl) << ")"                                 \

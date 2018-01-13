@@ -96,21 +96,22 @@ namespace plugin {
     {
       TPush log("Clong::InitPostgresDatabase()");
 
-      pqxx::transaction<> TXN( PQXX_ );
-
       *log << "- Database: " << twhite << PQXX_.dbname() << tnormal << tendl;
+      *log << "- Creating table " << twhite << "decl_kind" << tnormal << tendl;
 
-      TXN.exec(R"( -- DROP TABLE IF EXISTS decl_kind ;
+      PQXX_.TXN().exec(R"( DROP TABLE IF EXISTS decl_kind ;
                    CREATE TABLE IF NOT EXISTS decl_kind (
                      id                SMALLINT PRIMARY KEY NOT NULL,
                      decl_kind         SMALLINT NULL,
                      type_kind         SMALLINT NULL,
                      builtin_type_kind SMALLINT NULL,
-                     typeloc_kind      SMALLINT NULL,
+                     -- typeloc_kind      SMALLINT NULL,
                      name              VARCHAR(255) NULL
                    ); )");
 
-      TXN.exec(R"( DROP TABLE IF EXISTS decl ;
+      *log << "- Creating table " << twhite << "decl" << tnormal << tendl;
+
+      PQXX_.TXN().exec(R"( DROP TABLE IF EXISTS decl ;
                    CREATE TABLE IF NOT EXISTS decl (
                      id               SERIAL PRIMARY KEY NOT NULL,
                      kind             SMALLINT NOT NULL,
@@ -128,7 +129,9 @@ namespace plugin {
                      end_line   INT NULL
                    ); )");
 
-      TXN.commit();
+      DBPopulateDeclKinds();
+
+      PQXX_.TXN().commit();
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

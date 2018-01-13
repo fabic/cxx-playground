@@ -107,6 +107,18 @@ namespace plugin {
     bool InitLMDB();
     void InitPostgresDatabase();
 
+    /**
+     * Populate the `decl_kind` database with the constants from enumerations :
+     * - `Decl::Kind`        : 0-based "direct" mapping.
+     * - `Type::TypeClass`   : 100-based.
+     * - `BuiltinType::Type` : 200-based.
+     *
+     * WARNING: These have been hard-coded on 2018-01-13.
+     * - See file `resources/data-fixtures.sql`,
+     * - which was generated from the output of `bin/list-all-clang-nodes.cpp`.
+     */
+    void DBPopulateDeclKinds();
+
   };
 
 } // plugin ns
