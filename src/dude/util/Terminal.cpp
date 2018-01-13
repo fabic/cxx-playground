@@ -154,7 +154,7 @@ namespace clong {
   {
     Term_.pop();
     if (!Text_.empty())
-      Term_ << tnormal << Text_ << tendl;
+      Term_ << tnormal << "`" << Text_ << tendl;
   }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

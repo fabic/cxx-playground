@@ -109,13 +109,23 @@ namespace plugin {
 
     /**
      * Populate the `decl_kind` database with the constants from enumerations :
-     * - `Decl::Kind`        : 0-based "direct" mapping.
-     * - `Type::TypeClass`   : 100-based.
-     * - `BuiltinType::Type` : 200-based.
+     * - `Decl::Kind`        :   +1-based.
+     * - `Type::TypeClass`   : +100-based.
+     * - `BuiltinType::Type` : +200-based.
      *
      * WARNING: These have been hard-coded on 2018-01-13.
      * - See file `resources/data-fixtures.sql`,
      * - which was generated from the output of `bin/list-all-clang-nodes.cpp`.
+     * - ^ note that the authoritative data is _now in this_ method.
+     *
+     * Also a "Nil/null/void Decl Context" record is added to the `decl` table.
+     *
+     * And the BuiltinType/s are added _with their same ID from `decl_kind.id`
+     * (and for obscur reasons, to the author himself: these were wired as
+     * belonging to the Nil-decl-context).
+     *
+     * Do note that the starting sequence for the `decl.id` column was set
+     * to 1000 when the table was created. See `InitPostgresDatabase()`.
      */
     void DBPopulateDeclKinds();
 

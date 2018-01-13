@@ -205,3 +205,8 @@ VALUES
   (77+200, 77,  'BuiltinType::Kind::ARCUnbridgedCast'),
   (78+200, 78,  'BuiltinType::Kind::OMPArraySection') ;
 
+INSERT INTO decl (id, kind, name)
+  SELECT id, 100 AS BuiltinType_Kind, name AS BuiltinType_Name
+  FROM decl_kind
+  WHERE builtin_type_kind IS NOT NULL
+  ORDER BY id ASC ;
