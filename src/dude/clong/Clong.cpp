@@ -100,7 +100,17 @@ namespace plugin {
 
       *log << "- Database: " << twhite << PQXX_.dbname() << tnormal << tendl;
 
-      TXN.exec(R"( -- DROP TABLE IF EXISTS decl ;
+      TXN.exec(R"( -- DROP TABLE IF EXISTS decl_kind ;
+                   CREATE TABLE IF NOT EXISTS decl_kind (
+                     id                SMALLINT PRIMARY KEY NOT NULL,
+                     decl_kind         SMALLINT NULL,
+                     type_kind         SMALLINT NULL,
+                     builtin_type_kind SMALLINT NULL,
+                     typeloc_kind      SMALLINT NULL,
+                     name              VARCHAR(255) NULL
+                   ); )");
+
+      TXN.exec(R"( DROP TABLE IF EXISTS decl ;
                    CREATE TABLE IF NOT EXISTS decl (
                      id               SERIAL PRIMARY KEY NOT NULL,
                      kind             SMALLINT NOT NULL,

@@ -15,4 +15,5 @@ add_library( DudeHackRoutines STATIC routines.cpp )
 target_link_libraries( DudeHackRoutines INTERFACE
     ${CMAKE_SOURCE_DIR}/local/lib/libunwind-x86_64.a
     ${CMAKE_SOURCE_DIR}/local/lib/libunwind.a
+    lzma
   )

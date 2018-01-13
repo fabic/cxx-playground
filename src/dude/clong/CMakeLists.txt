@@ -94,6 +94,8 @@ else()
 
   set_property(TARGET ${ThisModuleName}
     PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
+
+  add_subdirectory( bin )
 endif()
 
 # ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
