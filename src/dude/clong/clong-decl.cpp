@@ -174,7 +174,7 @@ namespace plugin {
           INSERT INTO decl (kind, context_id, name, fq_name)
           VALUES ($1, NULLIF($2,0), $3, NULL)
           RETURNING id ;)",
-            999,
+            DCArt.GetDecl()->getKind()+1,
             PrevDC.getDatabaseID(),
             Name );
 

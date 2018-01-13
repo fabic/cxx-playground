@@ -26,7 +26,7 @@ namespace plugin {
       auto ID = PQXX_.Insert( R"(
         INSERT INTO decl (kind, context_id, name, fq_name, code)
         VALUES ($1, NULL, $2, NULL, $3)
-        RETURNING id ;)", 3, Name, SourceCode );
+        RETURNING id ;)", D->getKind()+1, Name, SourceCode );
 
       *log << "- ID: " << ID << tendl;
 
