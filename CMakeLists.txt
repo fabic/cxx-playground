@@ -274,6 +274,14 @@ add_compile_options(
 # /me want.
 if (true)
   add_compile_options( -march=amdfam10 )
+  # Clang modules... won't work.
+  if (false)
+  add_compile_options( -fmodules
+    -fno-autolink
+    -fbuiltin-module-map
+    -fmodules-search-all
+    )
+  endif()
 endif()
 
 add_compile_options(

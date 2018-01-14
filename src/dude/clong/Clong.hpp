@@ -109,9 +109,10 @@ namespace plugin {
 
     /**
      * Populate the `decl_kind` database with the constants from enumerations :
-     * - `Decl::Kind`        :   +1-based.
-     * - `Type::TypeClass`   : +100-based.
-     * - `BuiltinType::Type` : +200-based.
+     * - IDs in the range [0 ... 99] are reserved.
+     * - `Decl::Kind`        : +100-based.
+     * - `Type::TypeClass`   : +200-based.
+     * - `BuiltinType::Type` : +300-based.
      *
      * WARNING: These have been hard-coded on 2018-01-13.
      * - See file `resources/data-fixtures.sql`,
