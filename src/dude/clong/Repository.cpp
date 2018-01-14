@@ -154,7 +154,12 @@ namespace plugin {
     Repository::PreviousDeclContext(unsigned int Distance)
     {
       size_t Last = DCStack_.size() - 1;
-      assert(Distance <= Last);
+
+      assert(Last >= 0
+          && "TODO: Handle case where DeclContext stack is empty (throw?).");
+
+      assert(Distance <= Last && "TODO: Throw a banana or sthg?");
+
       size_t Index = DCStack_[ Last - Distance ];
       Artifact& A = Artifacts_.GetVector()[ Index ].second ;
       return A ;
