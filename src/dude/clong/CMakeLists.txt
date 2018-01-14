@@ -97,11 +97,79 @@ else()
     PROPERTY LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib )
 
   add_subdirectory( bin )
+
+
+  ## Add a custom target for invoking Clang, with the 'clong.so' plugin loaded,
+  ## against one of the tutu/test-XXX.cpp sample files.
+  if (true)
+    set(_clang_plugin_target clong)
+
+    get_property(_outdir
+      TARGET ${_clang_plugin_target}
+      PROPERTY LIBRARY_OUTPUT_DIRECTORY)
+
+    file(RELATIVE_PATH _outdir ${CMAKE_SOURCE_DIR} ${_outdir})
+
+    # get_property(_libname TARGET ${_clang_plugin_target} PROPERTY LIBRARY_OUTPUT_NAME)
+    # ^ FIXME: Returns "" empty string, expecting "clong-05.so".
+    #   FIXME: Hard-coding '.so' extension.
+    set(_libname "${_clang_plugin_target}.so")
+
+    ## Search for the "most recent" tutu/test-XXX.cpp test file.
+    set(_test_files "")
+    set(_last_test_file "")
+
+    file(GLOB _test_files
+      RELATIVE ${CMAKE_SOURCE_DIR}
+      ${CMAKE_SOURCE_DIR}/tutu/test-*.cpp)
+
+    if (NOT _test_files)
+      message(WARNING "Dude: Found _no_ test files under tutu/")
+      set(_last_test_file "test.cpp")
+    else()
+      list(SORT _test_files)
+      list(GET _test_files -1 _last_test_file)
+    endif()
+
+    # Clang compiler invocation :
+    #  ` Execution command for add_custom_target() below
+    #   (note that this must be a list ).
+    set(_run_clang_with_plugin_command
+          clang++ -fplugin=${_outdir}/${_libname}
+            -Xclang -plugin-arg-clong -Xclang Hola
+            -std=c++1z -fsyntax-only -Og
+            -c "${_last_test_file}"
+      )
+
+    set(_run_last_plugin_target_name "run-${_clang_plugin_target}")
+
+    add_custom_target( ${_run_last_plugin_target_name}
+      #ALL
+      DEPENDS ${_clang_plugin_target}
+        COMMAND ${_run_clang_with_plugin_command}
+        COMMAND echo -en "\\n\\e[94;7;1m Command was: \\e[0m\\e[37m" ${_run_clang_with_plugin_command} "\\e[0m\\n"
+        COMMAND echo -en "\\n\\e[32;1;7m  HEY!  \\e[0m\\n"
+        COMMAND echo -en "\\n\\e[2m  Relax, breathe, enjoy your stay here upon this earth...  \\e[0m\\n\\n"
+      WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+      COMMENT "-- Running Clang with the '${_libname}' plugin : --"
+      VERBATIM USES_TERMINAL
+      )
+
+    message(STATUS "~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~")
+    message(STATUS "~~")
+    message(STATUS "~~ Dude: About target '${_clang_plugin_target}' (Clang plugin \"thing\") :")
+    message(STATUS "~~  ` Added custom build target '${_run_last_plugin_target_name}' that runs :")
+    message(STATUS "~~   `  ${_run_clang_with_plugin_command}")
+    message(STATUS "~~    `")
+    message(STATUS "~~     ` For Ex.: \$ cmake --build ${CMAKE_BINARY_DIR} --target ${_run_last_plugin_target_name}")
+    message(STATUS "~~")
+    message(STATUS "~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~")
+  endif()
 endif()
 
 # ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~  ~~
 
-# Moved to /experiments/clong-experiments/
+# Moved to /experiments/clong-experiments/ (got in the way).
 # add_subdirectory(experiments)
 
 message(STATUS "~~ Dude: ^ Clong (end) ( ${CMAKE_CURRENT_SOURCE_DIR} ). ~~")
