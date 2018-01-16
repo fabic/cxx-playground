@@ -42,11 +42,33 @@ namespace plugin {
       assert(D != nullptr);
 
       Key_t K = KeyOf( D );
-      auto pair = Artifacts_.insert( {K, Artifact(D)} );
+      auto pair = Artifacts_.insert( {K, Artifact(D, ID)} );
 
       bool ok = pair.second;
       if (!ok)
         throw std::runtime_error("Decl. is already in repository (!)");
+
+      Map_t::iterator elt = pair.first ;
+      Artifact& A = elt->second ;
+
+      A.SetIndex( GetIndexOfLastArtifact() );
+
+      return A ;
+    }
+
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+  Artifact&
+    Repository::Add(const Type *T, DBIdentifier_t ID)
+    {
+      assert(T != nullptr);
+
+      Key_t K = KeyOf( T );
+      auto pair = Artifacts_.insert( {K, Artifact(T, Qualifiers(), ID)} );
+
+      bool ok = pair.second;
+      if (!ok)
+        throw std::runtime_error("Type is already in repository (!)");
 
       Map_t::iterator elt = pair.first ;
       Artifact& A = elt->second ;

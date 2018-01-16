@@ -79,32 +79,32 @@ namespace plugin {
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  bool
+  DBIdentifier_t
     TypeResolver::Resolve(const TypeSourceInfo *TSI)
     {
-      TPush("TR:Resolve:TSI");
       const TypeLoc  TL = TSI->getTypeLoc();
-      const QualType QT = TSI->getType();
-      return Resolve(QT, TL);
+      return Resolve(TL);
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  bool
-    TypeResolver::Resolve(const QualType QT, const TypeLoc TL)
+  DBIdentifier_t
+    TypeResolver::Resolve(const TypeLoc TL)
     {
+      TPush log("TR:Resolve(QT, TL)");
+
       if (TL.isNull()) {
         terrs() << tmagenta << "[TL]: Reached nil TypeLoc." << treset << tendl;
-        return false;
+        return 0;
       }
 
-      assert(TL.getType() == QT);
+      DBIdentifier_t DBID = 0;
 
       using TLC = TypeLoc::TypeLocClass;
       switch( TL.getTypeLocClass() )
       {
       case TLC::Builtin:
-        ResolveBuiltinTypeLoc( TL.castAs< BuiltinTypeLoc >() );
+        DBID = ResolveBuiltinTypeLoc( TL.castAs< BuiltinTypeLoc >() );
         break;
       default:
         TPush log ("[TR]: Resolve( TypeLoc ) - switch-default.");
@@ -117,7 +117,14 @@ namespace plugin {
 
       const TypeLoc NextTL = TL.getNextTypeLoc();
 
-      return Resolve(NextTL.getType(), NextTL);
+      // ~~ _unless_ this type is final (may not point to / wrap another type ~~
+      if (DBID != 0 && !NextTL.isNull()) {
+        throw clong_error( "We ended up resolving this type to a database ID"
+                           "and yet this Type/Loc is _not_ final: there's a"
+                           "\"next TypeLoc\" (WTF?!)" );
+      }
+
+      return Resolve(NextTL);
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

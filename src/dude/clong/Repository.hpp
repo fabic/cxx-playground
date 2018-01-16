@@ -4,9 +4,11 @@
 #include <functional>
 #include <memory>
 
+#include <clang/AST/Type.h> // for Qualifiers.
 // #include <llvm/ADT/MapVector.h>
 // ^ TEMP. imported :
 #include "dude/llvm/MapVector.hpp"
+#include "types.hpp"
 #include "exceptions.hpp"
 
 namespace clang {
@@ -40,13 +42,13 @@ namespace plugin {
     // Repository is friend so that it can access private
     // methods `SetIndex()` and `GetIndex0()`.
     friend class Repository ;
-  public:
-    /// The type that matches our database `SERIAL PRIMARY KEY`.
-    using DBIdentifier_t = unsigned int ;
 
   private:
     /// The Clang `Decl` this artifact is bound to.
-    const Decl*    Decl_ ;
+    const Decl* Decl_ ;
+
+    const Type*      Type_ ;
+    const Qualifiers Quals_ ;
 
     /// The database identifier, 0 meaning "not defined".
     DBIdentifier_t ID_ ;
@@ -79,6 +81,15 @@ namespace plugin {
       assert(Decl_ != nullptr);
     }
 
+    /// Ctor.
+    explicit Artifact(const Type* T, Qualifiers Q, DBIdentifier_t ID = 0)
+      : Decl_(nullptr)
+      , Type_(T), Quals_(Q)
+      , ID_(0), Index_(0)
+    {
+      assert(Type_ != nullptr);
+    }
+
   public:
 
     /// Returns _this_ 1-based artifact number (which is set by the Repository
@@ -94,6 +105,7 @@ namespace plugin {
       return Decl_ ;
     }
 
+    /// Helper for casting the Decl* to one of its subtypes.
     template<typename DeclSubType>
       const DeclSubType *
         GetDeclAs() const {
@@ -120,7 +132,12 @@ namespace plugin {
 
 
   /**
+   * Repository that indexes Decl/s and Type/s wrapped as `Artifact`/s
+   * into a map.
    *
+   *
+   * TODO: have a Clong& ref. so that we may query the DB for stuff, specif.
+   * for querying Artifacts for builtin types.
    */
   class Repository {
   public:
@@ -128,13 +145,17 @@ namespace plugin {
     using Key_t = size_t;
     using Map_t = MapVector< Key_t, Artifact > ;
     using DeclContextStack_t = llvm::SmallVector< size_t, /* nElt= */ 32 > ;
-    using DBIdentifier_t = Artifact::DBIdentifier_t ;
 
   public:
     /// Comes up with a key for this `Decl*` for insertion in the artifacts map.
     /// Note: we're using the `Decl*` memory address.
     static Key_t KeyOf(const Decl *D) {
       return reinterpret_cast< size_t >( D );
+    }
+
+    /// Likewise for Type/s.
+    static Key_t KeyOf(const Type *T) {
+      return reinterpret_cast< size_t >( T );
     }
 
   private:
@@ -161,9 +182,9 @@ namespace plugin {
 
     /// Add a Clang `Decl*` to the artifacts map.
     Artifact& Add(const Decl* D, DBIdentifier_t ID = 0);
+    Artifact& Add(const Type* T, DBIdentifier_t ID = 0);
 
     // TODO: impl.
-    void Add(const Type* T);
     void Add(const TypeLoc* T);
 
     /// True if we have an artifact for this `Decl*`.

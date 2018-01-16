@@ -3,7 +3,7 @@
 
 #include <clang/AST/Type.h>
 #include <clang/AST/Decl.h>
-// #include <tuple>
+#include "types.hpp"
 
 namespace clong {
 namespace plugin {
@@ -31,8 +31,12 @@ namespace plugin {
 
     /// Returns the eventually resolved `Decl*` (i.e. `decl_`).
     bool Resolve(const QualType QT);
-    bool Resolve(const TypeSourceInfo *TSI);
-    bool Resolve(const QualType QT, const TypeLoc TL);
+
+    /// Convenience "entry point" method that will basically invoke
+    /// `Resolve(const TypeLoc)`.
+    DBIdentifier_t Resolve(const TypeSourceInfo *TSI);
+
+    DBIdentifier_t Resolve(const TypeLoc TL);
 
   private:
     /// The recursive counter-part of `Resolve()`.
