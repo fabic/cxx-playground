@@ -151,6 +151,15 @@ namespace clong {
       TXN().commit();
       return *this;
     }
+
+    /// Wraps `pqxx::exec_params()`.
+    template<typename ...Arguments>
+    pqxx::result
+      Exec(const std::string& SQL, Arguments&& ...Args)
+      {
+        pqxx::result rset = TXN().exec_params(SQL, Args...);
+        return rset ;
+      }
   };
 
 } // clong ns

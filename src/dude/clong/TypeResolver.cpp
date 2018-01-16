@@ -118,13 +118,19 @@ namespace plugin {
 
       const TypeLoc NextTL = TL.getNextTypeLoc();
 
+      // FIXME: awkward logic here (temp.).
+
       DBID = Art != nullptr ? Art->getDatabaseID() : 0;
 
       // ~~ _unless_ this type is final (may not point to / wrap another type ~~
-      if (DBID != 0 && !NextTL.isNull()) {
-        throw clong_error( "We ended up resolving this type to a database ID"
-                           "and yet this Type/Loc is _not_ final: there's a"
-                           "\"next TypeLoc\" (WTF?!)" );
+      if (DBID != 0) {
+        if ( !NextTL.isNull() ) {
+          throw clong_error( "We ended up resolving this type to a database ID"
+                             "and yet this Type/Loc is _not_ final: there's a"
+                             "\"next TypeLoc\" (WTF?!)" );
+        }
+
+        return *Art ;
       }
 
       return Resolve(NextTL);
@@ -139,7 +145,25 @@ namespace plugin {
       *log << "-  code: " << Clong_.getSourceCode( TL.getLocalSourceRange() ) << tendl;
       *log << "- code': " << Clong_.getSourceCode( TL.getSourceRange() ) << tendl;
 
-      return Clong_.getRepository().GetNilArtifact();
+      // return Clong_.getRepository().GetNilArtifact();
+
+      const BuiltinType *B = TL.getTypePtr();
+      assert(B != nullptr && "Huh!");
+
+      BuiltinType::Kind K = B->getKind();
+
+      // TODO: refactor this into the Repository or Artifact ?
+      // FIXME: hard-code +300.
+      Repository::Key_t KK = static_cast<int>( K ) + 300;
+
+      *log << "- Kind: " << K << tendl;
+      *log << "- Key: " << KK << tendl;
+
+      Artifact& BArt = Clong_.getRepository().Get( KK );
+
+      *log << "- ID# " << BArt.getDatabaseID() << tendl;
+
+      return BArt ;
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

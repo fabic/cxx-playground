@@ -18,8 +18,8 @@ namespace plugin {
                const char *PQXXOptionsString)
     : Instance(Instance),
       ParsedTemplates(ParsedTemplates),
-      Repo_( *this ),
-      PQXX_( PQXXOptionsString )
+      PQXX_( PQXXOptionsString ),
+      Repo_( *this )
     {
       Preprocessor& PP = Instance.getPreprocessor();
       PP.addPPCallbacks( // PP takes ownership.

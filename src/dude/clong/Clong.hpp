@@ -40,6 +40,8 @@ namespace plugin {
     // FIXME (?): This is set by HandleTranslationUnit().
     const ASTContext *Context_ = nullptr;
 
+    PQXXHelper PQXX_ ;
+
     Repository Repo_ ;
 
     std::set<std::string> ParsedTemplates;
@@ -51,8 +53,6 @@ namespace plugin {
     //const char *
     StringRef LMDBDatabasePathName = "./database.lmdb";
     ::lmdb::env LMDB_;
-
-    PQXXHelper PQXX_ ;
 
   public:
     /// Ctor
@@ -76,6 +76,8 @@ namespace plugin {
 
     /// Ref. to the artifacts repository.
     Repository& getRepository() { return Repo_ ; }
+
+    PQXXHelper& PQXX() { return PQXX_ ; }
 
   private:
     /**

@@ -99,6 +99,12 @@ namespace plugin {
       : Decl_(nullptr), Type_(nullptr), Quals_(), ID_(0), Index_(0)
     { /* noop */ }
 
+    /// Ctor
+    explicit Artifact(DBIdentifier_t ID)
+      : Decl_(nullptr), Type_(nullptr), Quals_(), ID_(ID), Index_(0)
+    { /* noop */ }
+
+
   public:
 
     /// Returns _this_ 1-based artifact number (which is set by the Repository
@@ -209,6 +215,9 @@ namespace plugin {
     /// Fetch the artifact that corresponds to this `Decl*`.
     /// Probably O(log2(n)).
     Artifact& Get(const Decl* D);
+
+    /// Fetch an artifact by its integral `size_t` key.
+    Artifact& Get(Key_t K);
 
     /// Return the NIL artifact.
     Artifact& GetNilArtifact();

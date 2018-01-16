@@ -5,6 +5,7 @@
 
 #include "Repository.hpp"
 #include "dude/util/Terminal.hpp"
+#include "Clong.hpp"
 
 namespace clong {
 namespace plugin {
@@ -36,7 +37,7 @@ namespace plugin {
   // ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~
   // ~  -  ~  REPOSITORY  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~
 
-  /// Ctor
+  /// Ctor -- beware here: we're being constructed as part of Clong's ctor.
   Repository::Repository(Clong& CL)
     : Clong_(CL)
   {
@@ -50,7 +51,42 @@ namespace plugin {
     Artifact& A = pair.first->second ;
     A.SetIndex( 0 );
 
-    // TODO: Read builtin artifacts from database ?
+    //
+    // Read the builtin artifacts from the database and add "stub artifacts"
+    // for these to the map. FIXME: simple impl. : we assume that the builtin
+    // types were added to the `decl` table with `decl.id` == `decl_kind.id`.
+    //
+    {
+      TPush log("Repository : fetching the builtin types artifacts.");
+      pqxx::result rset = Clong_.PQXX().Exec(R"(
+        SELECT D.id AS builtin_decl_id,
+               K.builtin_type_kind, -- FIXME:UNUSED.
+               D.name
+        FROM decl D
+        INNER JOIN decl_kind K ON D.kind = K.id
+        WHERE D.kind = $1 AND D.context_id = 0
+        ORDER BY D.id ASC ;
+        )",
+          // hard-coded BuiltinType Type kind.
+          200
+          );
+
+      for(const pqxx::row& row : rset)
+      {
+        DBIdentifier_t BID = row[0].as<int>() ;
+        Key_t K = BID;
+        *log << "- Added ID# " << BID
+             << " : " << row[2].as<const char*>()
+             << tendl;
+        auto pair = Artifacts_.insert( {K, Artifact(BID)} );
+        bool ok = pair.second;
+        if (!ok)
+          throw std::runtime_error("Key is already exists in repository (!)");
+        Map_t::iterator elt = pair.first ;
+        Artifact& A = elt->second ;
+        A.SetIndex( GetIndexOfLastArtifact() );
+      }
+    }
   }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
@@ -143,6 +179,18 @@ namespace plugin {
       bool Found = it != Artifacts_.end();
       if (! Found)
         throw clong_error("Repository::Get(): No such Decl* (!)");
+      return it->second ;
+    }
+
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+  Artifact&
+    Repository::Get(Key_t K)
+    {
+      Map_t::iterator it = Artifacts_.find( K );
+      bool Found = it != Artifacts_.end();
+      if (! Found)
+        throw clong_error("Repository::Get(Key_t): No such Artifact (!)");
       return it->second ;
     }
 
