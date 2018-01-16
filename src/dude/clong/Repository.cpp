@@ -36,6 +36,25 @@ namespace plugin {
   // ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~
   // ~  -  ~  REPOSITORY  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~  -  ~
 
+  /// Ctor
+  Repository::Repository(Clong& CL)
+    : Clong_(CL)
+  {
+    // TEMP: Add the NIL artifact.
+    // TODO: fetch from database ?
+    Key_t K = 0;
+    auto pair = Artifacts_.insert( {K, Artifact()} );
+    bool ok = pair.second;
+    if (!ok)
+      throw std::runtime_error("Failed to insert the NIL artifact -_-");
+    Artifact& A = pair.first->second ;
+    A.SetIndex( 0 );
+
+    // TODO: Read builtin artifacts from database ?
+  }
+
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
   Artifact&
     Repository::Add(const Decl *D, DBIdentifier_t ID)
     {
@@ -121,6 +140,18 @@ namespace plugin {
     Repository::Get(const Decl* D)
     {
       Map_t::iterator it = Artifacts_.find( KeyOf(D) );
+      bool Found = it != Artifacts_.end();
+      if (! Found)
+        throw clong_error("Repository::Get(): No such Decl* (!)");
+      return it->second ;
+    }
+
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+  Artifact&
+    Repository::GetNilArtifact()
+    {
+      Map_t::iterator it = Artifacts_.find( 0 );
       bool Found = it != Artifacts_.end();
       if (! Found)
         throw clong_error("Repository::Get(): No such Decl* (!)");

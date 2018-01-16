@@ -18,6 +18,7 @@ namespace plugin {
                const char *PQXXOptionsString)
     : Instance(Instance),
       ParsedTemplates(ParsedTemplates),
+      Repo_( *this ),
       PQXX_( PQXXOptionsString )
     {
       Preprocessor& PP = Instance.getPreprocessor();

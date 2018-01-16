@@ -10,8 +10,9 @@ namespace plugin {
 
   using namespace clang;
 
-  // Forward decl.
-  class Clong;
+  // Forward decls.
+  class Artifact ;
+  class Clong ;
 
   /**
    * Helper class for working with (around) Clang's Type hierarchy.
@@ -34,9 +35,9 @@ namespace plugin {
 
     /// Convenience "entry point" method that will basically invoke
     /// `Resolve(const TypeLoc)`.
-    DBIdentifier_t Resolve(const TypeSourceInfo *TSI);
+    Artifact& Resolve(const TypeSourceInfo *TSI);
 
-    DBIdentifier_t Resolve(const TypeLoc TL);
+    Artifact& Resolve(const TypeLoc TL);
 
   private:
     /// The recursive counter-part of `Resolve()`.
@@ -47,7 +48,7 @@ namespace plugin {
     /// a weird smart-pointer-like "thing").
     bool ResolveImpl(const QualType QT);
 
-    bool ResolveBuiltinTypeLoc(const BuiltinTypeLoc TL);
+    Artifact& ResolveBuiltinTypeLoc(const BuiltinTypeLoc TL);
 
   private:
     const char * GetTypeLocKindName(TypeLoc TL);

@@ -74,6 +74,9 @@ namespace plugin {
 
     StringRef getSourceCode(SourceRange SR = SourceRange()) const;
 
+    /// Ref. to the artifacts repository.
+    Repository& getRepository() { return Repo_ ; }
+
   private:
     /**
      * <http://clang.llvm.org/doxygen/classclang_1_1ASTContext.html#a151571ff7d2efdb6b9b6026773916056>

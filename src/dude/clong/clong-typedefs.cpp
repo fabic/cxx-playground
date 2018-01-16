@@ -23,24 +23,26 @@ namespace plugin {
       *log << "- name: " << tcyan << Name << tnormal << tendl;
       *log << "- code: " << SourceCode << tendl;
 
+      // Resolve Type.
+      const TypeSourceInfo *TSI = D->getTypeSourceInfo();
+      assert(TSI != nullptr && "Woups!");
+
+      TypeResolver TR ( *this );
+      Artifact& TA = TR.Resolve( TSI );
+
+      //
       auto ID = PQXX_.Insert( R"(
         INSERT INTO decl (kind, type_id, context_id, name, fq_name, code)
         VALUES ($1, $2, $3, $4, NULL, $5)
         RETURNING id ;)",
           D->getKind()+100,
-          0,
+          TA.getDatabaseID(),
           Repo_.CurrentDeclContext().getDatabaseID(),
           Name, SourceCode );
 
       *log << "- ID: " << ID << tendl;
 
       Repo_.Add(D, ID);
-
-      const TypeSourceInfo *TSI = D->getTypeSourceInfo();
-      assert(TSI != nullptr && "Woups!");
-
-      TypeResolver TR ( *this );
-      TR.Resolve( TSI );
 
       return true;
     }

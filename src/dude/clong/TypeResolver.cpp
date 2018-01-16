@@ -79,7 +79,7 @@ namespace plugin {
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  DBIdentifier_t
+  Artifact&
     TypeResolver::Resolve(const TypeSourceInfo *TSI)
     {
       const TypeLoc  TL = TSI->getTypeLoc();
@@ -88,23 +88,24 @@ namespace plugin {
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  DBIdentifier_t
+  Artifact&
     TypeResolver::Resolve(const TypeLoc TL)
     {
       TPush log("TR:Resolve(QT, TL)");
 
       if (TL.isNull()) {
         terrs() << tmagenta << "[TL]: Reached nil TypeLoc." << treset << tendl;
-        return 0;
+        return Clong_.getRepository().GetNilArtifact();
       }
 
       DBIdentifier_t DBID = 0;
+      Artifact *Art = nullptr ;
 
       using TLC = TypeLoc::TypeLocClass;
       switch( TL.getTypeLocClass() )
       {
       case TLC::Builtin:
-        DBID = ResolveBuiltinTypeLoc( TL.castAs< BuiltinTypeLoc >() );
+        Art = & ResolveBuiltinTypeLoc( TL.castAs< BuiltinTypeLoc >() );
         break;
       default:
         TPush log ("[TR]: Resolve( TypeLoc ) - switch-default.");
@@ -116,6 +117,8 @@ namespace plugin {
       // ~~ Next TypeLoc in the chain. ~~
 
       const TypeLoc NextTL = TL.getNextTypeLoc();
+
+      DBID = Art != nullptr ? Art->getDatabaseID() : 0;
 
       // ~~ _unless_ this type is final (may not point to / wrap another type ~~
       if (DBID != 0 && !NextTL.isNull()) {
@@ -129,14 +132,14 @@ namespace plugin {
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 
-  bool
+  Artifact&
     TypeResolver::ResolveBuiltinTypeLoc(const BuiltinTypeLoc TL)
     {
       TPush log ("[TR]: BuiltinTypeLoc");
       *log << "-  code: " << Clong_.getSourceCode( TL.getLocalSourceRange() ) << tendl;
       *log << "- code': " << Clong_.getSourceCode( TL.getSourceRange() ) << tendl;
 
-      return false;
+      return Clong_.getRepository().GetNilArtifact();
     }
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

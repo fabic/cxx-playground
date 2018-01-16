@@ -33,6 +33,9 @@ namespace plugin {
   // Fwd decl.
   class Repository ;
 
+  // Fwd Decl.
+  class Clong ;
+
   /**
    * A "code artifact".
    *
@@ -89,6 +92,12 @@ namespace plugin {
     {
       assert(Type_ != nullptr);
     }
+
+  private:
+    /// Ctor : Nil artifact.
+    Artifact()
+      : Decl_(nullptr), Type_(nullptr), Quals_(), ID_(0), Index_(0)
+    { /* noop */ }
 
   public:
 
@@ -159,6 +168,9 @@ namespace plugin {
     }
 
   private:
+    /// Reference to the owning Clong.
+    Clong& Clong_;
+
     /// The artifacts map. Note that it is a `_llvm::MapVector<>` which is a
     /// `llvm::DenseMap<>` along with a `std::vector` that preserve information
     /// about the insertion order.
@@ -171,12 +183,16 @@ namespace plugin {
   private:
     /// For the impl. of Add() where we need to `Artifact::SetIndex()`.
     size_t GetIndexOfLastArtifact() const {
-      if (Artifacts_.empty())
-        throw clong_error("GetIndexOfLastArtifact(): we have no artifacts (empty map).");
+      // See ctor: we ensure there's at least one "NIL" artifact.
+      // if (Artifacts_.empty())
+      //   throw clong_error("GetIndexOfLastArtifact(): we have no artifacts (empty map).");
       return Artifacts_.GetVector().size() - 1 ;
     }
 
   public:
+    /// Ctor
+    explicit Repository(Clong& CL);
+
     /// Return the `MapVector(&)` that stores the collected code artifacts.
     Map_t& getArtifactsMap() { return Artifacts_ ; }
 
@@ -194,6 +210,8 @@ namespace plugin {
     /// Probably O(log2(n)).
     Artifact& Get(const Decl* D);
 
+    /// Return the NIL artifact.
+    Artifact& GetNilArtifact();
 
     /// Convenience helper that invokes `Has()`.
     /// fixme: rename as isKnownDeclContext ?
