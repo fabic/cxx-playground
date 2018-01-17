@@ -213,5 +213,37 @@ namespace plugin {
       return Str;
     }
 
+  // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
+
+  StringRef
+    Clong::getSourceCode(const Decl *D) const
+    {
+      if (D == nullptr)
+        return "<<Null pointer Decl* D [Clong::getSourceCode()]>>";
+
+      return getSourceCode( D->getSourceRange() );
+    }
+
+  StringRef
+    Clong::getNameForDecl(const Decl *D) const
+    {
+      const NamedDecl *ND = dyn_cast< NamedDecl >( D );
+
+      if (ND != nullptr) {
+        const IdentifierInfo *II = ND->getIdentifier();
+        StringRef Name = II != nullptr ? II->getName() : "<< unnamed >>";
+        return Name ;
+      }
+      else {
+        // std::string Name ;
+        // llvm::raw_string_ostream OS( Name );
+        // OS << D->getDeclKindName() << " ( " << D << " ) ";
+        // return OS.str();
+        // CAN'T: StringRef do not take ownership of the string's buffer.
+        // TODO: impl. ?
+        return D->getDeclKindName() ;
+      }
+    }
+
 } // plugin ns.
 } // clong ns.

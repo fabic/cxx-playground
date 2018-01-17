@@ -114,6 +114,20 @@ namespace plugin {
         }
       }
 
+      //if (! Repo_.Has(D))
+      {
+        auto ID = PQXX_.Insert( R"(
+          INSERT INTO decl (kind, type_id, context_id, name, fq_name, code)
+          VALUES ($1, NULLIF($2,0), $3, $4, NULL, $5)
+          RETURNING id ;)",
+            D->getKind()+100,
+            0,
+            Repo_.CurrentDeclContext().getDatabaseID(),
+            getNameForDecl( D ).str(),
+            getSourceCode( D ).str() );
+        Repo_.Add(D, ID);
+      }
+
       *log << tnormal << tendl;
 
       if (DC != nullptr) {

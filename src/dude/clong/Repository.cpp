@@ -143,7 +143,10 @@ namespace plugin {
       const Decl *D = dyn_cast< Decl >( DC );
       assert( D != nullptr && "Ouch! Could not obtain a Decl* by casting a DeclContext* (!)");
 
-      Artifact& A = Add(D, ID);
+      assert((!Has(D) || ID == 0)
+          && "FIXME: this func. shall not have this ID arg.");
+
+      Artifact& A = Has(D) ? Get(D) : Add(D, ID);
 
       DCStack_.push_back( A.GetIndex0() );
 

@@ -78,7 +78,7 @@ namespace plugin {
     /// Ctor.
     explicit Artifact(const Decl* D, DBIdentifier_t ID = 0)
       : Decl_(D)
-      , ID_(0)
+      , ID_(ID)
       , Index_(0)
     {
       assert(Decl_ != nullptr);
@@ -88,7 +88,7 @@ namespace plugin {
     explicit Artifact(const Type* T, Qualifiers Q, DBIdentifier_t ID = 0)
       : Decl_(nullptr)
       , Type_(T), Quals_(Q)
-      , ID_(0), Index_(0)
+      , ID_(ID), Index_(0)
     {
       assert(Type_ != nullptr);
     }
@@ -243,7 +243,10 @@ namespace plugin {
     /// Tells whether DC is the current DeclContext at the top of the stack.
     bool isCurrentDeclContext(const DeclContext* DC) const;
 
-    /// Push a DC onto the top of the stack.
+    /// Push a DC onto the top of the stack. DC is added to the repository
+    /// if it is unknown.
+    /// FIXME: this shall not take an ID arg. / this meth. shall just push
+    /// FIXME: not do some fancy other stuff.
     Artifact& PushDeclContext(const DeclContext* DC, DBIdentifier_t ID = 0);
 
     /// Pop the DC at stack top.

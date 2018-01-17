@@ -72,7 +72,16 @@ namespace plugin {
     ///  outputs booleans as `_Bool` instead of `bool`.
     const PrintingPolicy& getPrintingPolicy() const;
 
+    // Helper for getting a `StringRef` view into the given `SourceRange`.
     StringRef getSourceCode(SourceRange SR = SourceRange()) const;
+
+    /// Helper that basically invokes `D->getSourceRane()`.
+    StringRef getSourceCode(const Decl *D) const ;
+
+    /// Helper that comes up with a name for a given `Decl *D`. Either it is-a
+    /// `NamedDecl` from which we can read the `IdentifierInfo`, or it is one of
+    /// those other non-named decl.
+    StringRef getNameForDecl(const Decl *D) const ;
 
     /// Ref. to the artifacts repository.
     Repository& getRepository() { return Repo_ ; }
