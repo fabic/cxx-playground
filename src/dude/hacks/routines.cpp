@@ -146,8 +146,9 @@ namespace hack {
         //   and we're not handling this situation.
         //
 
-      throw std::runtime_error( "Routine::AttemptRoutineNameLookup(): "
-                                " We should not have reached this point." );
+      return "<< unknown routine, error while walking up stack frames. >>" ;
+      // throw std::runtime_error( "Routine::AttemptRoutineNameLookup(): "
+      //                           " We should not have reached this point." );
     }
 
     // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -

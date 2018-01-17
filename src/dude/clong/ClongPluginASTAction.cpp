@@ -34,6 +34,8 @@ namespace plugin {
 
   PluginASTAction::ActionType
     ClongPluginASTAction::getActionType() {
+      TPush log;
+      *log << "ActionType set to: AddBeforeMainAction\n";
       // return AddAfterMainAction;
       return AddBeforeMainAction;
     }
@@ -44,12 +46,13 @@ namespace plugin {
     ClongPluginASTAction::ParseArgs(const CompilerInstance &CI,
                                    const std::vector<std::string> &args)
     {
+      TPush log;
+
       if (!args.empty() && args[0] == "help")
         PrintHelp( terrs() );
 
       for (unsigned i = 0, e = args.size(); i != e; ++i) {
-        terrs() << "ClongPluginASTAction::ParseArgs(...): arg = "
-                     << args[i] << "\n";
+        *log << "- arg = " << args[i] << tendl ;
       }
 
       return true;
@@ -67,6 +70,7 @@ namespace plugin {
   bool
     ClongPluginASTAction::BeginInvocation(CompilerInstance &CI)
     {
+      TPush();
       return true;
     }
 
@@ -75,6 +79,7 @@ namespace plugin {
   bool
     ClongPluginASTAction::BeginSourceFileAction(CompilerInstance &CI)
     {
+      TPush();
       return true;
     }
 
@@ -83,6 +88,7 @@ namespace plugin {
   void
     ClongPluginASTAction::ExecuteAction()
     {
+      TPush();
       Base::ExecuteAction();
     }
 
@@ -91,6 +97,7 @@ namespace plugin {
   void
     ClongPluginASTAction::EndSourceFileAction()
     {
+      TPush();
     }
 
 } // plugin ns.

@@ -31,7 +31,13 @@ namespace plugin {
   //using Type = clang::Type;
 
   /**
+   * The Clong ASTConsumer, this is where things happen.
    *
+   * See `HandleTranslationUnit()` for the entry point.
+   *
+   * Implementation is scatterred among the various `clong-xxx.cpp` files.
+   *
+   * "Clong" is the sound it makes when it crashes Clang.
    */
   class Clong : public ASTConsumer {
   private:
@@ -40,26 +46,34 @@ namespace plugin {
     // FIXME (?): This is set by HandleTranslationUnit().
     const ASTContext *Context_ = nullptr;
 
+    /// Our PostgreSQL database connectivity helper.
+    /// TODO: Someday this might become a generic DB wrapper so that we may
+    /// TODO: substitute backends, like e.g. SQLite to begin with.
     PQXXHelper PQXX_ ;
 
+    /// The artifacts repository.
     Repository Repo_ ;
 
+    /// FIXME: get rid of this.
     std::set<std::string> ParsedTemplates;
+
+    /// For `PPCallbacksTracker`.
     std::vector<CallbackCall> CallbackCalls;
     llvm::SmallSet<std::string, 4> Ignore;
 
-    // todo: move to class lmdb::env.
-    //std::string
-    //const char *
+    // TODO: LMDB impl. still actual ?
     StringRef LMDBDatabasePathName = "./database.lmdb";
     ::lmdb::env LMDB_;
 
   public:
     /// Ctor
+    /// The preprocessor "observer" `PPCallbacksTracker` is instanciated and
+    // handed over to Clang.
     Clong(CompilerInstance &Instance,
                           std::set<std::string> ParsedTemplates,
                           const char *PQXXOptionsString);
 
+    /// Dtor
     ~Clong() override;
 
     /**
@@ -86,6 +100,7 @@ namespace plugin {
     /// Ref. to the artifacts repository.
     Repository& getRepository() { return Repo_ ; }
 
+    /// Get the PostgreSQL DB helper.
     PQXXHelper& PQXX() { return PQXX_ ; }
 
   private:
@@ -104,7 +119,13 @@ namespace plugin {
     bool isInMainFile(const Decl& D) const;
 
   private:
+    /// "entry point" of the recursive descent over the AST of a translation
+    /// unit.  Note that Decl/s are skipped until we reach one that belong to
+    /// the "main file".
     bool TraverseTranslationUnitDecl(const TranslationUnitDecl *TU);
+
+    /// Dispatches processing to specialized `TraverseXxxxDecl()` given the
+    /// concrete type of `Decl *D`.
     bool TraverseDecl(const Decl *D);
 
     /// Helper for `TraverseDecl()` default switch-case: Handle Decl/s for
@@ -113,12 +134,21 @@ namespace plugin {
 
     /// Default DeclContext traversal method.
     bool TraverseDeclContext(const DeclContext *DC);
+
+    /// Helper that invokes `TraverseDeclContext()`
+    /// iff `Decl *D` is-a DeclContext.
     bool TraverseDeclContextIfAny(const Decl* D);
+
     bool TraverseNamespaceDecl(const NamespaceDecl *D);
     bool TraverseTypedefNameDecl(const TypedefNameDecl *D);
 
   private:
     bool InitLMDB();
+
+    /**
+     * Drops the schema first, creates tables `decl` & `decl_kind`
+     * and invokes `DBPopulateDeclKinds()`
+     */
     void InitPostgresDatabase();
 
     /**

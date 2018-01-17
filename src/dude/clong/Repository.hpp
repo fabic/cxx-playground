@@ -37,7 +37,7 @@ namespace plugin {
   class Clong ;
 
   /**
-   * A "code artifact".
+   * A "code artifact" : used to represent either a `Decl *` or a `Type *`.
    *
    * TODO: Copy ctor/assign & Move -abilities (?) maybe prevent copying?
    */
@@ -51,13 +51,15 @@ namespace plugin {
     const Decl* Decl_ ;
 
     const Type*      Type_ ;
+
+    /// TODO: impl.
     const Qualifiers Quals_ ;
 
     /// The database identifier, 0 meaning "not defined".
     DBIdentifier_t ID_ ;
 
-    /// Unique 1-based index of this artifact within the Repository::Map_t
-    /// vector.
+    /// Unique 1-based index of this artifact within the
+    /// `Repository::Map_t` vector.
     size_t Index_ ;
 
   private:

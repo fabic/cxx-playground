@@ -1,3 +1,11 @@
+-- src/dude/clong/resources/data-fixtures.sql
+--
+-- 2018-01: original data fixtures file that was used to come up with the init.
+--          code in `clong-db-init.cpp`
+--          This is left here for information only, ain't used.
+--
+-- See `bin/list-all-clang-nodes.cpp` which gave the output for producing this.
+
 INSERT INTO decl_kind (id, decl_kind, name)
 VALUES
   ( 0,  0,  'Decl::Kind::AccessSpec'),

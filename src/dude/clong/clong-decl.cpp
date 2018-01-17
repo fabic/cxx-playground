@@ -114,7 +114,7 @@ namespace plugin {
         }
       }
 
-      //if (! Repo_.Has(D))
+      // Bake this "unknown" Decl. kind in advance.
       {
         auto ID = PQXX_.Insert( R"(
           INSERT INTO decl (kind, type_id, context_id, name, fq_name, code)

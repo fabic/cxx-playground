@@ -114,7 +114,7 @@ namespace clong {
     /// Note that there may only be _one_ transaction at all time;
     /// FYI: PostgreSql does not support nested transaction, which is fine;
     /// FYI: but it does have a SAVEPOINT facility, that is used by `pqxx`
-    /// in their `subtransaction` impl.
+    /// in their `pqxx::subtransaction` impl.
     pqxx::transaction<>&
       TXN() {
         if (! TXN_.Exists())
@@ -153,6 +153,7 @@ namespace clong {
     }
 
     /// Wraps `pqxx::exec_params()`.
+    /// TODO: see if we may add features to this.
     template<typename ...Arguments>
     pqxx::result
       Exec(const std::string& SQL, Arguments&& ...Args)

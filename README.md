@@ -14,3 +14,11 @@ Quick build command :
 ### Pointers
 
 * PostgreSql's [libpqxx](http://pqxx.org/development/libpqxx/) &ndash; [libpqxx.readthedocs.io](http://libpqxx.readthedocs.io/en/latest/)
+
+### ChangeLog
+
+* __2018-01-17:__ Dude, you were working on that _Clong_ Clang plugin thing;
+ __status:__ partially working proof-of-concept, this may lead somewhere.
+
+
+__EOF__

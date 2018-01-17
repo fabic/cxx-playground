@@ -10,6 +10,9 @@ namespace plugin {
   using namespace clang;
 
   /**
+   * ENTRY POINT of this Clong plugin thing.
+   *
+   * See registration at the end of `ClongPluginASTAction.cpp`.
    *
    */
   class ClongPluginASTAction : public PluginASTAction
@@ -27,7 +30,7 @@ namespace plugin {
 
   public:
     /// ctor
-    explicit ClongPluginASTAction();
+    ClongPluginASTAction();
 
     /// dtor
     ~ClongPluginASTAction() override;
@@ -46,6 +49,8 @@ namespace plugin {
 
     ///
     void PrintHelp(llvm::raw_ostream& ros);
+
+    // FIXME: Dude, these overriden methods _seem not_ be invoked by Clang.
 
     bool BeginInvocation(CompilerInstance &CI) override;
     bool BeginSourceFileAction(CompilerInstance &CI) override;

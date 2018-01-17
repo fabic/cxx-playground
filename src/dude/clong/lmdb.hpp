@@ -9,9 +9,10 @@
 namespace clong {
   /**
    * * Having these structures adhere to the pseudo-concept StandardLayoutType
-   *   was too constraining.
-   * http://en.cppreference.com/w/cpp/concept/StandardLayoutType
-   * `static_assert(std::is_standard_layout<NamedDecl>());`
+   *   was too constraining. http://en.cppreference.com/w/cpp/concept/StandardLayoutType
+   *   `static_assert(std::is_standard_layout<NamedDecl>());`
+   *
+   * * __2018-01-17:__ IMPL. LEFT UNFINISHED, SWITCHED BACK TO POSTGRESQL.
    */
   namespace lmdb {
 
