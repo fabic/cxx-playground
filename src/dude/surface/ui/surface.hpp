@@ -1,8 +1,8 @@
 #ifndef SF_UI_SURFACE_H
 #define SF_UI_SURFACE_H
 
-#include "surface/xcb/window.hpp"
-#include "surface/text/TextBuffers.hpp"
+#include "dude/xcbx/window.hpp"
+#include "dude/surface/text/TextBuffers.hpp"
 
 namespace sf {
   namespace ui {

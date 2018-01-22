@@ -1,6 +1,6 @@
 
 #include <cairo.h>
-# include "surface/ui/surface.hpp"
+# include "dude/surface/ui/surface.hpp"
 
 namespace sf {
   namespace ui {

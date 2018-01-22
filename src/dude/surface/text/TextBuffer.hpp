@@ -5,8 +5,8 @@
 #include <fstream>
 #include <list>
 
-#include "surface/common.hpp"
-#include "surface/text/Line.hpp"
+#include "dude/surface/common.hpp"
+#include "dude/surface/text/Line.hpp"
 
 namespace sf {
 

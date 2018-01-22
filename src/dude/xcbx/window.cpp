@@ -1,8 +1,8 @@
 
-#include "surface/xcb/window.hpp"
-#include "surface/xcb/inline-decls.hpp"
-//#include "surface/ui/elements-inlines.hpp"
-#include "util/logging.hpp"
+#include "dude/xcbx/window.hpp"
+#include "dude/xcbx/inline-decls.hpp"
+//#include "dude/surface/ui/elements-inlines.hpp"
+#include "dude/util/logging.hpp"
 
 namespace sf {
   namespace xcb {

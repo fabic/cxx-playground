@@ -1,11 +1,11 @@
 #ifndef SURFACE_XCB_H
 #define SURFACE_XCB_H
 
-#include "surface/xcb/typedefs.hpp"
-#include "surface/xcb/exceptions.hpp"
-#include "surface/xcb/events.hpp"
-#include "surface/xcb/mask_values.hpp"
-#include "surface/xcb/window.hpp"
+#include "dude/xcbx/typedefs.hpp"
+#include "dude/xcbx/exceptions.hpp"
+#include "dude/xcbx/events.hpp"
+#include "dude/xcbx/mask_values.hpp"
+#include "dude/xcbx/window.hpp"
 
 namespace sf {
   namespace xcb {

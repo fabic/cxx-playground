@@ -1,7 +1,7 @@
 #ifndef SF_MATHS_DIMENSIONS_HPP
 #define SF_MATHS_DIMENSIONS_HPP
 
-#include "surface/maths/vector.hpp"
+#include "dude/surface/maths/vector.hpp"
 
 namespace sf {
 

@@ -6,8 +6,8 @@
 
 #include <iostream>
 
-#include "surface/ui/surface.hpp"
-#  include "surface/xcb/inline-decls.hpp"
+#include "dude/surface/ui/surface.hpp"
+#  include "dude/xcbx/inline-decls.hpp"
 
 
 /**

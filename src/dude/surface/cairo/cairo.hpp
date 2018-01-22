@@ -4,10 +4,10 @@
 #include <memory>
 #include <cairo/cairo-xcb.h>
 
-#include "surface/common.hpp"
-#include "surface/maths/rectangle.hpp"
-#include "surface/color.hpp"
-#include "util/logging.hpp"
+#include "dude/surface/common.hpp"
+#include "dude/surface/maths/rectangle.hpp"
+#include "dude/surface/color.hpp"
+#include "dude/util/logging.hpp"
 
 namespace sf {
   namespace cairo {

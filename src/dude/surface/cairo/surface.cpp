@@ -1,7 +1,7 @@
 
 #include <cassert>
-# include "surface/cairo/surface.hpp"
-# include "util/logging.hpp"
+# include "dude/surface/cairo/surface.hpp"
+# include "dude/util/logging.hpp"
 
 namespace sf {
   namespace cairo {

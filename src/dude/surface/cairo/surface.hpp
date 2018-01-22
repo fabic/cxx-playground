@@ -1,7 +1,7 @@
 #ifndef SF_CAIRO_SURFACE_H
 #define SF_CAIRO_SURFACE_H
 
-#include "surface/cairo/cairo.hpp"
+#include "dude/surface/cairo/cairo.hpp"
 
 namespace sf {
   namespace cairo {

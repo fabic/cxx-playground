@@ -1,6 +1,6 @@
 #include <cassert>
 #include "TextBuffer.hpp"
-#include "util/logging.hpp"
+#include "dude/util/logging.hpp"
 
 namespace sf {
 

@@ -1,5 +1,5 @@
-# include "surface/xcb+.hpp"
-# include "util/logging.hpp"
+# include "dude/xcb+.hpp"
+# include "dude/util/logging.hpp"
 
 /**
  * MAIN !
