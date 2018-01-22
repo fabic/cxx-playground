@@ -1,5 +1,5 @@
 
-# include "dude/xcbx/events.hpp"
+# include "surface/xcb/events.hpp"
 
 namespace sf {
   namespace xcb {

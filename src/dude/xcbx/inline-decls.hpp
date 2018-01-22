@@ -1,7 +1,7 @@
 #ifndef SF_XCB_INLINES_H
 #define SF_XCB_INLINES_H
 
-#include "dude/xcbx/xcb.hpp"
+#include "xcb.hpp"
 
 namespace sf {
   namespace xcb {
@@ -142,7 +142,7 @@ namespace sf {
 
     inline Window_ref_t Window::flush()
     {
-      //this->surface().flush();
+      this->surface().flush();
       xcb_->flush();
       return *this;
     }

@@ -1,7 +1,8 @@
 
-#include "dude/xcbx/window.hpp"
-#include "dude/xcbx/inline-decls.hpp"
-#include "dude/util/logging.hpp"
+#include "surface/xcb/window.hpp"
+#include "surface/xcb/inline-decls.hpp"
+//#include "surface/ui/elements-inlines.hpp"
+#include "util/logging.hpp"
 
 namespace sf {
   namespace xcb {
@@ -223,7 +224,6 @@ namespace sf {
                << "width = " << width << ", height = " << height
                << ", x = " << x << ", y = " << y ;
 
-      // FIXME: Improbable case of so huge dimensions that exceed 32k pixels.
       assert (! (width & 0x8000) );
       assert (! (height & 0x8000) );
 
@@ -231,7 +231,7 @@ namespace sf {
       width  &= ~0x8000;
       height &= ~0x8000;
 
-      //this->_surface.setSize( Dimensions<>(width, height) );
+      this->_surface.setSize( Dimensions<>(width, height) );
 
       this->render();
 
@@ -264,12 +264,12 @@ namespace sf {
           geometry->height
       );
 
-      // this->_surface.initXCB(
-      //     this->xcb_->getXcbConnectionPtr(),
-      //     this->getDrawableXid(),
-      //     this->getVisualType(),
-      //     dimensions
-      //   );
+      this->_surface.initXCB(
+          this->xcb_->getXcbConnectionPtr(),
+          this->getDrawableXid(),
+          this->getVisualType(),
+          dimensions
+        );
 
       return this;
     }
@@ -278,27 +278,27 @@ namespace sf {
     Window::self_ptr
       Window::render()
     {
-      // auto sf = this->surface();
-      //
-      // sf.set_operator(CAIRO_OPERATOR_CLEAR);
-      // sf.paint();
-      //
-      // sf.set_operator(CAIRO_OPERATOR_OVER);
-      //
-      // sf.source_rgba(rgba<>(255, 255, 255, 32));
-      //
-      // sf.set_line_width(20);
-      //
-      // auto dim = sf.dimensions();
-      //
-      // sf.move_to(Vector<>(0, 0));
-      // sf.line_to(Vector<>(dim.width(), dim.height()));
-      //
-      // sf.move_to(Vector<>(dim.width(), 0));
-      // sf.line_to(Vector<>(0, dim.height()));
-      //
-      // sf.stroke();
-      //
+      auto sf = this->surface();
+
+      sf.set_operator(CAIRO_OPERATOR_CLEAR);
+      sf.paint();
+
+      sf.set_operator(CAIRO_OPERATOR_OVER);
+
+      sf.source_rgba(rgba<>(255, 255, 255, 32));
+
+      sf.set_line_width(20);
+
+      auto dim = sf.dimensions();
+
+      sf.move_to(Vector<>(0, 0));
+      sf.line_to(Vector<>(dim.width(), dim.height()));
+
+      sf.move_to(Vector<>(dim.width(), 0));
+      sf.line_to(Vector<>(0, dim.height()));
+
+      sf.stroke();
+
       return this;
     }
 

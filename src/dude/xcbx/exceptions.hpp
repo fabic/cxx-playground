@@ -2,13 +2,13 @@
 #define SURFACE_XCB_EXCEPTIONS_H
 
 #include <memory>
-#include "dude/util/exceptions.hpp"
+#include "surface/common.hpp"
 
 namespace sf {
   namespace xcb {
 
     /// Base exception class for Xcb...
-    struct base_exception : dude::ex::base_exception
+    struct base_exception : sf::ex::base_exception
     {  };
 
     class Window;

@@ -1,8 +1,9 @@
 #ifndef SF_XCB_WINDOW_H
 #define SF_XCB_WINDOW_H
 
-#include "dude/xcbx/xcb.hpp"
-#include "dude/util/pointers.hpp"
+#include "surface/xcb/xcb.hpp"
+#include "surface/cairo/surface.hpp"
+#include "surface/ui/elements.hpp"
 
 namespace sf {
   namespace xcb {
@@ -32,6 +33,7 @@ namespace sf {
       xcb_shared_ptr     xcb_;
       xcb_window_t       _xid;
       xcb_visualtype_t * visual_type_ = nullptr;
+      cairo::Surface     _surface;
 
       handle_expose_callback_func_t handle_expose_callback_ = nullptr;
 
@@ -64,6 +66,8 @@ namespace sf {
         get_geometry();
 
       xcb_visualtype_t * getVisualType();
+
+      cairo::Surface::reference surface() { return this->_surface; }
 
       virtual void handleEvent(const Event &event);
 
