@@ -17,6 +17,8 @@ Quick build command :
 
 ### ChangeLog
 
+* __2018-02-17:__ Been a month since I've touched any C++, lost momentum with that
+  Clong plugin :-/
 * __2018-01-17:__ Dude, you were working on that _Clong_ Clang plugin thing;
  __status:__ partially working proof-of-concept, this may lead somewhere.
 
