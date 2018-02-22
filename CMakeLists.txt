@@ -32,7 +32,7 @@ if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
     list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules")
     message(STATUS "Dude: Also added ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules to CMAKE_MODULE_PATH.")
     include(dude_please_dump_cmake_variables)
-    include(list_all_targets)
+    #include(list_all_targets)
   endif()
 endif()
 
@@ -365,42 +365,25 @@ endif()
 # https://cmake.org/cmake/help/latest/module/FindBoost.html
 # https://svn.boost.org/trac/boost/wiki/CMakeBuildFeatures
 if (true)
-  # Hard-coded path if needed for `find_package(Boost...)`
-  #   - or simply set this as an environment variable,
-  #   - or pass `-DBOOSTROOT=...` when running CMake.
-  # (works ok with my CMake v3.4.3)
-  if (NOT IS_DIRECTORY "$ENV{BOOSTROOT}")
-    set(BOOSTROOT ../local/boost-1.61.0-clang)
-    message(WARNING "Dude: Boost C++: using hard-coded path for BOOSTROOT = ${BOOSTROOT}.")
-  elseif(IS_DIRECTORY $ENV{BOOSTROOT})
-    set(BOOSTROOT $ENV{BOOSTROOT})
-    message(STATUS "Dude: Boost C++ location said to be at ${BOOSTROOT}")
+  if (NOT DEFINED ENV{BOOSTROOT})
+    message(STATUS "FYI: The $BOOTROOT environment variable is not set (which might be just fine).")
   else()
-    message(WARNING "Dude: Boost C++ location $ENV{BOOSTROOT} ain't no exit buddy.")
+    message(STATUS "FYI: Environment variable $BOOTROOT is set to: ${ENV{BOOSTROOT}}")
+
+    # This one (with the '_' blankee) is for JetBrains' CLion bundled CMake (v3.5.2) :
+    # FIXME: Do we still need this BOOST_ROOT fix ?
+    set(BOOST_ROOT ${BOOSTROOT})
+
+    if (NOT IS_DIRECTORY $ENV{BOOSTROOT})
+      message(WARNING "Dude: Directory ${ENV{BOOSTROOT}} does not exist (!)")
+    endif()
   endif()
-
-  # This one (with the '_' blankee) is for JetBrains' CLion bundled CMake (v3.5.2) :
-  set(BOOST_ROOT ${BOOSTROOT})
-
-  # These two ain't needed, actually...
-  # set(BOOST_INCLUDE_DIRS ${BOOSTROOT}/include)
-  # set(BOOST_LIBRARY_DIRS ${BOOSTROOT}/local/boost-1.61.0-clang/lib)
-
-  #set (Boost_DEBUG)
-  # ^ this turns out debug output _ONLY FOR_ the CMake module !
 
   set (Boost_USE_MULTITHREAD ON)  # enable multithreading
   set (Boost_USE_STATIC_LIBS OFF) # enable dynamic linking
 
-  #add_definitions(-DBOOST_ALL_DYN_LINK)
-  # ^ solves linking problems, notably with Boost.log library.
-  #   See http://www.boost.org/doc/libs/1_61_0/libs/log/doc/html/log/rationale/namespace_mangling.html
-  #   See also `symfony/include/fabic/logging.hpp`
-
-  #   Note that the following would also solve the
-  #     “ unresolved symbol `v2s_mt_posix` ”
-  #   problem for the `log` module only.
-  add_definitions(-DBOOST_LOG_DYN_LINK)
+  #set (Boost_DEBUG)
+  # ^ this turns out debug output _ONLY FOR_ the CMake module !
 
   # 2018-01-09 : FindBoost has not yet been updated for handling the latest
   #              release; note that this _breaks_ the dependencies resolution
@@ -409,17 +392,38 @@ if (true)
 
   find_package(Boost 1.61.0)
 
+  # find_package( Boost
+  #                 COMPONENTS REQUIRED
+  #                   log program_options filesystem system )
+  # ^ now performed where/when/as needed.
+
+  # dude_dump_cmake_variables_matching("Boost.*")
+
+  # TODO: Re-impl. retry search with hard-coded path ?
+  ## if (NOT Boost_FOUND)
+  ##   # Hard-coded path if needed for `find_package(Boost...)`
+  ##   #   - or simply set this as an environment variable,
+  ##   #   - or pass `-DBOOSTROOT=...` when running CMake.
+  ##   # (works ok with my CMake v3.4.3)
+  ##   if (IS_DIRECTORY ${DUDE_LOCAL_DIR}/ ....)
+  ##     set(BOOSTROOT ../local/boost-1.61.0-clang)
+  ##     message(WARNING "Dude: Boost C++: using hard-coded path for BOOSTROOT = ${BOOSTROOT}.")
+  ##   endif()
+  ##   find_package(Boost 1.61.0)
+  ## endif()
+
   if (Boost_FOUND)
-  	include_directories(${Boost_INCLUDE_DIR})
-    # find_package (
-    #   Boost
-    #   COMPONENTS REQUIRED
-    #     log
-    #     program_options
-    #     filesystem
-    #     system
-    # )
-    # ^ now performed where/when/as needed.
+    include_directories( ${Boost_INCLUDE_DIR} )
+
+    #add_definitions(-DBOOST_ALL_DYN_LINK)
+    # ^ solves linking problems, notably with Boost.log library.
+    #   See http://www.boost.org/doc/libs/1_61_0/libs/log/doc/html/log/rationale/namespace_mangling.html
+    #   See also `symfony/include/fabic/logging.hpp`
+
+    #   Note that the following would also solve the
+    #     “ unresolved symbol `v2s_mt_posix` ”
+    #   problem for the `log` module only.
+    add_definitions( -DBOOST_LOG_DYN_LINK )
   else()
     message(WARNING "Dude: Boost C++: Ain't not found lad :-/")
     message(WARNING "      (it's okay, btw. you have quite an awkward")
@@ -463,23 +467,36 @@ endif()
 ###
 ## LLVM/Clang
 #
-#find_package(LLVM REQUIRED CONFIG)
 if (true)
-  find_package(LLVM CONFIG)
-  # find_package(Clang REQUIRED)
+  find_package(LLVM CONFIG)  #REQUIRED CONFIG)
+  find_package(Clang CONFIG) #REQUIRED)
 
-  # This would typically append for ex. '/usr/lib/cmake/llvm/' to CMake search path.
-  list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
+  #dude_dump_cmake_variables_matching("(Clang|LLVM).*")
 
-  # For `add_llvm_loadable_module()` notably.
-  include(AddLLVM)
+  if (NOT LLVM_FOUND)
+    message(STATUS "Dude: LLVM wasn't found")
+  elseif (NOT Clang_FOUND)
+    message(STATUS "Dude: Clang wasn't found")
+  else()
+    # This would typically append for ex. '/usr/lib/cmake/llvm/' to CMake search path.
+    list(APPEND CMAKE_MODULE_PATH "${LLVM_CMAKE_DIR}")
+    list(APPEND CMAKE_MODULE_PATH "${Clang_DIR}")
 
-  message(STATUS "Dude: Found LLVM version ${LLVM_PACKAGE_VERSION}")
-  message(STATUS "Dude: Using LLVMConfig.cmake found at: ${LLVM_DIR}")
+    # For `add_llvm_loadable_module()` notably.
+    include(AddLLVM)
 
-  # Don't (!): do this as needed.
-  #add_definitions( ${LLVM_DEFINITIONS} )
-  #include_directories( ${LLVM_INCLUDE_DIRS} )
+    message(STATUS "Dude: Found LLVM version ${LLVM_VERSION}")
+
+    if (${LLVM_VERSION} VERSION_LESS "6.0.0")
+      message(STATUS "Dude: ` We need at least LLVM/Clang version 6.0.0 (!)")
+    endif()
+
+    message(STATUS "Dude: ` LLVM_BINARY_DIR = ${LLVM_BINARY_DIR}")
+    message(STATUS "Dude: ` Using LLVMConfig.cmake found at: ${LLVM_CONFIG}")
+
+    message(STATUS "Dude: ` Don't forget to issue: add_definitions( \${LLVM_DEFINITIONS} )")
+    message(STATUS "Dude: `                   and: include_directories( \${LLVM_INCLUDE_DIRS} )")
+  endif()
 endif()
 
 
