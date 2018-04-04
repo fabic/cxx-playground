@@ -59,6 +59,10 @@ endif()
 ## PostgreSQL libpqxx
 ##
 ## Custom build target for some obscur reasons.
+## ^ FIXME: we only need to build libpqxx when we're building
+##          our stuff against LLVM's libcxx under Linux, instead of the
+##          default libstdc++.
+## FIXME: there's an autoconf-generated header that we can't generate -_-
 ##
 if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/libpqxx/src/connection.cxx)
   message(STATUS "Dude! Found libpqxx sources, adding custom library target for building it, ok.")
