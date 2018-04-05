@@ -29,7 +29,7 @@ else()
   # the following statement will have CMake automatically link against
   # those two statics that we need from libunwind :
   target_link_libraries( DudeHackRoutines INTERFACE
-    -L "${LIBUNW_LIBDIR}" ${LIBUNW_LDFLAGS}
+    -L"${LIBUNW_LIBDIR}" ${LIBUNW_LDFLAGS}
     unwind-x86_64
     # ^ FIXME: for some reason we have to specify this one, why?
 

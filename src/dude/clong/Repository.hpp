@@ -201,6 +201,8 @@ namespace plugin {
     /// Ctor
     explicit Repository(Clong& CL);
 
+    void Init();
+
     /// Return the `MapVector(&)` that stores the collected code artifacts.
     Map_t& getArtifactsMap() { return Artifacts_ ; }
 

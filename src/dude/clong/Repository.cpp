@@ -40,6 +40,9 @@ namespace plugin {
   /// Ctor -- beware here: we're being constructed as part of Clong's ctor.
   Repository::Repository(Clong& CL)
     : Clong_(CL)
+  {}
+
+  void Repository::Init()
   {
     // TEMP: Add the NIL artifact.
     // TODO: fetch from database ?
@@ -87,7 +90,7 @@ namespace plugin {
         A.SetIndex( GetIndexOfLastArtifact() );
       }
     }
-  }
+  } // Repository::Init() //
 
   // -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -  -
 

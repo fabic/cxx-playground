@@ -21,6 +21,8 @@ namespace plugin {
       PQXX_( PQXXOptionsString ),
       Repo_( *this )
     {
+      InitPostgresDatabase();
+      Repo_.Init();
       Preprocessor& PP = Instance.getPreprocessor();
       PP.addPPCallbacks( // PP takes ownership.
           llvm::make_unique<PPCallbacksTracker>(Ignore,

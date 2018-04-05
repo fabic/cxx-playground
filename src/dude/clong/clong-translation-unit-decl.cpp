@@ -29,7 +29,7 @@ namespace plugin {
         if (false)
           InitLMDB();
 
-        if (true)
+        if (false)
           InitPostgresDatabase();
 
         const TranslationUnitDecl *TU = context.getTranslationUnitDecl();
